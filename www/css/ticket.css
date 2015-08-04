@@ -1,0 +1,16 @@
+div.page-header {
+    font-size: 80px;
+    font-weight: bolder;
+}
+
+div#target {
+    margin-top: 40px;
+}
+div.ticket {
+
+}
+
+div.ticket p {
+    font-size: 160px;
+    font-weight: bolder;
+}
