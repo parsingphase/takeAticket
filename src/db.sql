@@ -1,1 +1,1 @@
- CREATE TABLE tickets (id int PRIMARY KEY, offset int, title string, performed int DEFAULT 0);
+ CREATE TABLE tickets (id int PRIMARY KEY, offset int, title string, used int DEFAULT 0, deleted int DEFAULT 0);

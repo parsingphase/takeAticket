@@ -20,14 +20,13 @@ var ticketer = {
         //console.log(['drawDisplayTicket',ticket]);
         //console.log(ticket.title);
         var title = ticket.title;
-        var block = '<div class="ticket well well-lg"><p class="text-center">' + title + '</p></div>';
+        var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
         return block;
     },
 
     drawManagableTicket: function (ticket) {
-        //console.log(['drawManagableTicket',ticket]);
+        ticket.used = 0 + Number(ticket.used); // force int
 
-        //var block = '<div class="ticket well well-lg"><p class="text-center">' + title + '</p></div>';
         var block = this.manageTemplate({ticket: ticket});
         return block;
 
@@ -45,13 +44,14 @@ var ticketer = {
                 var block = that.drawDisplayTicket(ticket);
                 out += block;
             }
-            out += Date.now().toLocaleString();
+            //out += Date.now().toLocaleString();
 
             $('#target').html(out);
         });
     },
 
     manage: function (tickets) {
+        var that = this;
         this.initTemplates();
         //console.log(tickets);
         var that = this;
@@ -73,42 +73,39 @@ var ticketer = {
         }).disableSelection().css('cursor', 'move');
 
         $('.addTicketButton').click(function () {
-            var titleInput = $('.addTicketTitle');
-            var newTitle = titleInput.val();
-            console.log('addTicket: ' + newTitle);
-            $.ajax({
-                    method: 'POST',
-                    data: {
-                        title: newTitle
-                    },
-                    url: '/api/newTicket',
-                    success: function (data, status) {
-                        titleInput.val('');
-                        $('#target').append(that.drawManagableTicket(data.ticket));
-                    },
-                    error: function (xhr, status, error) {
-                        console.log('addTicketTitle post ERROR: ' + status);
-                    }
-                }
-            );
+            that.addTicketCallback();
+        });
+
+        $('.addTicketTitle').keydown(function (e) {
+            if (e.keyCode == 13) {
+                that.addTicketCallback();
+            }
+        });
+
+        $('.performButton').click(function () {
+            that.performButtonCallback(this);
+        });
+        $('.removeButton').click(function () {
+            that.removeButtonCallback(this);
         });
     },
 
     initTemplates: function () {
         this.manageTemplate = Handlebars.compile(
-            '<div class="ticket well" data-ticket-id="{{ ticket.id }}">' +
+            '<div class="ticket well {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
             '        <div class="pull-right">' +
-            '        <button class="btn btn-primary" data-ticket-id="{{ ticket.id }}">Performing</button>' +
-            '        <button class="btn btn-danger" data-ticket-id="{{ ticket.id }}">Remove</button>' +
+            '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
+            '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
             '        </div>' +
-            '        {{ ticket.offset }}: ' +
-            '{{ ticket.title }}' +
+            '        #{{ ticket.id }}: ' +
+            'Band {{ ticket.title }}' +
+            '{{#if ticket.used}} (done){{/if}}' +
             '</div>  '
         );
     },
 
     ticketOrderChanged: function () {
-        console.log('Ticket order changed');
+        //console.log('Ticket order changed');
         var idOrder = [];
         $('#target').find('.ticket').each(
             function () {
@@ -120,7 +117,7 @@ var ticketer = {
             }
         );
 
-        console.log(['New order', idOrder]);
+        //console.log(['New order', idOrder]);
 
         $.ajax({
             method: 'POST',
@@ -135,6 +132,70 @@ var ticketer = {
                 console.log('ticketOrderChanged post ERROR: ' + status);
             }
         });
+    },
+
+    addTicketCallback: function () {
+        var that = this;
+        var titleInput = $('.addTicketTitle');
+        var newTitle = titleInput.val();
+        console.log('addTicket: ' + newTitle);
+        $.ajax({
+                method: 'POST',
+                data: {
+                    title: newTitle
+                },
+                url: '/api/newTicket',
+                success: function (data, status) {
+                    titleInput.val('');
+                    $('#target').append(that.drawManagableTicket(data.ticket));
+                },
+                error: function (xhr, status, error) {
+                    console.log('addTicketTitle post ERROR: ' + status);
+                }
+            }
+        );
+    },
+
+    performButtonCallback: function (button) {
+        button = $(button);
+        var ticketId = button.data('ticketId');
+        console.log('performButtonCallback: ' + ticketId);
+        $.ajax({
+                method: 'POST',
+                data: {
+                    ticketId: ticketId
+                },
+                url: '/api/useTicket',
+                success: function (data, status) {
+                    var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+                    ticketBlock.addClass('used');
+                },
+                error: function (xhr, status, error) {
+                    console.log('performButtonCallback post ERROR: ' + status);
+                }
+            }
+        );
+    },
+
+    removeButtonCallback: function (button) {
+        button = $(button);
+        var ticketId = button.data('ticketId');
+        console.log('removeButtonCallback: ' + ticketId);
+        $.ajax({
+                method: 'POST',
+                data: {
+                    ticketId: ticketId
+                },
+                url: '/api/deleteTicket',
+                success: function (data, status) {
+                    var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+                    ticketBlock.remove();
+                },
+                error: function (xhr, status, error) {
+                    console.log('removeButtonCallback post ERROR: ' + status);
+                }
+            }
+        );
     }
 
 };

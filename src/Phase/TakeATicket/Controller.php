@@ -40,7 +40,7 @@ class Controller
         /**
          * @var $conn Connection
          */
-        $statement = $conn->prepare('SELECT * FROM tickets ORDER BY offset ASC LIMIT 3');
+        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT 3');
         $statement->execute();
         $next = $statement->fetchAll();
 //
@@ -90,12 +90,40 @@ class Controller
     public function newTicketOrderPostAction(Request $request)
     {
         $idOrder = $request->get('idOrder');
-        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($idOrder) . "\n");
+//        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($idOrder) . "\n");
         $conn = $this->getDbConn();
 
+        $res = 1;
         foreach ($idOrder as $offset => $id) {
-            $res = $conn->update(self::ticketTable, ['offset' => $offset], ['id' => $id]);
+            $res = $res && $conn->update(self::ticketTable, ['offset' => $offset], ['id' => $id]);
         }
+        if ($res) {
+            $jsonResponse = new JsonResponse(['ok' => 'ok']);
+        } else {
+            $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
+        }
+        return $jsonResponse;
+    }
+
+
+    public function useTicketPostAction(Request $request)
+    {
+        $id = $request->get('ticketId');
+        $conn = $this->getDbConn();
+        $res =  $conn->update(self::ticketTable, ['used' => 1], ['id' => $id]);
+        if ($res) {
+            $jsonResponse = new JsonResponse(['ok' => 'ok']);
+        } else {
+            $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
+        }
+        return $jsonResponse;
+    }
+
+    public function deleteTicketPostAction(Request $request)
+    {
+        $id = $request->get('ticketId');
+        $conn = $this->getDbConn();
+        $res =  $conn->update(self::ticketTable, ['deleted' => 1], ['id' => $id]);
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
@@ -107,7 +135,7 @@ class Controller
     /**
      * @return Connection
      */
-    public function getDbConn()
+    protected function getDbConn()
     {
         $conn = $this->app['db'];
         return $conn;

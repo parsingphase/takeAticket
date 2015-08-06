@@ -6,8 +6,9 @@ div.page-header {
 div#target {
     margin-top: 40px;
 }
-div.ticket {
 
+div.ticket.well {
+    padding: 10px;
 }
 
 div.ticket p {
@@ -15,9 +16,8 @@ div.ticket p {
     font-weight: bolder;
 }
 
-
 div.manage div.ticket p {
-    font-size: 60px;
+    font-size: 50px;
     font-weight: bolder;
 }
 
@@ -29,4 +29,18 @@ div.page-header {
 
 .addTicketTitle {
     width: 30em;
+}
+
+.ticket.used {
+    color: #777;
+    font-style: italic;
+    background-color: #fefefe !important;
+}
+
+.ticket.used button.performButton {
+    display: none;
+}
+
+div.gflink {
+    font-size: 50px;
 }
