@@ -50,11 +50,22 @@ var ticketer = {
         });
     },
 
+    enableButtons: function (topElement) {
+        var that = this;
+
+        $(topElement).find('.performButton').click(function () {
+            that.performButtonCallback(this);
+        });
+
+        $(topElement).find('.removeButton').click(function () {
+            that.removeButtonCallback(this);
+        });
+    },
+
     manage: function (tickets) {
         var that = this;
         this.initTemplates();
         //console.log(tickets);
-        var that = this;
 
         var out = '';
         for (var i = 0; i < tickets.length; i++) {
@@ -82,12 +93,7 @@ var ticketer = {
             }
         });
 
-        $('.performButton').click(function () {
-            that.performButtonCallback(this);
-        });
-        $('.removeButton').click(function () {
-            that.removeButtonCallback(this);
-        });
+        this.enableButtons($('.sortContainer'));
     },
 
     initTemplates: function () {
@@ -148,6 +154,9 @@ var ticketer = {
                 success: function (data, status) {
                     titleInput.val('');
                     $('#target').append(that.drawManagableTicket(data.ticket));
+                    var ticketId = data.ticket.id;
+                    var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+                    that.enableButtons(ticketBlock);
                 },
                 error: function (xhr, status, error) {
                     console.log('addTicketTitle post ERROR: ' + status);
@@ -157,6 +166,8 @@ var ticketer = {
     },
 
     performButtonCallback: function (button) {
+        var that = this;
+
         button = $(button);
         var ticketId = button.data('ticketId');
         console.log('performButtonCallback: ' + ticketId);

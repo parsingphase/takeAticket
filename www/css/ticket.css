@@ -27,6 +27,12 @@ div.page-header {
     font-weight: bolder;
 }
 
+
+.manage div.ticket.well {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
 .addTicketTitle {
     width: 30em;
 }

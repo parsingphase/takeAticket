@@ -56,7 +56,7 @@ class Controller
     public function manageAction()
     {
         $conn = $this->getDbConn();
-        $statement = $conn->prepare('SELECT * FROM tickets ORDER BY offset ASC');
+        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 ORDER BY offset ASC');
         $statement->execute();
         $tickets = $statement->fetchAll();
 
