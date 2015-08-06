@@ -59,6 +59,10 @@ class ControllerProvider implements ControllerProviderInterface
             '/api/newTicket',
             'ticket.controller:newTicketPostAction'
         );
+        $controllers->match(
+            '/api/newOrder',
+            'ticket.controller:newTicketOrderPostAction'
+        );
 
 
         return $controllers;

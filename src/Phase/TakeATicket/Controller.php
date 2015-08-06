@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Controller
 {
+    const ticketTable = 'tickets';
     /**
      * @var Application
      */
@@ -60,27 +61,45 @@ class Controller
         $tickets = $statement->fetchAll();
 
 
-        return $this->app['twig']->render('manage.twig', ['tickets' => $tickets]);
+        return $this->app['twig']->render('manage.twig', [self::ticketTable => $tickets]);
     }
 
     public function newTicketPostAction(Request $request)
     {
         $title = $request->get('title');
         $conn = $this->getDbConn();
-        $statement = $conn->prepare('SELECT max(offset) FROM tickets');
-        $statement->execute();
-        $maxOffset = $statement->fetchColumn();
+        $max = $conn->fetchAssoc('SELECT max(offset) AS o, max(id) AS i FROM tickets');
+
+        $maxOffset = $max['o'];
+        $maxId = $max['i'];
         $ticket = [
             'title' => $title,
+            'id' => $maxId + 1,
             'offset' => $maxOffset + 1
         ];
-        $res = $conn->insert('tickets', $ticket);
-        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($ticket) . "\n$res");
+        $res = $conn->insert(self::ticketTable, $ticket);
 
         if ($res) {
             $jsonResponse = new JsonResponse(['ticket' => $ticket]);
         } else {
             $jsonResponse = new JsonResponse(['ticket' => $ticket], 500);
+        }
+        return $jsonResponse;
+    }
+
+    public function newTicketOrderPostAction(Request $request)
+    {
+        $idOrder = $request->get('idOrder');
+        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($idOrder) . "\n");
+        $conn = $this->getDbConn();
+
+        foreach ($idOrder as $offset => $id) {
+            $res = $conn->update(self::ticketTable, ['offset' => $offset], ['id' => $id]);
+        }
+        if ($res) {
+            $jsonResponse = new JsonResponse(['ok' => 'ok']);
+        } else {
+            $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
         return $jsonResponse;
     }
