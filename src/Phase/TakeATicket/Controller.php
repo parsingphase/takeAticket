@@ -11,6 +11,7 @@ namespace Phase\TakeATicket;
 use Doctrine\DBAL\Connection;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class Controller
 {
@@ -29,16 +30,16 @@ class Controller
         return $this->app['twig']->render('index.twig');
     }
 
-    public function nextAction()
+    public function nextJsonAction()
     {
 //        Cheza:db wechsler$ sqlite3 app.db
         //sqlite> CREATE TABLE tickets (offset int PRIMARY KEY, title string);
 
-        $conn=$this->app['db'];
+        $conn = $this->app['db'];
         /**
          * @var $conn Connection
          */
-        $statement = $conn->prepare('SELECT * FROM tickets ORDER BY offset ASC');
+        $statement = $conn->prepare('SELECT * FROM tickets ORDER BY offset ASC LIMIT 3');
         $statement->execute();
         $next = $statement->fetchAll();
 //
@@ -49,5 +50,50 @@ class Controller
 //        ];
 
         return new JsonResponse($next);
+    }
+
+    public function manageAction()
+    {
+        $conn = $this->getDbConn();
+        $statement = $conn->prepare('SELECT * FROM tickets ORDER BY offset ASC');
+        $statement->execute();
+        $tickets = $statement->fetchAll();
+
+
+        return $this->app['twig']->render('manage.twig', ['tickets' => $tickets]);
+    }
+
+    public function newTicketPostAction(Request $request)
+    {
+        $title = $request->get('title');
+        $conn = $this->getDbConn();
+        $statement = $conn->prepare('SELECT max(offset) FROM tickets');
+        $statement->execute();
+        $maxOffset = $statement->fetchColumn();
+        $ticket = [
+            'title' => $title,
+            'offset' => $maxOffset + 1
+        ];
+        $res = $conn->insert('tickets', $ticket);
+        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($ticket) . "\n$res");
+
+        if ($res) {
+            $jsonResponse = new JsonResponse(['ticket' => $ticket]);
+        } else {
+            $jsonResponse = new JsonResponse(['ticket' => $ticket], 500);
+        }
+        return $jsonResponse;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getDbConn()
+    {
+        $conn = $this->app['db'];
+        return $conn;
+        /**
+         * @var $conn Connection
+         */
     }
 }

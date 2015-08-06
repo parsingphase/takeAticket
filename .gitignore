@@ -4,3 +4,4 @@ composer.phar
 components
 app.db
 log
+tmp

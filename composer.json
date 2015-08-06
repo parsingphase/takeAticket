@@ -17,7 +17,7 @@
         "silex/silex": "~1.2",
         "components/bootstrap": "~3.2",
         "components/jqueryui": "~1.11",
-        "components/handlebars.js": "~2.0",
+        "components/handlebars.js": "^3.0",
         "twig/twig": "~1.16",
         "doctrine/dbal": "~2.4",
         "symfony/twig-bridge": "~2.5",

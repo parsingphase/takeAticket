@@ -14,3 +14,19 @@ div.ticket p {
     font-size: 160px;
     font-weight: bolder;
 }
+
+
+div.manage div.ticket p {
+    font-size: 60px;
+    font-weight: bolder;
+}
+
+div.manage
+div.page-header {
+    font-size: 40px;
+    font-weight: bolder;
+}
+
+.addTicketTitle {
+    width: 30em;
+}

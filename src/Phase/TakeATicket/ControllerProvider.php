@@ -46,8 +46,18 @@ class ControllerProvider implements ControllerProviderInterface
         );
 
         $controllers->match(
-            '/next',
-            'ticket.controller:nextAction'
+            '/api/next',
+            'ticket.controller:nextJsonAction'
+        );
+
+        $controllers->match(
+            '/manage',
+            'ticket.controller:manageAction'
+        );
+
+        $controllers->match(
+            '/api/newTicket',
+            'ticket.controller:newTicketPostAction'
         );
 
 
