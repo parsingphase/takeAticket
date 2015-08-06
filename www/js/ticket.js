@@ -180,6 +180,7 @@ var ticketer = {
                 success: function (data, status) {
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     ticketBlock.addClass('used');
+                    ticketBlock.append(' (done)');
                 },
                 error: function (xhr, status, error) {
                     console.log('performButtonCallback post ERROR: ' + status);
