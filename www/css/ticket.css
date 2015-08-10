@@ -2,18 +2,19 @@ div.page-header {
     font-size: 80px;
     font-weight: bolder;
     margin-top: 0;
+    margin-bottom: 0;
 }
 
 div#target {
     margin-top: 40px;
 }
 
-div.ticket.well {
-    padding: 10px;
+div.well {
+    padding: 0;
 }
 
 div.ticket p {
-    font-size: 160px;
+    font-size: 180px;
     font-weight: bolder;
 }
 
