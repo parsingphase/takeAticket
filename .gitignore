@@ -5,3 +5,4 @@ components
 app.db
 log
 tmp
+config.php

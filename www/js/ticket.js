@@ -25,7 +25,7 @@ var ticketer = {
     },
 
     drawManagableTicket: function (ticket) {
-        ticket.used = 0 + Number(ticket.used); // force int
+        ticket.used = Number(ticket.used); // force int
 
         var block = this.manageTemplate({ticket: ticket});
         return block;

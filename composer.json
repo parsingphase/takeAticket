@@ -21,6 +21,7 @@
         "twig/twig": "~1.16",
         "doctrine/dbal": "~2.4",
         "symfony/twig-bridge": "~2.5",
-        "monolog/monolog": "^1.15"
+        "monolog/monolog": "^1.15",
+        "phpoffice/phpexcel": "^1.8"
     }
 }
