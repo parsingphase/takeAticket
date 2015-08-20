@@ -5,35 +5,24 @@ var ticketer = {
     drawTemplate: null,
     manageTemplate: null,
     displayOptions: {},
-    //
-    //greet: function () {
-    //    $('#target').text('Hi from ticketer');
-    //},
 
     go: function () {
         this.initTemplates();
 
         ticketer.reloadTickets();
         setInterval(function () {
-            ticketer.reloadTickets()
+            ticketer.reloadTickets();
         }, 10000);
     },
 
     drawDisplayTicket: function (ticket) {
-        //console.log(['drawDisplayTicket',ticket]);
-        //console.log(ticket.title);
-        //var title = ticket.title;
-        //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
-        var block = this.drawTemplate({ticket: ticket});
-        return block;
+        return this.drawTemplate({ticket: ticket});
     },
 
-    drawManagableTicket: function (ticket) {
+    drawManageableTicket: function (ticket) {
         ticket.used = Number(ticket.used); // force int
 
-        var block = this.manageTemplate({ticket: ticket});
-        return block;
-
+        return this.manageTemplate({ticket: ticket});
     },
 
     reloadTickets: function () {
@@ -45,16 +34,16 @@ var ticketer = {
             var out = '';
             for (var i = 0; i < tickets.length; i++) {
                 var ticket = tickets[i];
-                var block = that.drawDisplayTicket(ticket);
-                out += block;
+                out += that.drawDisplayTicket(ticket);
             }
             //out += Date.now().toLocaleString();
 
-            $('#target').html(out);
+            var target = $('#target');
+            target.html(out);
 
-            $('#target').find('.auto-font').each(
+            target.find('.auto-font').each(
                 function () {
-                    var scale = 1.05 * this.scrollWidth / this.clientWidth; // extra scale to fit neatly
+                    var scale = 1.05 * Math.min(this.scrollWidth / this.clientWidth); // extra scale to fit neatly
                     var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
                     //console.log(['width', outerWidth, outerScroll, innerWidth, innerScroll, font]);
                     $(this).css('font-size', (font / scale) + 'px');
@@ -84,16 +73,17 @@ var ticketer = {
         var out = '';
         for (var i = 0; i < tickets.length; i++) {
             var ticket = tickets[i];
-            var block = that.drawManagableTicket(ticket);
-            out += block;
+            out += that.drawManageableTicket(ticket);
         }
         $('#target').html(out);
 
-
-        $('.sortContainer').sortable({
+        var $sortContainer = $('.sortContainer');
+        $sortContainer.sortable({
             axis: 'y',
             update: function (event, ui) {
-                that.ticketOrderChanged()
+                void(event);
+                void(ui);
+                that.ticketOrderChanged();
             }
         }).disableSelection().css('cursor', 'move');
 
@@ -107,7 +97,7 @@ var ticketer = {
             }
         });
 
-        this.enableButtons($('.sortContainer'));
+        this.enableButtons($sortContainer);
     },
 
     initTemplates: function () {
@@ -126,6 +116,7 @@ var ticketer = {
 
         //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
 
+        //noinspection JSUnresolvedVariable
         this.drawTemplate = Handlebars.compile(
             '<div class="ticket well" data-ticket-id="{{ ticket.id }}">' +
             '        <div class="ticket-inner">' +
@@ -162,6 +153,7 @@ var ticketer = {
             },
             error: function (xhr, status, error) {
                 console.log('ticketOrderChanged post ERROR: ' + status);
+                void(error);
             }
         });
     },
@@ -181,14 +173,16 @@ var ticketer = {
                 },
                 url: '/api/newTicket',
                 success: function (data, status) {
+                    void(status);
                     titleInput.val('');
                     songInput.val('');
-                    $('#target').append(that.drawManagableTicket(data.ticket));
+                    $('#target').append(that.drawManageableTicket(data.ticket));
                     var ticketId = data.ticket.id;
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     that.enableButtons(ticketBlock);
                 },
                 error: function (xhr, status, error) {
+                    void(error);
                     console.log('addTicketTitle post ERROR: ' + status);
                 }
             }
@@ -196,7 +190,7 @@ var ticketer = {
     },
 
     performButtonCallback: function (button) {
-        var that = this;
+        //var that = this;
 
         button = $(button);
         var ticketId = button.data('ticketId');
@@ -208,11 +202,15 @@ var ticketer = {
                 },
                 url: '/api/useTicket',
                 success: function (data, status) {
+                    void(data);
+                    void(status);
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     ticketBlock.addClass('used');
                     ticketBlock.append(' (done)');
                 },
                 error: function (xhr, status, error) {
+                    void(xhr);
+                    void(error);
                     console.log('performButtonCallback post ERROR: ' + status);
                 }
             }
@@ -230,10 +228,12 @@ var ticketer = {
                 },
                 url: '/api/deleteTicket',
                 success: function (data, status) {
+                    void(status);
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     ticketBlock.remove();
                 },
                 error: function (xhr, status, error) {
+                    void(error);
                     console.log('removeButtonCallback post ERROR: ' + status);
                 }
             }

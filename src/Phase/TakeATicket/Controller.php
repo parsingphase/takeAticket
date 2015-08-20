@@ -147,10 +147,10 @@ class Controller
         $conn = $this->getDbConn();
         $params = ['pattern' => '%' . implode('%', preg_split('/\s+/', $searchString)) . '%'];
         $songs = $conn->fetchAll(
-            'SELECT * FROM songs
-            WHERE (title || " " || artist LIKE :pattern)
-            OR (artist || " " || title LIKE :pattern)
-            LIMIT 10',
+            "SELECT * FROM songs
+            WHERE (title || ' ' || artist LIKE :pattern)
+            OR (artist || ' ' || title LIKE :pattern)
+            LIMIT 10",
             $params);
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'songs' => $songs]);
         return $jsonResponse;
