@@ -7,7 +7,7 @@
  */
 
 $config = [
-
+    'displayOptions' => ['songInPreview' => true]
 ];
 
 return $config;

@@ -28,7 +28,9 @@ class Controller
 
     public function indexAction()
     {
-        return $this->app['twig']->render('index.twig');
+        $viewParams = [];
+        $viewParams['displayOptions'] = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : null;
+        return $this->app['twig']->render('index.twig', $viewParams);
     }
 
     public function nextJsonAction()

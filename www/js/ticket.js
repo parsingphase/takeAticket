@@ -4,6 +4,7 @@
 var ticketer = {
     drawTemplate: null,
     manageTemplate: null,
+    displayOptions: {},
     //
     //greet: function () {
     //    $('#target').text('Hi from ticketer');
@@ -129,7 +130,7 @@ var ticketer = {
             '<div class="ticket well" data-ticket-id="{{ ticket.id }}">' +
             '        <div class="ticket-inner">' +
             '        <p class="text-center band auto-font">{{ticket.title}}</p>' +
-            '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' + //fixme check a config var
+            (this.displayOptions.songInPreview ? '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : '') +
             '        </div>' +
             '</div>  '
         );
