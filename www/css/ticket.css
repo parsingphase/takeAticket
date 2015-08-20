@@ -36,12 +36,6 @@ div.manage div.ticket.well {
   padding-top: 10px;
   padding-bottom: 20px;
 }
-div.manage div.ticket .addSongTitle {
-  width: 30em;
-}
-div.manage div.ticket .addTicketTitle {
-  width: 30em;
-}
 div.manage div.ticket.used {
   color: #777;
   font-style: italic;
@@ -49,6 +43,26 @@ div.manage div.ticket.used {
 }
 div.manage div.ticket.used button.performButton {
   display: none;
+}
+div.manage div.addTicket .addSongTitle {
+  width: 30em;
+}
+div.manage div.addTicket .addTicketTitle {
+  width: 30em;
+}
+div.manage div.addTicket .songComplete {
+  position: absolute;
+  width: 30em;
+  background-color: white;
+  border: solid grey 1px;
+}
+div.manage div.addTicket .acSong {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: solid grey 1px;
+}
+div.manage div.addTicket .acSong:last-of-type {
+  border-bottom: none;
 }
 div.manage div.page-header {
   font-size: 40px;

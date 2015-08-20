@@ -4,6 +4,7 @@
 var ticketer = {
     drawTemplate: null,
     manageTemplate: null,
+    songAutocompleteItemTemplate: null,
     displayOptions: {},
 
     go: function () {
@@ -97,6 +98,43 @@ var ticketer = {
             }
         });
 
+        $('.addSongTitle').keyup(
+            function () {
+                var input = $(this);
+                var searchString = input.val();
+                //console.log('SS: ' + searchString);
+                if (searchString.length > 3) {
+                    console.log('SS+: ' + searchString);
+                    $.ajax({
+                        method: 'POST',
+                        data: {
+                            searchString: searchString
+                        },
+                        url: '/api/songSearch',
+                        success: function (data, status) {
+                            console.log(['songSearch returned', data]);
+                            var songs = data.songs;
+                            if (input.val() == data.searchString) {
+                                // ensure autocomplete response is still valid for current input value
+                                var out = '';
+                                for (var i = 0; i < songs.length; i++) {
+                                    var song = songs[i];
+                                    out += that.songAutocompleteItemTemplate({song: song});
+                                }
+                                $('.songComplete').html(out);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('songSearch post ERROR: ' + status);
+                            void(error);
+                        }
+                    });
+                } else {
+                    $('.songComplete').html('');
+                }
+            }
+        );
+
         this.enableButtons($sortContainer);
     },
 
@@ -122,6 +160,14 @@ var ticketer = {
             '        <div class="ticket-inner">' +
             '        <p class="text-center band auto-font">{{ticket.title}}</p>' +
             (this.displayOptions.songInPreview ? '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : '') +
+            '        </div>' +
+            '</div>  '
+        );
+
+        this.songAutocompleteItemTemplate = Handlebars.compile(
+            '<div class="acSong" data-song-id="{{ song.id }}">' +
+            '        <div class="acSong-inner">' +
+            '        <p class="">{{song.artist}}: {{song.title}}</p>' +
             '        </div>' +
             '</div>  '
         );

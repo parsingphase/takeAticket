@@ -50,14 +50,6 @@ div.manage {
       padding-bottom: 20px;
     }
 
-    .addSongTitle {
-      width: 30em;
-    }
-
-    .addTicketTitle {
-      width: 30em;
-    }
-
     &.used {
       color: #777;
       font-style: italic;
@@ -66,6 +58,35 @@ div.manage {
 
     &.used button.performButton {
       display: none;
+    }
+  }
+
+  div.addTicket {
+
+    .addSongTitle {
+      width: 30em;
+    }
+
+    .addTicketTitle {
+      width: 30em;
+    }
+
+    .songComplete {
+      position: absolute;
+      //height: 200px;
+      width: 30em;
+      background-color: white;
+      border: solid grey 1px;
+    }
+
+    .acSong {
+      // single song
+      padding: 5px;
+      cursor: pointer;
+      border-bottom: solid grey 1px;
+      &:last-of-type {
+        border-bottom: none;
+      }
     }
   }
 

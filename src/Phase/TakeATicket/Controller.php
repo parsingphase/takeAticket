@@ -152,7 +152,7 @@ class Controller
             OR (artist || ' ' || title LIKE :pattern)
             LIMIT 10",
             $params);
-        $jsonResponse = new JsonResponse(['ok' => 'ok', 'songs' => $songs]);
+        $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
         return $jsonResponse;
     }
 
