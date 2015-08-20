@@ -74,6 +74,11 @@ class ControllerProvider implements ControllerProviderInterface
             'ticket.controller:deleteTicketPostAction'
         );
 
+        $controllers->match(
+            '/api/songSearch',
+            'ticket.controller:songSearchAction'
+        );
+
         return $controllers;
     }
 

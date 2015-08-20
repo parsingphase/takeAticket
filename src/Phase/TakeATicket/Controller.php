@@ -35,10 +35,7 @@ class Controller
 
     public function nextJsonAction()
     {
-        $conn = $this->app['db'];
-        /**
-         * @var $conn Connection
-         */
+        $conn = $this->getDbConn();
         $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT 3');
         $statement->execute();
         $next = $statement->fetchAll();
@@ -104,7 +101,6 @@ class Controller
     public function newTicketOrderPostAction(Request $request)
     {
         $idOrder = $request->get('idOrder');
-//        file_put_contents(dirname(__DIR__) . '../../tmp', json_encode($idOrder) . "\n");
         $conn = $this->getDbConn();
 
         $res = 1;
@@ -118,7 +114,6 @@ class Controller
         }
         return $jsonResponse;
     }
-
 
     public function useTicketPostAction(Request $request)
     {
@@ -143,6 +138,21 @@ class Controller
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
+        return $jsonResponse;
+    }
+
+    public function songSearchAction(Request $request)
+    {
+        $searchString = $request->get('searchString');
+        $conn = $this->getDbConn();
+        $params = ['pattern' => '%' . implode('%', preg_split('/\s+/', $searchString)) . '%'];
+        $songs = $conn->fetchAll(
+            'SELECT * FROM songs
+            WHERE (title || " " || artist LIKE :pattern)
+            OR (artist || " " || title LIKE :pattern)
+            LIMIT 10',
+            $params);
+        $jsonResponse = new JsonResponse(['ok' => 'ok', 'songs' => $songs]);
         return $jsonResponse;
     }
 
