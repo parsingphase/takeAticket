@@ -2,6 +2,7 @@ CREATE TABLE tickets (
   id      INT PRIMARY KEY,
   offset  INT,
   title   TEXT,
+  songId INT DEFAULT NULL,
   used    INT DEFAULT 0,
   deleted INT DEFAULT 0
 );

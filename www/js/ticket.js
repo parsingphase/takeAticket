@@ -4,12 +4,14 @@
 var ticketer = {
     drawTemplate: null,
     manageTemplate: null,
-
-    greet: function () {
-        $('#target').text('Hi from ticketer');
-    },
+    //
+    //greet: function () {
+    //    $('#target').text('Hi from ticketer');
+    //},
 
     go: function () {
+        this.initTemplates();
+
         ticketer.reloadTickets();
         setInterval(function () {
             ticketer.reloadTickets()
@@ -19,8 +21,9 @@ var ticketer = {
     drawDisplayTicket: function (ticket) {
         //console.log(['drawDisplayTicket',ticket]);
         //console.log(ticket.title);
-        var title = ticket.title;
-        var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
+        //var title = ticket.title;
+        //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
+        var block = this.drawTemplate({ticket: ticket});
         return block;
     },
 
@@ -47,6 +50,16 @@ var ticketer = {
             //out += Date.now().toLocaleString();
 
             $('#target').html(out);
+
+            $('#target').find('.auto-font').each(
+                function () {
+                    var scale = 1.05 * this.scrollWidth / this.clientWidth; // extra scale to fit neatly
+                    var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
+                    //console.log(['width', outerWidth, outerScroll, innerWidth, innerScroll, font]);
+                    $(this).css('font-size', (font / scale) + 'px');
+                }
+            );
+
         });
     },
 
@@ -103,9 +116,21 @@ var ticketer = {
             '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
             '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
             '        </div>' +
-            '        #{{ ticket.id }}: ' +
-            'Band {{ ticket.title }}' +
+            '        <b>#{{ ticket.id }}:</b> ' +
+            'Band: {{ ticket.title }}' +
             '{{#if ticket.used}} (done){{/if}}' +
+            '{{#if ticket.song}}<br />{{ticket.song.artist}}: {{ticket.song.title}}{{/if}}' +
+            '</div>  '
+        );
+
+        //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
+
+        this.drawTemplate = Handlebars.compile(
+            '<div class="ticket well" data-ticket-id="{{ ticket.id }}">' +
+            '        <div class="ticket-inner">' +
+            '        <p class="text-center band auto-font">{{ticket.title}}</p>' +
+            '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' + //fixme check a config var
+            '        </div>' +
             '</div>  '
         );
     },
@@ -144,15 +169,19 @@ var ticketer = {
         var that = this;
         var titleInput = $('.addTicketTitle');
         var newTitle = titleInput.val();
+        var songInput = $('.addSongTitle');
+        var songTitle = songInput.val();
         console.log('addTicket: ' + newTitle);
         $.ajax({
                 method: 'POST',
                 data: {
-                    title: newTitle
+                    title: newTitle,
+                    song: songTitle
                 },
                 url: '/api/newTicket',
                 success: function (data, status) {
                     titleInput.val('');
+                    songInput.val('');
                     $('#target').append(that.drawManagableTicket(data.ticket));
                     var ticketId = data.ticket.id;
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');

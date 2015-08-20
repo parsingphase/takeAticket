@@ -2,15 +2,16 @@
 <head>
     <title>Ticket Queue</title>
     <script src="/components/jquery/jquery.min.js"></script>
+    <script src="/components/handlebars/handlebars.js"></script>
     <script src="js/ticket.js"></script>
     <script>
-        $(ticketer.go);
+        $(function () { ticketer.go(); });
     </script>
     <link rel="stylesheet" href="/components/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/ticket.css"/>
 </head>
 <body>
-<div class="container">
+<div class="container upcoming">
     <div class="page-header well"><p class="text-center">Next Bands</p></div>
     <div id="target"></div>
 

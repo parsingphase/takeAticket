@@ -14,7 +14,7 @@ class SongLoader
 {
     private $fileFields = [
         'B' => 'artist',
-        'C' => 'song',
+        'C' => 'title',
         'D' => 'source',
         'E' => 'hasHarmony',
         'F' => 'hasKeys'
@@ -22,7 +22,7 @@ class SongLoader
 
     private $startRow = 2;
 
-    const CODELENGTH = 6; // min to avoid clashes
+    const CODE_LENGTH = 6; // min to avoid clashes
 
     public function run($sourceFile, Connection $dbConn)
     {
@@ -64,7 +64,7 @@ class SongLoader
                 }
 
                 if (isset($codeStored[$storable['codeNumber']])) {
-                    print("\nDuplicate: " . $storable['artist'] . ': ' . $storable['song'] . "\n");
+                    print("\nDuplicate: " . $storable['artist'] . ': ' . $storable['title'] . "\n");
                 } else {
                     $dbConn->insert('songs', $storable);
                     $i++;
@@ -95,9 +95,9 @@ class SongLoader
      */
     public function makeCodeNumberFromArray($storable)
     {
-        $normalisedSong = strtoupper(preg_replace('/[^a-z0-9]/i', '', $storable['artist']) . '::' . preg_replace('/[^a-z0-9]/i', '', $storable['song']));
+        $normalisedSong = strtoupper(preg_replace('/[^a-z0-9]/i', '', $storable['artist']) . '::' . preg_replace('/[^a-z0-9]/i', '', $storable['title']));
         $hash = (string)md5($normalisedSong);
-        $code = strtoupper(substr($hash, 0, self::CODELENGTH));
+        $code = strtoupper(substr($hash, 0, self::CODE_LENGTH));
 //        print("\n$hash     $code      $normalisedSong  ");
         return $code;
     }

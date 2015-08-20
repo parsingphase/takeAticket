@@ -33,9 +33,6 @@ class Controller
 
     public function nextJsonAction()
     {
-//        Cheza:db wechsler$ sqlite3 app.db
-        //sqlite> CREATE TABLE tickets (offset int PRIMARY KEY, title string);
-
         $conn = $this->app['db'];
         /**
          * @var $conn Connection
@@ -43,12 +40,7 @@ class Controller
         $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT 3');
         $statement->execute();
         $next = $statement->fetchAll();
-//
-//        $next = [
-//            ['title' => 123],
-//            ['title' => 124],
-//            ['title' => 139]
-//        ];
+        $next = $this->expandSongsInTickets($next);
 
         return new JsonResponse($next);
     }
@@ -59,15 +51,30 @@ class Controller
         $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 ORDER BY offset ASC');
         $statement->execute();
         $tickets = $statement->fetchAll();
+        $tickets = $this->expandSongsInTickets($tickets);
 
-
-        return $this->app['twig']->render('manage.twig', [self::ticketTable => $tickets]);
+        return $this->app['twig']->render('manage.twig', ['config' => $this->app['config'], 'tickets' => $tickets]);
     }
 
     public function newTicketPostAction(Request $request)
     {
         $title = $request->get('title');
+        $songKey = $request->get('song');
         $conn = $this->getDbConn();
+
+        $song = null;
+        $songId = null;
+
+        if (preg_match('/^[a-f0-9]{6}$/i', $songKey)) {
+            $song = $conn->fetchAssoc('SELECT * FROM songs WHERE codeNumber = :code', ['code' => $songKey]);
+        } else if (preg_match('/^\d+$/', $songKey)) {
+            $song = $this->getSongById($songKey);
+        }
+
+        if ($song) {
+            $songId = $song['id'];
+        }
+
         $max = $conn->fetchAssoc('SELECT max(offset) AS o, max(id) AS i FROM tickets');
 
         $maxOffset = $max['o'];
@@ -75,9 +82,14 @@ class Controller
         $ticket = [
             'title' => $title,
             'id' => $maxId + 1,
-            'offset' => $maxOffset + 1
+            'offset' => $maxOffset + 1,
+            'songId' => $songId
         ];
         $res = $conn->insert(self::ticketTable, $ticket);
+
+        if ($song) {
+            $ticket['song'] = $song;
+        }
 
         if ($res) {
             $jsonResponse = new JsonResponse(['ticket' => $ticket]);
@@ -110,7 +122,7 @@ class Controller
     {
         $id = $request->get('ticketId');
         $conn = $this->getDbConn();
-        $res =  $conn->update(self::ticketTable, ['used' => 1], ['id' => $id]);
+        $res = $conn->update(self::ticketTable, ['used' => 1], ['id' => $id]);
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
@@ -123,7 +135,7 @@ class Controller
     {
         $id = $request->get('ticketId');
         $conn = $this->getDbConn();
-        $res =  $conn->update(self::ticketTable, ['deleted' => 1], ['id' => $id]);
+        $res = $conn->update(self::ticketTable, ['deleted' => 1], ['id' => $id]);
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
@@ -139,8 +151,29 @@ class Controller
     {
         $conn = $this->app['db'];
         return $conn;
-        /**
-         * @var $conn Connection
-         */
     }
+
+    /**
+     * @param $songId
+     * @return mixed
+     */
+    public function getSongById($songId)
+    {
+        return $this->getDbConn()->fetchAssoc('SELECT * FROM songs WHERE id = :code', ['code' => $songId]);
+    }
+
+    /**
+     * @param $tickets
+     * @return mixed
+     */
+    public function expandSongsInTickets($tickets)
+    {
+        foreach ($tickets as &$ticket) {
+            if ($ticket['songId']) {
+                $ticket['song'] = $this->getSongById($ticket['songId']);
+            }
+        }
+        return $tickets;
+    }
+
 }
