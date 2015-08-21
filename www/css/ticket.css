@@ -53,6 +53,10 @@ div.manage div.ticket.used button.performButton {
 div.manage div.addTicket {
   min-height: 440px;
 }
+div.manage div.addTicket h3 {
+  margin-top: 0;
+  margin-left: 12px;
+}
 div.manage div.addTicket .addTicketSong,
 div.manage div.addTicket .addTicketBand {
   float: left;

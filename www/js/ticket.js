@@ -5,6 +5,8 @@ var ticketer = {
     drawTemplate: null,
     manageTemplate: null,
     songAutocompleteItemTemplate: null,
+    addTicketTemplate: null,
+
     displayOptions: {},
 
     go: function () {
@@ -66,27 +68,14 @@ var ticketer = {
         });
     },
 
-    manage: function (tickets) {
+    drawAddTicketForm: function () {
+        $('.addTicketOuter').html(this.addTicketTemplate());
+    },
+
+    resetAddTicketBlock: function () {
         var that = this;
-        this.initTemplates();
-        //console.log(tickets);
 
-        var out = '';
-        for (var i = 0; i < tickets.length; i++) {
-            var ticket = tickets[i];
-            out += that.drawManageableTicket(ticket);
-        }
-        $('#target').html(out);
-
-        var $sortContainer = $('.sortContainer');
-        $sortContainer.sortable({
-            axis: 'y',
-            update: function (event, ui) {
-                void(event);
-                void(ui);
-                that.ticketOrderChanged();
-            }
-        }).disableSelection().css('cursor', 'move');
+        this.drawAddTicketForm();
 
         $('.addTicketButton').click(function () {
             that.addTicketCallback();
@@ -94,7 +83,9 @@ var ticketer = {
 
         $('.addTicketTitle').keydown(function (e) {
             if (e.keyCode == 13) {
-                that.addTicketCallback();
+                //that.addTicketCallback();
+                var bandName = $('.addTicketTitle').val();
+                $('.selectedBand').text(bandName);
             }
         });
 
@@ -136,8 +127,34 @@ var ticketer = {
                 }
             }
         );
+    },
+
+    manage: function (tickets) {
+        var that = this;
+        this.initTemplates();
+        //console.log(tickets);
+
+        var out = '';
+        for (var i = 0; i < tickets.length; i++) {
+            var ticket = tickets[i];
+            out += that.drawManageableTicket(ticket);
+        }
+        $('#target').html(out);
+
+        var $sortContainer = $('.sortContainer');
+        $sortContainer.sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                void(event);
+                void(ui);
+                that.ticketOrderChanged();
+            }
+        }).disableSelection().css('cursor', 'move');
 
         this.enableButtons($sortContainer);
+
+        this.resetAddTicketBlock();
+
     },
 
     initTemplates: function () {
@@ -175,6 +192,43 @@ var ticketer = {
             '        </div>' +
             '</div>  '
         );
+
+        this.addTicketTemplate = Handlebars.compile(
+            '<div class="addTicket well">' +
+            '<div class="pull-right">' +
+            '<button class="addTicketButton btn btn-success">Add</button>' +
+            '</div>' +
+
+            '<h3>Add new ticket</h3>'+
+
+            '<div>' +
+            '<div class="addTicketSong">' +
+            '<div class="selectedFieldOuter"><span class="fa fa-music fa-2x"></span>' +
+            '<input type="hidden" class="selectedSongId"/> <span class="selectedSong"></span>' +
+            '</div>' +
+            '<div class="input-group input-group">' +
+            '<span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>' +
+            '<input class="addSongTitle form-control" placeholder="Search song or use code"/>' +
+            '</div>' +
+
+            '<div class="songCompleteOuter">' +
+            '<div class="songComplete"></div>' +
+            '</div>' +
+            '</div>' +
+
+            '<div class="addTicketBand">' +
+            '<div class="selectedFieldOuter"><span class="fa fa-group fa-2x"></span>' +
+            '<span class="selectedBand"></span>' +
+            '</div>' +
+            '<div class="input-group input-group">' +
+            '<span class="input-group-addon" id="group-addon1"><span class="fa fa-search"></span> </span>' +
+            '<input class="addTicketTitle form-control" placeholder="Performing band name"/>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
+        );
+
     },
 
     ticketOrderChanged: function () {
@@ -212,14 +266,14 @@ var ticketer = {
         var that = this;
         var titleInput = $('.addTicketTitle');
         var newTitle = titleInput.val();
-        var songInput = $('.addSongTitle');
-        var songTitle = songInput.val();
+        var songInput = $('.selectedSongId');
+        var songId = songInput.val();
         console.log('addTicket: ' + newTitle);
         $.ajax({
                 method: 'POST',
                 data: {
                     title: newTitle,
-                    song: songTitle
+                    songId: songId
                 },
                 url: '/api/newTicket',
                 success: function (data, status) {
@@ -230,6 +284,9 @@ var ticketer = {
                     var ticketId = data.ticket.id;
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     that.enableButtons(ticketBlock);
+
+                    that.resetAddTicketBlock();
+
                 },
                 error: function (xhr, status, error) {
                     void(error);

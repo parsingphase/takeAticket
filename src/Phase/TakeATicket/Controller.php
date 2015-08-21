@@ -58,7 +58,7 @@ class Controller
     public function newTicketPostAction(Request $request)
     {
         $title = $request->get('title');
-        $songKey = $request->get('song');
+        $songKey = $request->get('songId');
         $conn = $this->getDbConn();
 
         $song = null;
