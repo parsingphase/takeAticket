@@ -145,13 +145,32 @@ class Controller
     {
         $searchString = $request->get('searchString');
         $conn = $this->getDbConn();
-        $params = ['pattern' => '%' . implode('%', preg_split('/\s+/', $searchString)) . '%'];
-        $songs = $conn->fetchAll(
-            "SELECT * FROM songs
-            WHERE (title || ' ' || artist LIKE :pattern)
-            OR (artist || ' ' || title LIKE :pattern)
-            LIMIT 10",
-            $params);
+        $leadingPattern = implode('%', preg_split('/\s+/', $searchString)) . '%';
+        $internalPattern = '%' . $leadingPattern;
+        $params = [
+            'internalPattern' => $internalPattern,
+            'leadingPattern' => $leadingPattern,
+            'searchString' => $searchString
+        ];
+
+        // this may be unnecessary - chances of a code number hitting anything else is minimal
+        if ($this->potentialCodeNumber($searchString)) {
+            $sql = "SELECT * FROM songs
+            WHERE (title = :searchString)
+            OR (id = :searchString)
+            LIMIT 10";
+            //allow title just in case
+        } else {
+            $sql = "SELECT * FROM songs
+            WHERE (title || ' ' || artist LIKE :internalPattern)
+            OR (artist || ' ' || title LIKE :internalPattern)
+            OR (codeNumber LIKE :leadingPattern)
+            OR (id = :searchString)
+            LIMIT 10";
+        }
+
+        $songs = $conn->fetchAll($sql, $params);
+
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
         return $jsonResponse;
     }
@@ -186,6 +205,13 @@ class Controller
             }
         }
         return $tickets;
+    }
+
+    protected function potentialCodeNumber($searchString)
+    {
+        $codeLength = (int)SongLoader::CODE_LENGTH;
+        $regexp = '/^[a-f0-9]{' . $codeLength . '}$/i';
+        return preg_match($regexp, $searchString);
     }
 
 }
