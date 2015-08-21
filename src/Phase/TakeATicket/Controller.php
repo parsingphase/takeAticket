@@ -157,7 +157,8 @@ class Controller
         if ($this->potentialCodeNumber($searchString)) {
             $sql = "SELECT * FROM songs
             WHERE (title = :searchString)
-            OR (id = :searchString)
+            OR (codeNumber = :searchString)
+            ORDER BY artist, title
             LIMIT 10";
             //allow title just in case
         } else {
@@ -166,6 +167,7 @@ class Controller
             OR (artist || ' ' || title LIKE :internalPattern)
             OR (codeNumber LIKE :leadingPattern)
             OR (id = :searchString)
+            ORDER BY artist, title
             LIMIT 10";
         }
 

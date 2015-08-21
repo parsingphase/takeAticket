@@ -100,10 +100,11 @@ var ticketer = {
 
         $('.addSongTitle').keyup(
             function () {
+                var songComplete = $('.songComplete');
                 var input = $(this);
                 var searchString = input.val();
                 //console.log('SS: ' + searchString);
-                if (searchString.length > 3) {
+                if (searchString.length >= 3) {
                     console.log('SS+: ' + searchString);
                     $.ajax({
                         method: 'POST',
@@ -121,7 +122,8 @@ var ticketer = {
                                     var song = songs[i];
                                     out += that.songAutocompleteItemTemplate({song: song});
                                 }
-                                $('.songComplete').html(out);
+                                songComplete.html(out).show();
+                                that.enableAcSongSelector(songComplete);
                             }
                         },
                         error: function (xhr, status, error) {
@@ -130,7 +132,7 @@ var ticketer = {
                         }
                     });
                 } else {
-                    $('.songComplete').html('');
+                    songComplete.html('');
                 }
             }
         );
@@ -145,11 +147,13 @@ var ticketer = {
             '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
             '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
             '        </div>' +
-            '        <b>#{{ ticket.id }}:</b> ' +
-            'Band: {{ ticket.title }}' +
+            '        <div class="ticketId">#{{ ticket.id }}:</div> ' +
+            '<div class="pendingSong">' +
+            '<span class="fa fa-group"></span> {{ ticket.title }}' +
             '{{#if ticket.used}} (done){{/if}}' +
-            '{{#if ticket.song}}<br />{{ticket.song.artist}}: {{ticket.song.title}}{{/if}}' +
-            '</div>  '
+            '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: {{ticket.song.title}}{{/if}}' +
+            '</div>' +
+            '</div>'
         );
 
         //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
@@ -167,7 +171,7 @@ var ticketer = {
         this.songAutocompleteItemTemplate = Handlebars.compile(
             '<div class="acSong" data-song-id="{{ song.id }}">' +
             '        <div class="acSong-inner">' +
-            '        <p class="">{{song.artist}}: {{song.title}}</p>' +
+            '        {{song.artist}}: {{song.title}}' +
             '        </div>' +
             '</div>  '
         );
@@ -284,6 +288,20 @@ var ticketer = {
                 }
             }
         );
-    }
+    },
 
+    enableAcSongSelector: function (outerElement) {
+        outerElement.find('.acSong').click(
+            function () {
+                outerElement.find('.acSong').removeClass('selected');
+                $(this).addClass('selected');
+                var selectedId = $(this).data('song-id');
+                var selectedSong = $(this).text().trim(); // lazy, possibly better populate data?
+                var addTicketBlock = $('.addTicket');
+                addTicketBlock.find('input.selectedSongId').val(selectedId);
+                addTicketBlock.find('.selectedSong').text(selectedSong);
+                console.log(['selected song', selectedId, selectedSong]);
+            }
+        )
+    }
 };

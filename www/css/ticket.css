@@ -28,13 +28,19 @@ div.upcoming div.ticket .auto-font {
   text-wrap: none;
   white-space: nowrap;
 }
-div.manage div.ticket p {
-  font-size: 50px;
-  font-weight: bolder;
+div.manage div.ticket .ticketId {
+  float: left;
+  height: 2em;
+  font-size: 2em;
+  width: 2em;
+}
+div.manage div.ticket .pendingSong .fa {
+  width: 16px;
 }
 div.manage div.ticket.well {
   padding-top: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
+  min-height: 62px;
 }
 div.manage div.ticket.used {
   color: #777;
@@ -44,25 +50,49 @@ div.manage div.ticket.used {
 div.manage div.ticket.used button.performButton {
   display: none;
 }
+div.manage div.addTicket {
+  min-height: 440px;
+}
+div.manage div.addTicket .addTicketSong,
+div.manage div.addTicket .addTicketBand {
+  float: left;
+  padding: 10px;
+  width: 500px;
+}
+div.manage div.addTicket .addTicketSong .selectedFieldOuter,
+div.manage div.addTicket .addTicketBand .selectedFieldOuter {
+  padding-left: 6px;
+  min-height: 50px;
+}
 div.manage div.addTicket .addSongTitle {
   width: 30em;
 }
 div.manage div.addTicket .addTicketTitle {
   width: 30em;
 }
-div.manage div.addTicket .songComplete {
+div.manage div.addTicket .input-group-addon .fa {
+  width: 16px;
+}
+div.manage div.addTicket .songCompleteOuter {
+  padding-left: 41px;
+}
+div.manage div.addTicket .songCompleteOuter .songComplete {
   position: absolute;
   width: 30em;
   background-color: white;
-  border: solid grey 1px;
+  border: solid lightgrey 1px;
+  display: none;
 }
 div.manage div.addTicket .acSong {
   padding: 5px;
   cursor: pointer;
-  border-bottom: solid grey 1px;
+  border-bottom: solid lightgrey 1px;
 }
 div.manage div.addTicket .acSong:last-of-type {
   border-bottom: none;
+}
+div.manage div.addTicket .acSong.selected {
+  background-color: lightblue;
 }
 div.manage div.page-header {
   font-size: 40px;

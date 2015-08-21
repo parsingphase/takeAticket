@@ -22,7 +22,8 @@
         "doctrine/dbal": "~2.4",
         "symfony/twig-bridge": "~2.5",
         "monolog/monolog": "^1.15",
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "components/font-awesome": "^4.4"
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "83ee7bf1d69e178ea00ad71aedcdb25d",
+    "hash": "e8d6c3d446da1099c4604ff52c056baf",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -73,6 +73,43 @@
                 "web"
             ],
             "time": "2015-06-17 06:08:09"
+        },
+        {
+            "name": "components/font-awesome",
+            "version": "4.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/components/font-awesome.git",
+                "reference": "7dffacc72e566e5db6272244effc06f64fe9f185"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/font-awesome/zipball/7dffacc72e566e5db6272244effc06f64fe9f185",
+                "reference": "7dffacc72e566e5db6272244effc06f64fe9f185",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.4.x-dev"
+                },
+                "component": {
+                    "styles": [
+                        "css/font-awesome.css"
+                    ],
+                    "files": [
+                        "css/font-awesome.min.css",
+                        "fonts/*"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT",
+                "OFL-1.1"
+            ],
+            "description": "The iconic font designed for use with Twitter Bootstrap.",
+            "time": "2015-07-30 02:38:45"
         },
         {
             "name": "components/handlebars.js",

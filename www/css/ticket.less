@@ -40,14 +40,30 @@ div.upcoming {
 
 div.manage {
   div.ticket {
-    p {
-      font-size: 50px;
-      font-weight: bolder;
+
+    .ticketId {
+      float: left;
+      height: 2em;
+      //font-weight: bold;
+      font-size: 2em;
+      width: 2em;
     }
+
+    .pendingSong {
+      .fa {
+        width: 16px;
+      }
+    }
+
+    //p {
+    //  font-size: 50px;
+    //  font-weight: bolder;
+    //}
 
     &.well {
       padding-top: 10px;
-      padding-bottom: 20px;
+      padding-bottom: 10px;
+      min-height: 62px;
     }
 
     &.used {
@@ -62,6 +78,19 @@ div.manage {
   }
 
   div.addTicket {
+    min-height: 440px;
+
+    .addTicketSong,
+    .addTicketBand,
+    {
+      float: left;
+      padding: 10px;
+      width: 500px;
+      .selectedFieldOuter {
+        padding-left: 6px;
+        min-height: 50px;
+      }
+    }
 
     .addSongTitle {
       width: 30em;
@@ -71,21 +100,32 @@ div.manage {
       width: 30em;
     }
 
-    .songComplete {
-      position: absolute;
-      //height: 200px;
-      width: 30em;
-      background-color: white;
-      border: solid grey 1px;
+    .input-group-addon .fa {
+      width: 16px;
+    }
+
+    .songCompleteOuter {
+      padding-left: 41px;
+      .songComplete {
+        position: absolute;
+        //height: 200px;
+        width: 30em;
+        background-color: white;
+        border: solid lightgrey 1px;
+        display: none;
+      }
     }
 
     .acSong {
       // single song
       padding: 5px;
       cursor: pointer;
-      border-bottom: solid grey 1px;
+      border-bottom: solid lightgrey 1px;
       &:last-of-type {
         border-bottom: none;
+      }
+      &.selected {
+        background-color: lightblue;
       }
     }
   }
