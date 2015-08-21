@@ -10,7 +10,7 @@ CREATE TABLE tickets (
 CREATE TABLE songs (
   id         INT PRIMARY KEY,
   artist     TEXT,
-  song       TEXT,
+  title      TEXT,
   source     TEXT DEFAULT NULL,
   hasHarmony INT    DEFAULT 0,
   hasKeys    INT    DEFAULT 0,
