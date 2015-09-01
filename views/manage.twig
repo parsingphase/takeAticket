@@ -7,8 +7,10 @@
     <script src="/js/ticket.js"></script>
     <script>
         var tickets = {{ tickets|json_encode|raw }};
+        var performers = {{ performers|json_encode|raw }};
         $(function () {
-            ticketer.manage(tickets)
+            ticketer.performers = performers;
+            ticketer.manage(tickets);
         });
     </script>
     <link rel="stylesheet" href="/components/bootstrap/css/bootstrap.min.css"/>

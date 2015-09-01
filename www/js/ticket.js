@@ -9,6 +9,8 @@ var ticketer = {
 
     displayOptions: {},
 
+    performers: [],
+
     go: function () {
         this.initTemplates();
 
@@ -69,7 +71,7 @@ var ticketer = {
     },
 
     drawAddTicketForm: function () {
-        $('.addTicketOuter').html(this.addTicketTemplate());
+        $('.addTicketOuter').html(this.addTicketTemplate({performers: this.performers}));
     },
 
     resetAddTicketBlock: function () {
@@ -81,12 +83,46 @@ var ticketer = {
             that.addTicketCallback();
         });
 
-        $('.addTicketTitle').keydown(function (e) {
+        var ticketTitleInput = $('.addTicketTitle');
+        ticketTitleInput.keydown(function (e) {
             if (e.keyCode == 13) {
                 //that.addTicketCallback();
                 var bandName = $('.addTicketTitle').val();
                 $('.selectedBand').text(bandName);
             }
+        });
+
+        $('.addPerformerButton').click(function () {
+            var name = $(this).text();
+            var selected = $(this).data('selected') ? 0 : 1; // reverse to get new state
+            if (selected) {
+                $(this).removeClass('btn-default').addClass('btn-primary');
+            } else {
+                $(this).removeClass('btn-primary').addClass('btn-default');
+            }
+            $(this).data('selected', selected); // toggle
+
+            console.log('Clicked performer name: "' + name + '"');
+
+            // split out band name and see if we need to add the new name
+            var currentBandList = ticketTitleInput.val();
+            console.log('Current band: "' + currentBandList + '"');
+            var bandMembersRaw = currentBandList.split(/\s*,\s*/);
+            var bandMembers = [];
+            for (var i = 0; i < bandMembersRaw.length; i++) {
+                var member = bandMembersRaw[i].trim();
+                if (member.length) {
+                    // don't add the member in the ticket (we'll add below if approriate)
+                    if (member.toUpperCase() != name.toUpperCase()) {
+                        bandMembers.push(member);
+                    }
+                }
+            }
+            if (selected) {
+                bandMembers.push(name);
+            }
+
+            ticketTitleInput.val(bandMembers.sort().join(', '));
         });
 
         $('.addSongTitle').keyup(
@@ -166,9 +202,21 @@ var ticketer = {
             '        </div>' +
             '        <div class="ticketId">#{{ ticket.id }}:</div> ' +
             '<div class="pendingSong">' +
-            '<span class="fa fa-group"></span> {{ ticket.title }}' +
+            '<span class="fa fa-group"></span> ' +
+
+                // Display performers with metadata if valid, else just the band title.
+            '{{#if ticket.performers}}' +
+            '{{#each ticket.performers}}' +
+            '<span class="performer"> {{performerName}} ({{songsDone}}/{{songsPending}}) </span>' +
+            '{{/each}}' +
+            '{{else}}' +
+            '{{ ticket.title }}' +
+            '{{/if}}' +
+
             '{{#if ticket.used}} (done){{/if}}' +
-            '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: {{ticket.song.title}}{{/if}}' +
+            '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: ' +
+            '{{ticket.song.title}}' +
+            '{{/if}}' +
             '</div>' +
             '</div>'
         );
@@ -199,7 +247,7 @@ var ticketer = {
             '<button class="addTicketButton btn btn-success">Add</button>' +
             '</div>' +
 
-            '<h3>Add new ticket</h3>'+
+            '<h3>Add new ticket</h3>' +
 
             '<div>' +
             '<div class="addTicketSong">' +
@@ -221,9 +269,14 @@ var ticketer = {
             '<span class="selectedBand"></span>' +
             '</div>' +
             '<div class="input-group input-group">' +
-            '<span class="input-group-addon" id="group-addon1"><span class="fa fa-search"></span> </span>' +
-            '<input class="addTicketTitle form-control" placeholder="Performing band name"/>' +
+            '<span class="input-group-addon" id="group-addon1"><span class="fa fa-plus"></span> </span>' +
+            '<input class="addTicketTitle form-control" placeholder="Band members (comma-separated)"/>' +
             '</div>' +
+
+            '<div class="performers">{{#if performers}}{{#each performers}}' +
+            '<span class="btn btn-default addPerformerButton" data-selected="0">{{performerName}}</span>' +
+            '{{/each}}{{/if}}</div>' +
+
             '</div>' +
             '</div>' +
             '</div>'
@@ -284,6 +337,10 @@ var ticketer = {
                     var ticketId = data.ticket.id;
                     var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                     that.enableButtons(ticketBlock);
+
+                    if (data.performers) {
+                        that.performers = data.performers;
+                    }
 
                     that.resetAddTicketBlock();
 

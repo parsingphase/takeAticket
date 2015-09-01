@@ -68,6 +68,10 @@ div.manage div.addTicket .addTicketBand .selectedFieldOuter {
   padding-left: 6px;
   min-height: 50px;
 }
+div.manage div.addTicket .addTicketBand .performers .btn {
+  margin-top: 8px;
+  margin-right: 8px;
+}
 div.manage div.addTicket .addSongTitle {
   width: 30em;
 }

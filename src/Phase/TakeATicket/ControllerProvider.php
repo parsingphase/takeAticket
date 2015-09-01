@@ -79,6 +79,11 @@ class ControllerProvider implements ControllerProviderInterface
             'ticket.controller:songSearchAction'
         );
 
+        $controllers->match(
+            '/api/getPerformers',
+            'ticket.controller:getPerformersAction'
+        );
+
         return $controllers;
     }
 
