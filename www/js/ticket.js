@@ -6,6 +6,7 @@ var ticketer = {
     manageTemplate: null,
     songAutocompleteItemTemplate: null,
     addTicketTemplate: null,
+    songDetailsTemplate: null,
 
     displayOptions: {},
 
@@ -74,6 +75,56 @@ var ticketer = {
         $('.addTicketOuter').html(this.addTicketTemplate({performers: this.performers}));
     },
 
+    enableSongSearchBox: function (songSearchInput, songSearchResultsTarget, songClickHandler) {
+        var that = this;
+        $(songSearchInput).keyup(
+            function () {
+                var songComplete = $(songSearchResultsTarget);
+                var input = $(this);
+                var searchString = input.val();
+                //console.log('SS: ' + searchString);
+                if (searchString.length >= 3) {
+                    console.log('SS+: ' + searchString);
+                    $.ajax({
+                        method: 'POST',
+                        data: {
+                            searchString: searchString
+                        },
+                        url: '/api/songSearch',
+                        success: function (data, status) {
+                            console.log(['songSearch returned', data]);
+                            var songs = data.songs;
+                            if (input.val() == data.searchString) {
+                                // ensure autocomplete response is still valid for current input value
+                                var out = '';
+                                for (var i = 0; i < songs.length; i++) {
+                                    var song = songs[i];
+                                    out += that.songAutocompleteItemTemplate({song: song});
+                                }
+                                songComplete.html(out).show();
+
+                                // now attach whole song as data:
+                                for (i = 0; i < songs.length; i++) {
+                                    song = songs[i];
+                                    var songId = song.id;
+                                    songComplete.find('.acSong[data-song-id=' + songId + ']').data('song', song);
+                                }
+
+                                that.enableAcSongSelector(songComplete, songClickHandler);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('songSearch post ERROR: ' + status);
+                            void(error);
+                        }
+                    });
+                } else {
+                    songComplete.html('');
+                }
+            }
+        );
+    },
+
     resetAddTicketBlock: function () {
         var that = this;
 
@@ -125,44 +176,11 @@ var ticketer = {
             ticketTitleInput.val(bandMembers.sort().join(', '));
         });
 
-        $('.addSongTitle').keyup(
-            function () {
-                var songComplete = $('.songComplete');
-                var input = $(this);
-                var searchString = input.val();
-                //console.log('SS: ' + searchString);
-                if (searchString.length >= 3) {
-                    console.log('SS+: ' + searchString);
-                    $.ajax({
-                        method: 'POST',
-                        data: {
-                            searchString: searchString
-                        },
-                        url: '/api/songSearch',
-                        success: function (data, status) {
-                            console.log(['songSearch returned', data]);
-                            var songs = data.songs;
-                            if (input.val() == data.searchString) {
-                                // ensure autocomplete response is still valid for current input value
-                                var out = '';
-                                for (var i = 0; i < songs.length; i++) {
-                                    var song = songs[i];
-                                    out += that.songAutocompleteItemTemplate({song: song});
-                                }
-                                songComplete.html(out).show();
-                                that.enableAcSongSelector(songComplete);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.log('songSearch post ERROR: ' + status);
-                            void(error);
-                        }
-                    });
-                } else {
-                    songComplete.html('');
-                }
-            }
-        );
+        var songSearchInput = '.addSongTitle';
+        var songSearchResultsTarget = '.songComplete';
+        var songClickHandler = that.managePageSongSelectionClick;
+
+        this.enableSongSearchBox(songSearchInput, songSearchResultsTarget, songClickHandler);
     },
 
     manage: function (tickets) {
@@ -191,6 +209,12 @@ var ticketer = {
 
         this.resetAddTicketBlock();
 
+    },
+
+    initSearchPage: function () {
+        var that = this;
+        this.initTemplates();
+        this.enableSongSearchBox('.searchString', '.songComplete', that.searchPageSongSelectionClick);
     },
 
     initTemplates: function () {
@@ -279,6 +303,15 @@ var ticketer = {
 
             '</div>' +
             '</div>' +
+            '</div>'
+        );
+
+        this.songDetailsTemplate = Handlebars.compile(
+            '<div class=""><h4>{{song.artist}}: {{song.title}}</h4>' +
+            'Code: {{song.codeNumber}}<br /> ' +
+            'Harmony? {{#if song.hasHarmony}}Yes{{else}}No{{/if}}<br /> ' +
+            'Keys? {{#if song.hasKeys}}Yes{{else}}No{{/if}}<br /> ' +
+            'Source: {{song.source}}' +
             '</div>'
         );
 
@@ -404,18 +437,38 @@ var ticketer = {
         );
     },
 
-    enableAcSongSelector: function (outerElement) {
+    enableAcSongSelector: function (outerElement, songClickHandler) {
+        var that = this;
         outerElement.find('.acSong').click(
             function () {
+                // find & decorate clicked element
                 outerElement.find('.acSong').removeClass('selected');
                 $(this).addClass('selected');
-                var selectedId = $(this).data('song-id');
-                var selectedSong = $(this).text().trim(); // lazy, possibly better populate data?
-                var addTicketBlock = $('.addTicket');
-                addTicketBlock.find('input.selectedSongId').val(selectedId);
-                addTicketBlock.find('.selectedSong').text(selectedSong);
-                console.log(['selected song', selectedId, selectedSong]);
+
+                var song = $(this).data('song');
+                songClickHandler.call(that, song); // run in 'that' context
             }
         )
+    },
+
+    managePageSongSelectionClick: function (song) {
+        var selectedId = song.id;
+        var selectedSong = song.artist + ': ' + song.title;
+
+        // perform actions with selected song
+        var addTicketBlock = $('.addTicket');
+        addTicketBlock.find('input.selectedSongId').val(selectedId);
+        addTicketBlock.find('.selectedSong').text(selectedSong);
+        console.log(['selected song', selectedId, selectedSong]);
+    },
+
+    searchPageSongSelectionClick: function (song) {
+        var target = $('#target');
+        //this.dumpSongInfo(song);
+        target.html(this.songDetailsTemplate({song: song}));
+    },
+
+    dumpSongInfo: function (song) {
+        console.log(['song', song]);
     }
 };

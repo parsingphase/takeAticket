@@ -81,30 +81,35 @@ div.manage div.addTicket .addTicketTitle {
 div.manage div.addTicket .input-group-addon .fa {
   width: 16px;
 }
-div.manage div.addTicket .songCompleteOuter {
+div.manage div.page-header {
+  font-size: 40px;
+  font-weight: bolder;
+}
+div.manage .songCompleteOuter,
+div.songSearch .songCompleteOuter {
   padding-left: 41px;
 }
-div.manage div.addTicket .songCompleteOuter .songComplete {
+div.manage .songCompleteOuter .songComplete,
+div.songSearch .songCompleteOuter .songComplete {
   position: absolute;
   width: 30em;
   background-color: white;
   border: solid lightgrey 1px;
   display: none;
 }
-div.manage div.addTicket .acSong {
+div.manage .acSong,
+div.songSearch .acSong {
   padding: 5px;
   cursor: pointer;
   border-bottom: solid lightgrey 1px;
 }
-div.manage div.addTicket .acSong:last-of-type {
+div.manage .acSong:last-of-type,
+div.songSearch .acSong:last-of-type {
   border-bottom: none;
 }
-div.manage div.addTicket .acSong.selected {
+div.manage .acSong.selected,
+div.songSearch .acSong.selected {
   background-color: lightblue;
-}
-div.manage div.page-header {
-  font-size: 40px;
-  font-weight: bolder;
 }
 div.end {
   position: fixed;

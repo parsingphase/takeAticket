@@ -191,6 +191,12 @@ class DataSource
         }
 
         $songs = $conn->fetchAll($sql, $params);
+
+        // normalise datatypes
+        foreach ($songs as &$song) {
+            $song = $this->normaliseSongRecord($song);
+        }
+
         return $songs;
     }
 
@@ -287,6 +293,18 @@ class DataSource
         ];
         $res = $conn->insert(DataSource::TICKETS_TABLE, $ticket);
         return $res ? $ticket['id'] : false;
+    }
+
+    /**
+     * @param $song
+     * @return mixed
+     */
+    public function normaliseSongRecord($song)
+    {
+        $song['id'] = (int)$song['id'];
+        $song['hasHarmony'] = (bool)$song['hasHarmony'];
+        $song['hasKeys'] = (bool)$song['hasKeys'];
+        return $song;
     }
 
 }

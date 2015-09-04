@@ -43,6 +43,13 @@ class Controller
         return $this->app['twig']->render('index.twig', $viewParams);
     }
 
+    public function songSearchAction()
+    {
+        $viewParams = [];
+        $viewParams['displayOptions'] = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : null;
+        return $this->app['twig']->render('songSearch.twig', $viewParams);
+    }
+
     public function nextJsonAction()
     {
         $next = $this->dataSource->fetchUpcomingTickets();
@@ -148,7 +155,7 @@ class Controller
         return $jsonResponse;
     }
 
-    public function songSearchAction(Request $request)
+    public function songSearchApiAction(Request $request)
     {
         $searchString = $request->get('searchString');
         $songs = $this->dataSource->findSongsBySearchString($searchString);
