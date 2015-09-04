@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e8d6c3d446da1099c4604ff52c056baf",
+    "hash": "f1d6e494a0d50c144f200017bf186ea4",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -759,6 +759,104 @@
             "time": "2014-09-09 13:34:57"
         },
         {
+            "name": "jasongrimes/paginator",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jasongrimes/php-paginator.git",
+                "reference": "b3df7160d5baa6a3e2bb6b1f359dd0447ebc3561"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jasongrimes/php-paginator/zipball/b3df7160d5baa6a3e2bb6b1f359dd0447ebc3561",
+                "reference": "b3df7160d5baa6a3e2bb6b1f359dd0447ebc3561",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JasonGrimes": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jason Grimes",
+                    "email": "jason@grimesit.com"
+                }
+            ],
+            "description": "A lightweight PHP paginator, for generating pagination controls in the style of Stack Overflow and Flickr. The 'first' and 'last' page links are shown inline as page numbers, and excess page numbers are replaced by ellipses.",
+            "homepage": "http://github.com/jasongrimes/php-paginator",
+            "keywords": [
+                "pager",
+                "pagination",
+                "paginator"
+            ],
+            "time": "2014-10-13 01:34:54"
+        },
+        {
+            "name": "jasongrimes/silex-simpleuser",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jasongrimes/silex-simpleuser.git",
+                "reference": "b44786395e126ec1e7caa8f0c77eef9cebe02f89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jasongrimes/silex-simpleuser/zipball/b44786395e126ec1e7caa8f0c77eef9cebe02f89",
+                "reference": "b44786395e126ec1e7caa8f0c77eef9cebe02f89",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "~2.4",
+                "jasongrimes/paginator": "~1.0",
+                "php": ">=5.3.0",
+                "silex/silex": "~1.0",
+                "swiftmailer/swiftmailer": "~5.3",
+                "symfony/security": "~2.3",
+                "symfony/twig-bridge": "~2.3"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "phpunit/phpunit": "~4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SimpleUser": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jason Grimes",
+                    "email": "jason@grimesit.com"
+                }
+            ],
+            "description": "A simple database-backed user provider for Silex, with associated services and controllers.",
+            "homepage": "http://github.com/jasongrimes/silex-simpleuser",
+            "keywords": [
+                "silex",
+                "simple user provider",
+                "user",
+                "user provider"
+            ],
+            "time": "2014-11-01 20:19:08"
+        },
+        {
             "name": "kriswallsmith/assetic",
             "version": "v1.2.1",
             "source": {
@@ -1180,6 +1278,59 @@
             "time": "2015-08-04 10:41:12"
         },
         {
+            "name": "swiftmailer/swiftmailer",
+            "version": "v5.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swiftmailer/swiftmailer.git",
+                "reference": "0697e6aa65c83edf97bb0f23d8763f94e3f11421"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/0697e6aa65c83edf97bb0f23d8763f94e3f11421",
+                "reference": "0697e6aa65c83edf97bb0f23d8763f94e3f11421",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.1,<0.9.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.4-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Corbyn"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "http://swiftmailer.org",
+            "keywords": [
+                "email",
+                "mail",
+                "mailer"
+            ],
+            "time": "2015-06-06 14:19:39"
+        },
+        {
             "name": "symfony/debug",
             "version": "v2.7.3",
             "source": {
@@ -1549,6 +1700,82 @@
                 "url"
             ],
             "time": "2015-07-09 16:07:40"
+        },
+        {
+            "name": "symfony/security",
+            "version": "v2.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Security.git",
+                "reference": "3d137c73cd8c6cb584e3f478b52de00e751d2289"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Security/zipball/3d137c73cd8c6cb584e3f478b52de00e751d2289",
+                "reference": "3d137c73cd8c6cb584e3f478b52de00e751d2289",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9",
+                "symfony/event-dispatcher": "~2.2",
+                "symfony/http-foundation": "~2.1",
+                "symfony/http-kernel": "~2.4"
+            },
+            "replace": {
+                "symfony/security-acl": "self.version",
+                "symfony/security-core": "self.version",
+                "symfony/security-csrf": "self.version",
+                "symfony/security-http": "self.version"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.2",
+                "doctrine/dbal": "~2.2",
+                "ircmaxell/password-compat": "~1.0",
+                "psr/log": "~1.0",
+                "symfony/expression-language": "~2.6",
+                "symfony/intl": "~2.3",
+                "symfony/phpunit-bridge": "~2.7",
+                "symfony/routing": "~2.2",
+                "symfony/translation": "~2.0,>=2.0.5",
+                "symfony/validator": "~2.5,>=2.5.5"
+            },
+            "suggest": {
+                "doctrine/dbal": "For using the built-in ACL implementation",
+                "ircmaxell/password-compat": "For using the BCrypt password encoder in PHP <5.5",
+                "symfony/class-loader": "For using the ACL generateSql script",
+                "symfony/expression-language": "For using the expression voter",
+                "symfony/finder": "For using the ACL generateSql script",
+                "symfony/routing": "For using the HttpUtils class to create sub-requests, redirect the user, and match URLs",
+                "symfony/validator": "For using the user password constraint"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Security\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Security Component",
+            "homepage": "https://symfony.com",
+            "time": "2015-07-28 14:07:07"
         },
         {
             "name": "symfony/twig-bridge",

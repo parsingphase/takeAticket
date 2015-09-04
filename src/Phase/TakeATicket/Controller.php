@@ -11,9 +11,12 @@ namespace Phase\TakeATicket;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller
 {
+
+    const MANAGER_REQUIRED_ROLE = 'ROLE_ADMIN';
 
     /**
      * @var Application
@@ -48,6 +51,8 @@ class Controller
 
     public function manageAction()
     {
+        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
         $tickets = $this->dataSource->fetchUndeletedTickets();
 
         $performers = $this->dataSource->generatePerformerStats();
@@ -84,7 +89,7 @@ class Controller
 
         $ticket['id'] = $ticketId; //FIXME re-fetch ticket by ID
         $ticket['songId'] = $songId; //FIXME re-fetch ticket by ID
-        
+
         $ticket = $this->dataSource->expandTicketData($ticket);
 
         $responseData = ['ticket' => $ticket, 'performers' => $this->dataSource->generatePerformerStats()];
@@ -99,6 +104,8 @@ class Controller
 
     public function newTicketOrderPostAction(Request $request)
     {
+        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
         $idOrder = $request->get('idOrder');
 
         $res = true;
@@ -115,6 +122,8 @@ class Controller
 
     public function useTicketPostAction(Request $request)
     {
+        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
         $id = $request->get('ticketId');
         $res = $this->dataSource->markTicketUsedById($id);
         if ($res) {
@@ -127,6 +136,8 @@ class Controller
 
     public function deleteTicketPostAction(Request $request)
     {
+        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
         $id = $request->get('ticketId');
         $res = $this->dataSource->deleteTicketById($id);
         if ($res) {
@@ -152,6 +163,16 @@ class Controller
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'performers' => $performers]);
         return $jsonResponse;
+    }
+
+    /**
+     * @param $requiredRole
+     */
+    public function assertRole($requiredRole)
+    {
+        if (!$this->app['security']->isGranted($requiredRole)) {
+            throw new AccessDeniedException();
+        }
     }
 
 }

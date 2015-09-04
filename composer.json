@@ -23,7 +23,8 @@
         "symfony/twig-bridge": "~2.5",
         "monolog/monolog": "^1.15",
         "phpoffice/phpexcel": "^1.8",
-        "components/font-awesome": "^4.4"
+        "components/font-awesome": "^4.4",
+        "jasongrimes/silex-simpleuser": "^2.0"
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0"
