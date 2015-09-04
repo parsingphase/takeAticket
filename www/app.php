@@ -22,14 +22,14 @@ date_default_timezone_set('Europe/London');
 
 $app = new \Silex\Application();
 
-$app['config'] = require(dirname(__DIR__).'/config/config.php');
+$app['config'] = require(dirname(__DIR__) . '/config/config.php');
 
 //$app['twig.cache.dir'] = dirname(__DIR__).'/cache';
-$app['monolog.logfile'] = dirname(__DIR__).'/log/app.log';
+$app['monolog.logfile'] = dirname(__DIR__) . '/log/app.log';
 
 $app['db.options'] = [
-    'driver'   => 'pdo_sqlite',
-    'path'     => dirname(__DIR__).'/db/app.db',
+    'driver' => 'pdo_sqlite',
+    'path' => dirname(__DIR__) . '/db/app.db',
 ];
 
 // simpleuser - requires mysql? - nope
@@ -59,12 +59,12 @@ $app->register($simpleUserProvider);
 
 $app->register(
     new TwigServiceProvider(),
-    ['twig.path' => dirname(__DIR__).'/views']
+    ['twig.path' => dirname(__DIR__) . '/views']
 );
 
 //$app->register(new TwigExtensionsServiceProvider());
 
-$app->mount('/',new \Phase\TakeATicket\ControllerProvider($app));
+$app->mount('/', new \Phase\TakeATicket\ControllerProvider($app));
 $app->mount('/user', $simpleUserProvider);
 
 
