@@ -44,14 +44,14 @@ class Controller
     public function upcomingAction()
     {
         $viewParams = [];
-        $viewParams['displayOptions'] = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : null;
+        $viewParams['displayOptions'] = $this->getDisplayOptions();
         return $this->app['twig']->render('upcoming.html.twig', $viewParams);
     }
 
     public function songSearchAction()
     {
         $viewParams = [];
-        $viewParams['displayOptions'] = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : null;
+        $viewParams['displayOptions'] = $this->getDisplayOptions();
         return $this->app['twig']->render('songSearch.twig', $viewParams);
     }
 
@@ -185,6 +185,19 @@ class Controller
         if (!$this->app['security']->isGranted($requiredRole)) {
             throw new AccessDeniedException();
         }
+    }
+
+    /**
+     * Get display options from config, with overrides if possible
+     * @return array
+     */
+    protected function getDisplayOptions()
+    {
+        $displayOptions = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : [];
+        if ($this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE)) {
+            $displayOptions['songInPreview'] = true; // force for logged-in users
+        }
+        return $displayOptions;
     }
 
 }
