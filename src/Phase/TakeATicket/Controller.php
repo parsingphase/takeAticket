@@ -38,9 +38,14 @@ class Controller
 
     public function indexAction()
     {
+        return $this->upcomingAction();
+    }
+
+    public function upcomingAction()
+    {
         $viewParams = [];
         $viewParams['displayOptions'] = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : null;
-        return $this->app['twig']->render('index.twig', $viewParams);
+        return $this->app['twig']->render('upcoming.html.twig', $viewParams);
     }
 
     public function songSearchAction()

@@ -1,0 +1,39 @@
+<html>
+<head>
+    {% block head %}
+        <title>{% block title %}TakeATicket{% endblock %}</title>
+    {% block scriptLinks %}
+        <script src="/components/jquery/jquery.min.js"></script>
+        <script src="/components/handlebars/handlebars.js"></script>
+        <script src="js/ticket.js"></script>
+    {% endblock %}
+
+    {% block styleLinks %}
+    <link rel="stylesheet" href="/components/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/ticket.css"/>
+    {% endblock %}
+    {% block pageJs %}
+        <script>
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            $(function () {
+                ticketer.displayOptions = displayOptions;
+                ticketer.go();
+            });
+        </script>
+    {% endblock %}
+    {% endblock %}
+</head>
+<body>
+<div class="container upcoming">
+    <div class="page-header well"><p class="text-center">{% block headerText %}Next Bands{% endblock %}</p></div>
+    {% block appTarget %}
+    <div id="target"></div>
+    {% endblock %}
+</div>
+{% block footer %}
+<div class="end">
+    <div class="gflink page-footer"><p class="text-center">gofundme.com/rcl2015</p></div>
+</div>
+{% endblock %}
+</body>
+</html>

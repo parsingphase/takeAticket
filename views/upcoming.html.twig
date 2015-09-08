@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Next Bands{% endblock %}
+
+    {% block pageJs %}
+        <script>
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            $(function () {
+                ticketer.displayOptions = displayOptions;
+                ticketer.go();
+            });
+        </script>
+    {% endblock %}
+
+{% block headerText %}Next Bands{% endblock %}
