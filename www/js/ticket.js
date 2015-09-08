@@ -249,7 +249,9 @@ var ticketer = {
 
         //noinspection JSUnresolvedVariable
         this.drawTemplate = Handlebars.compile(
-            '<div class="ticket well" data-ticket-id="{{ ticket.id }}">' +
+            '<div class="ticket well ' +
+            (this.displayOptions.songInPreview ? 'withSong' : 'noSong') +
+            '" data-ticket-id="{{ ticket.id }}">' +
             '        <div class="ticket-inner">' +
             '        <p class="text-center band auto-font">{{ticket.title}}</p>' +
             (this.displayOptions.songInPreview ? '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : '') +

@@ -3,6 +3,23 @@ div.page-header {
   font-weight: bolder;
   margin-top: 0;
   margin-bottom: 0;
+  position: relative;
+  .headerControls {
+    position: absolute;
+    right: 0px;
+    font-size: 24px;
+    margin-right: 20px;
+    &, a {
+      color: #e0e0e0;
+    }
+  }
+  &:hover {
+    .headerControls {
+      &, a {
+        color: #999;
+      }
+    }
+  }
 }
 
 div#target {
@@ -26,14 +43,23 @@ div.upcoming {
 
   div.well {
     padding: 0;
-  }
 
-  div.ticket {
-    min-height: 200px;
+    &.ticket {
+      min-height: 200px;
 
-    .auto-font {
-      text-wrap: none;
-      white-space: nowrap;
+      &.withSong {
+        padding-top: 10px;
+      }
+
+      &.noSong {
+        padding-top: 40px;
+        padding-bottom: 40px;
+      }
+
+      .auto-font {
+        text-wrap: none;
+        white-space: nowrap;
+      }
     }
   }
 }
