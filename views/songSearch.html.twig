@@ -14,21 +14,20 @@
     {% endblock %}
 
     {% block appTarget %}
+        <div class="searchContent">
+            <div class="col-md-6">
+                <div class="input-group input-group">
+                    <span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>
+                    <input class="searchString form-control" placeholder="Search song or use code"/>
+                </div>
 
-
-        <div class="col-md-6">
-            <div class="input-group input-group">
-                <span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>
-                <input class="searchString form-control" placeholder="Search song or use code"/>
+                <div class="songCompleteOuter">
+                    <div class="songComplete"></div>
+                </div>
             </div>
 
-            <div class="songCompleteOuter">
-                <div class="songComplete"></div>
+            <div class="col-md-6 well searchTargetOuter">
+                <div id="searchTarget"></div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div id="target"></div>
-        </div>
-
     {% endblock %}

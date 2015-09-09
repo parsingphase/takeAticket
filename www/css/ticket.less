@@ -1,4 +1,5 @@
 div.page-header {
+  padding: 0;
   font-size: 80px;
   font-weight: bolder;
   margin-top: 0;
@@ -43,7 +44,7 @@ div.upcoming {
   margin-bottom: 100px;
 
   div.well {
-    padding: 0;
+    //padding: 0;
 
     &.ticket {
       min-height: 200px;
@@ -178,6 +179,17 @@ div.songSearch {
     &.selected {
       background-color: lightblue;
     }
+  }
+}
+
+div.songSearch {
+  .searchContent {
+    padding-top: 20px;
+  }
+
+  .searchTargetOuter {
+    min-height: 180px;
+    padding-top: 0;
   }
 }
 

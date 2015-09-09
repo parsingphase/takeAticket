@@ -309,7 +309,7 @@ var ticketer = {
         );
 
         this.songDetailsTemplate = Handlebars.compile(
-            '<div class=""><h4>{{song.artist}}: {{song.title}}</h4>' +
+            '<div class="songDetails"><h3>{{song.artist}}: {{song.title}}</h3>' +
             'Code: {{song.codeNumber}}<br /> ' +
             'Harmony? {{#if song.hasHarmony}}Yes{{else}}No{{/if}}<br /> ' +
             'Keys? {{#if song.hasKeys}}Yes{{else}}No{{/if}}<br /> ' +
@@ -465,7 +465,7 @@ var ticketer = {
     },
 
     searchPageSongSelectionClick: function (song) {
-        var target = $('#target');
+        var target = $('#searchTarget');
         //this.dumpSongInfo(song);
         target.html(this.songDetailsTemplate({song: song}));
     },
