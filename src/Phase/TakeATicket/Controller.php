@@ -11,6 +11,7 @@ namespace Phase\TakeATicket;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller
@@ -175,6 +176,17 @@ class Controller
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'performers' => $performers]);
         return $jsonResponse;
+    }
+
+    public function upcomingRssAction()
+    {
+        $viewParams = [];
+        $viewParams['displayOptions'] = $this->getDisplayOptions();
+        $viewParams['tickets'] = $this->dataSource->fetchUpcomingTickets();
+        $data = $this->app['twig']->render('upcoming.rss.twig', $viewParams);
+        $headers = empty($_GET['nt']) ? ['Content-type' => 'application/rss+xml'] : ['Content-type' => 'text/plain'];
+        $response = new Response($data, 200, $headers);
+        return $response;
     }
 
     /**

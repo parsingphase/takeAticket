@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>RCL | Upcoming songs</title>
+        <link>{{ url('index') }}</link>
+        <description>Upcoming songs</description>
+        <lastBuildDate>{{ "now"|date(constant('DATE_RFC1123')) }}</lastBuildDate>
+        <language>en-uk</language>
+        <atom:link href="{{ url('upcomingRss') }}" rel="self" type="application/rss+xml" />
+
+        {% set i = 1 %}
+        {% for ticket in tickets %}
+        <item>
+            <title>{{ i }}) {{ ticket.title }}</title>
+            {#<link>{{ url('songs',{songCode: ticket.song.codeNumber}) }}</link>#}
+            <guid>{{ url('songs',{songCode: ticket.song.codeNumber}) }}</guid>
+            {#<pubDate>{{ "now"|date(constant('DATE_RFC1123')) }}</pubDate>#}
+            {#<description>{% if displayOptions.songInPreview %}{{ ticket.song.title }}{% endif %}</description>#}
+        </item>
+        {% set i = i+1 %}
+        {% endfor %}
+    </channel>
+</rss>

@@ -43,7 +43,17 @@ class ControllerProvider implements ControllerProviderInterface
         $controllers->match(
             '/',
             'ticket.controller:indexAction'
-        );
+        )->bind('index');
+
+        $controllers->match(
+            '/upcoming',
+            'ticket.controller:upcomingAction'
+        )->bind('upcoming');
+
+        $controllers->match(
+            '/upcomingRss',
+            'ticket.controller:upcomingRssAction'
+        )->bind('upcomingRss');
 
         $controllers->match(
             '/api/next',
@@ -78,6 +88,11 @@ class ControllerProvider implements ControllerProviderInterface
             '/songSearch',
             'ticket.controller:songSearchAction'
         );
+
+        $controllers->match(
+            '/songSearch/{songCode}',
+            'ticket.controller:songSearchAction'
+        )->bind('songs');
 
         $controllers->match(
             '/api/songSearch',
