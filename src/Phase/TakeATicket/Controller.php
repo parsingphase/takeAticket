@@ -53,7 +53,7 @@ class Controller
     {
         $viewParams = [];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
-        return $this->app['twig']->render('songSearch.twig', $viewParams);
+        return $this->app['twig']->render('songSearch.html.twig', $viewParams);
     }
 
     public function nextJsonAction()
@@ -71,7 +71,7 @@ class Controller
         $performers = $this->dataSource->generatePerformerStats();
 
         return $this->app['twig']->render(
-            'manage.twig',
+            'manage.html.twig',
             ['config' => $this->app['config'], 'tickets' => $tickets, 'performers' => $performers]
         );
     }

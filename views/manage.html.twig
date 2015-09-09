@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Queue Management{% endblock %}
+{% block headerText %}Manage Tickets{% endblock %}
+{% block containerClass %}manage{% endblock %}
+
+    {% block pageJs %}
+        <script>
+            var tickets = {{ tickets|json_encode|raw }};
+            var performers = {{ performers|json_encode|raw }};
+            $(function () {
+                ticketer.performers = performers;
+                ticketer.manage(tickets);
+            });
+        </script>
+    {% endblock %}
+
+    {% block appTarget %}
+        <div id="target" class="sortContainer"></div>
+        <div class="addTicketOuter"></div>
+    {% endblock %}

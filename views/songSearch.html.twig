@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Song Search{% endblock %}
+{% block headerText %}Song Search{% endblock %}
+{% block containerClass %}songSearch{% endblock %}
+
+    {% block pageJs %}
+        <script>
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            $(function () {
+                ticketer.displayOptions = displayOptions;
+                ticketer.initSearchPage();
+            });
+        </script>
+    {% endblock %}
+
+    {% block appTarget %}
+
+
+        <div class="col-md-6">
+            <div class="input-group input-group">
+                <span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>
+                <input class="searchString form-control" placeholder="Search song or use code"/>
+            </div>
+
+            <div class="songCompleteOuter">
+                <div class="songComplete"></div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div id="target"></div>
+        </div>
+
+    {% endblock %}

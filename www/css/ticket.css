@@ -13,7 +13,8 @@ div.page-header .headerControls {
 }
 div.page-header .headerControls,
 div.page-header .headerControls a {
-  color: #e0e0e0;
+  color: #e8e8e8;
+  padding: 4px 6px;
 }
 div.page-header:hover .headerControls,
 div.page-header:hover .headerControls a {
