@@ -202,6 +202,29 @@ div.end {
   div.gflink {
     font-size: 50px;
     width: 100%;
+    a {
+      color: #333
+    }
+    a:hover {
+      color: #777;
+      text-decoration: none;
+    }
+  }
+
+  .docslink {
+    font-size: 24px;
+    margin-right: 20px;
+    &, a {
+      color: #e8e8e8;
+      padding: 4px 6px;
+    }
+  }
+  &:hover {
+    .docslink {
+      &, a {
+        color: #999;
+      }
+    }
   }
 }
 

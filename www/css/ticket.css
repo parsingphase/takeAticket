@@ -149,3 +149,23 @@ div.end div.gflink {
   font-size: 50px;
   width: 100%;
 }
+div.end div.gflink a {
+  color: #333333;
+}
+div.end div.gflink a:hover {
+  color: #777;
+  text-decoration: none;
+}
+div.end .docslink {
+  font-size: 24px;
+  margin-right: 20px;
+}
+div.end .docslink,
+div.end .docslink a {
+  color: #e8e8e8;
+  padding: 4px 6px;
+}
+div.end:hover .docslink,
+div.end:hover .docslink a {
+  color: #999;
+}
