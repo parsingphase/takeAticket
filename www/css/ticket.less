@@ -1,10 +1,15 @@
+.container {
+  padding: 0;
+}
+
 div.page-header {
   padding: 0;
-  font-size: 80px;
+  font-size: 50px;
   font-weight: bolder;
   margin-top: 0;
   margin-bottom: 0;
   position: relative;
+  background-color: #d0d0d0;
   .headerControls {
     position: absolute;
     right: 0px;
@@ -25,12 +30,12 @@ div.page-header {
 }
 
 div#target {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 div.ticket {
   p.band {
-    font-size: 180px;
+    font-size: 100px;
     font-weight: bolder;
   }
 
@@ -47,15 +52,16 @@ div.upcoming {
     //padding: 0;
 
     &.ticket {
-      min-height: 200px;
+      min-height: 180px;
 
       &.withSong {
-        padding-top: 10px;
+        padding-top: 6px;
       }
 
       &.noSong {
-        padding-top: 40px;
-        padding-bottom: 40px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        min-height: 100px;
       }
 
       .auto-font {
@@ -106,7 +112,7 @@ div.manage {
   }
 
   div.addTicket {
-    min-height: 440px;
+    min-height: 500px;
 
     h3 {
       margin-top: 0;
@@ -200,7 +206,7 @@ div.end {
   background-color: #f5f5f5;
 
   div.gflink {
-    font-size: 50px;
+    font-size: 40px;
     width: 100%;
     a {
       color: #333

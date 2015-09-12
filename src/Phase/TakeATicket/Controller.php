@@ -29,12 +29,19 @@ class Controller
      */
     protected $dataSource;
 
+    /**
+     * @var int Whether to identify band by its name or a list of performers
+     */
     protected $bandIdentifier = DataSource::BAND_IDENTIFIER_PERFORMERS;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
         $this->dataSource = new DataSource($this->app['db']);
+        $upcomingCount = $this->getUpcomingCount();
+        if ($upcomingCount) {
+            $this->dataSource->setUpcomingCount($upcomingCount);
+        }
     }
 
     public function indexAction()
@@ -164,7 +171,11 @@ class Controller
     public function songSearchApiAction(Request $request)
     {
         $searchString = $request->get('searchString');
-        $songs = $this->dataSource->findSongsBySearchString($searchString);
+        $searchCount = 10;
+        if ($request->get('searchCount')) {
+            $searchCount = $request->get('searchCount');
+        }
+        $songs = $this->dataSource->findSongsBySearchString($searchString, $searchCount);
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
         return $jsonResponse;
@@ -210,6 +221,16 @@ class Controller
             $displayOptions['songInPreview'] = true; // force for logged-in users
         }
         return $displayOptions;
+    }
+
+    /**
+     * Get UpcomingCount
+     * @return int
+     */
+    protected function getUpcomingCount()
+    {
+        $displayOptions = $this->getDisplayOptions();
+        return isset($displayOptions['upcomingCount']) ? $displayOptions['upcomingCount'] : null;
     }
 
 }

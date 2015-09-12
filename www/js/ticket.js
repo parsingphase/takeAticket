@@ -7,6 +7,7 @@ var ticketer = {
     songAutocompleteItemTemplate: null,
     addTicketTemplate: null,
     songDetailsTemplate: null,
+    searchCount:10,
 
     displayOptions: {},
 
@@ -88,7 +89,8 @@ var ticketer = {
                     $.ajax({
                         method: 'POST',
                         data: {
-                            searchString: searchString
+                            searchString: searchString,
+                            searchCount: that.searchCount
                         },
                         url: '/api/songSearch',
                         success: function (data, status) {

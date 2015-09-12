@@ -24,6 +24,10 @@ class DataSource
      * @var Connection
      */
     protected $dbConn;
+    /**
+     * @var int
+     */
+    protected $upcomingCount = 3;
 
     /**
      * DataSource constructor.
@@ -40,6 +44,22 @@ class DataSource
     public function getDbConn()
     {
         return $this->dbConn;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUpcomingCount()
+    {
+        return $this->upcomingCount;
+    }
+
+    /**
+     * @param int $upcomingCount
+     */
+    public function setUpcomingCount($upcomingCount)
+    {
+        $this->upcomingCount = $upcomingCount;
     }
 
     /**
@@ -161,8 +181,10 @@ class DataSource
      * @param $searchString
      * @return array
      */
-    public function findSongsBySearchString($searchString)
+    public function findSongsBySearchString($searchString, $howMany = 10)
     {
+        $howMany += 0; // force int
+
         $conn = $this->getDbConn();
         $leadingPattern = implode('%', preg_split('/\s+/', $searchString)) . '%';
         $internalPattern = '%' . $leadingPattern;
@@ -178,7 +200,7 @@ class DataSource
             WHERE (title = :searchString)
             OR (codeNumber = :searchString)
             ORDER BY artist, title
-            LIMIT 10";
+            LIMIT $howMany";
             //allow title just in case
         } else {
             $sql = "SELECT * FROM songs
@@ -187,7 +209,7 @@ class DataSource
             OR (codeNumber LIKE :leadingPattern)
             OR (id = :searchString)
             ORDER BY artist, title
-            LIMIT 10";
+            LIMIT $howMany";
         }
 
         $songs = $conn->fetchAll($sql, $params);
@@ -252,7 +274,9 @@ class DataSource
     public function fetchUpcomingTickets()
     {
         $conn = $this->getDbConn();
-        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT 3');
+        $statement = $conn->prepare(
+            'SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
+        );
         $statement->execute();
         $next = $statement->fetchAll();
         $next = $this->expandTicketsData($next);

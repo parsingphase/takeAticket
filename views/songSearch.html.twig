@@ -8,6 +8,7 @@
             var displayOptions = {{ displayOptions|json_encode|raw }};
             $(function () {
                 ticketer.displayOptions = displayOptions;
+                ticketer.searchCount = 20;
                 ticketer.initSearchPage();
             });
         </script>

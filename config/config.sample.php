@@ -7,7 +7,11 @@
  */
 
 $config = [
-    'displayOptions' => ['songInPreview' => true]
+    'displayOptions' =>
+        [
+            'songInPreview' => false,
+            'upcomingCount' => 4
+        ]
 ];
 
 return $config;
