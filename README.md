@@ -38,6 +38,10 @@ To load song library
 To start server
 
     ./startServer.sh
+    
+To run tests 
+
+    ./vendor/bin/phing
 
 ## Usage
 
