@@ -69,15 +69,14 @@ $app->mount('/user', $simpleUserProvider);
 
 
 // SimpleUser options. See https://github.com/jasongrimes/silex-simpleuser for details.
-$app['user.options'] =
-    [
-        'mailer' => [
-            'enabled' => false
-        ],
-        'emailConfirmation' => [
-            'required' => true // force manual enabling
-        ]
-    ];
+$app['user.options'] = [
+    'mailer' => [
+        'enabled' => false
+    ],
+    'emailConfirmation' => [
+        'required' => true // force manual enabling
+    ]
+];
 
 // Security config. See http://silex.sensiolabs.org/doc/providers/security.html for details.
 $app['security.firewalls'] = array(

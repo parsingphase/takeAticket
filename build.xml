@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="takeAticket" default="test">
+    <target name="test" depends="phplint,phpcs"/>
+
+    <target name="phplint"
+            description="Perform syntax check of sourcecode files"
+            >
+        <phplint
+                haltonfailure="true"
+                >
+            <fileset dir="${project.basedir}">
+                <include name="**/*.php"/>
+                <exclude name="vendor/"/>
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpcs"
+            description="Perform codesniffer check of sourcecode files"
+            >
+        <phpcodesniffer
+                standard="PSR2"
+                format="full"
+                allowedFileExtensions="php"
+                haltonerror="true"
+                haltonwarning="true"
+                >
+            <fileset dir="${project.basedir}">
+                <include name="**/*.php"/>
+                <exclude name="vendor/"/>
+            </fileset>
+        </phpcodesniffer>
+    </target>
+</project>

@@ -21,6 +21,10 @@ To create database file/schema:
     sqlite3 db/app.db < sql/db.sql
     sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
  
+A symlink is currently required to make certain frontend resources available:
+
+    ln -s ../components www/components
+ 
 To configure
  
     cp config/config.sample.php config/config.php
@@ -99,3 +103,10 @@ Find your user (probably the only one) and check the id field (the first field s
 
 You can now log in, and will be able to use the 'manage' page. Once logged in, the login icon will be replaced with a logout icon.
 
+## TODO 
+
+See [[Docs/TODO.md]]
+
+## CONTRIBUTING 
+
+See [[Docs/CONTRIBUTING.md]]

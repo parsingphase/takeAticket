@@ -93,7 +93,7 @@ class Controller
 
         if (preg_match('/^[a-f0-9]{6}$/i', $songKey)) {
             $song = $this->dataSource->fetchSongByKey($songKey);
-        } else if (preg_match('/^\d+$/', $songKey)) {
+        } elseif (preg_match('/^\d+$/', $songKey)) {
             $song = $this->dataSource->fetchSongById($songKey);
         }
 
@@ -232,5 +232,4 @@ class Controller
         $displayOptions = $this->getDisplayOptions();
         return isset($displayOptions['upcomingCount']) ? $displayOptions['upcomingCount'] : null;
     }
-
 }

@@ -10,7 +10,6 @@ namespace Phase\TakeATicket;
 
 use Doctrine\DBAL\Connection;
 
-
 class SongLoader
 {
     private $fileFields = [
@@ -40,7 +39,7 @@ class SongLoader
             $storable = [];
 
             /** @var \PHPExcel_Worksheet_Row $row */
-            $rowIdx = $row->getRowIndex();
+//            $rowIdx = $row->getRowIndex();
             $cells = $row->getCellIterator();
             foreach ($cells as $cell) {
                 /** @var \PHPExcel_Cell $cell */
@@ -74,8 +73,10 @@ class SongLoader
 
                 if (!($i % 100)) {
                     echo $i;
-                } else if (!($i % 10)) {
-                    echo '.';
+                } else {
+                    if (!($i % 10)) {
+                        echo '.';
+                    }
                 }
                 if (!($i % 1000)) {
                     echo "\n";
@@ -96,7 +97,11 @@ class SongLoader
      */
     public function makeCodeNumberFromArray($storable)
     {
-        $normalisedSong = strtoupper(preg_replace('/[^a-z0-9]/i', '', $storable['artist']) . '::' . preg_replace('/[^a-z0-9]/i', '', $storable['title']));
+        $normalisedSong = strtoupper(
+            preg_replace('/[^a-z0-9]/i', '', $storable['artist']) .
+            '::' .
+            preg_replace('/[^a-z0-9]/i', '', $storable['title'])
+        );
         $hash = (string)md5($normalisedSong);
         $code = strtoupper(substr($hash, 0, self::CODE_LENGTH));
 //        print("\n$hash     $code      $normalisedSong  ");

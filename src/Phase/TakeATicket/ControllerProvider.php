@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicket;
 
-
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -116,5 +115,4 @@ class ControllerProvider implements ControllerProviderInterface
     {
         return $this->app['controllers_factory'];
     }
-
 }

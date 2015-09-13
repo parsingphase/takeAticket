@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicket;
 
-
 use Doctrine\DBAL\Connection;
 
 class DataSource
@@ -179,6 +178,7 @@ class DataSource
 
     /**
      * @param $searchString
+     * @param $howMany
      * @return array
      */
     public function findSongsBySearchString($searchString, $howMany = 10)
@@ -330,5 +330,4 @@ class DataSource
         $song['hasKeys'] = (bool)$song['hasKeys'];
         return $song;
     }
-
 }
