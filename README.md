@@ -109,8 +109,8 @@ You can now log in, and will be able to use the 'manage' page. Once logged in, t
 
 ## TODO 
 
-See [[Docs/TODO.md]]
+See [Docs/TODO.md](Docs/TODO.md)
 
 ## CONTRIBUTING 
 
-See [[Docs/CONTRIBUTING.md]]
+See (Docs/CONTRIBUTING.md)[Docs/CONTRIBUTING.md]
