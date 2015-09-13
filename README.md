@@ -1,4 +1,4 @@
-TakeATicket
+TakeATicket [![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket)
 ===========
 Queue management tool for Rock Club London (http://rockclublondon.com/)
 
