@@ -18,3 +18,12 @@ so that it can be run from most Linux or OSX desktop environments without server
 In particular, npm or ant should not currently be assumed to be available.
 
 Please discuss before adding any further requirements, or adding any further dependencies via composer.
+
+### Source data
+`sql/sampleSongs.sql` is included to get you started. Full `.xls` file may be available on request.
+
+### CSS
+CSS is compiled from www/css/ticket.less to www/css/ticket.css 
+ 
+* Run `./rebuildLess.sh` to compile
+* CSS file must be checked in
