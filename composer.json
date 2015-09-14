@@ -7,13 +7,14 @@
             "email": "richard@phase.org"
         }
     ],
+    "licence": "Apache-2.0",
     "autoload": {
         "psr-0": {
             "Phase\\TakeATicket\\": "src/"
         }
     },
     "require": {
-        "php": "~5.5",
+        "php": "~5.5 || ^7.0-dev",
         "silex/silex": "~1.2",
         "components/bootstrap": "~3.2",
         "components/jqueryui": "~1.11",
@@ -30,5 +31,10 @@
         "leafo/lessphp": "^0.5.0",
         "squizlabs/php_codesniffer": "^2.3",
         "phing/phing": "^2.12"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
     }
 }
