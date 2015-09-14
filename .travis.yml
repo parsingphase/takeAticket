@@ -3,8 +3,9 @@ php:
   - 5.6
   - 5.5
   - hhvm
+  - nightly
 os:
   - linux
-  - osx
+# osx/php testing not supported by travis
 install: composer install
 script: vendor/bin/phing
