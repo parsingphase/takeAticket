@@ -1,0 +1,25 @@
+{
+  "name": "takeAticket",
+  "version": "0.1.0",
+  "description": "RCL ticket queue management software",
+  "main": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/jshint www/js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:parsingphase/takeAticket.git"
+  },
+  "author": "Richard George <richard@phase.org>",
+  "license": "Apache2",
+  "bugs": {
+    "url": "https://github.com/parsingphase/takeAticket/issues"
+  },
+  "homepage": "https://github.com/parsingphase/takeAticket",
+  "devDependencies": {
+    "jshint": "^2.8.0"
+  }
+}

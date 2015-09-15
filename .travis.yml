@@ -7,8 +7,11 @@ php:
 os:
   - linux
 # osx/php testing not supported by travis
-install: composer install
-script: vendor/bin/phing
+install:
+ - composer install
+ - npm install
+#JS tools installed by npm required for validation only, not for app execution or development
+script: vendor/bin/phing test-all
 #Disable nightly-build test until I fix deps
 matrix:
   allow_failures:

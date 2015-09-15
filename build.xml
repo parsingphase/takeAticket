@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="takeAticket" default="test">
-    <target name="test" depends="phplint,phpcs"/>
+<project name="takeAticket" default="test-mindeps">
+    <target name="test-mindeps" depends="phplint,phpcs"
+            description="Perform all tests that only require basic dependencies"/>
+    <target name="test-all" depends="phplint,phpcs,jstests"
+            description="Perform all tests, including those which may require extra dependencies"/>
 
     <target name="phplint"
             description="Perform syntax check of sourcecode files"
@@ -30,5 +33,16 @@
                 <exclude name="vendor/"/>
             </fileset>
         </phpcodesniffer>
+    </target>
+
+
+    <target name="jstests"
+            description="Perform any tests specified by node package.json">
+        <!-- delegate to npm-->
+        <exec
+                command="npm test"
+                checkreturn="true"
+                logoutput="true"
+                />
     </target>
 </project>
