@@ -76,6 +76,9 @@ div.manage div.ticket.used {
 div.manage div.ticket.used button.performButton {
   display: none;
 }
+div.manage div.addTicketOuter {
+  margin-bottom: 80px;
+}
 div.manage div.addTicket {
   min-height: 500px;
 }

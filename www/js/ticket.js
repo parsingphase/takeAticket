@@ -314,6 +314,7 @@ var ticketer = (function () {
 
                 '</div>' +
                 '</div>' +
+                '<div class="clearfix"></div>' + // clear after addTicketBand
                 '</div>'
             );
 
