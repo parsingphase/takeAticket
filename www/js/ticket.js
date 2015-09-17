@@ -11,11 +11,35 @@ var ticketer = (function () {
         addTicketTemplate: null,
         songDetailsTemplate: null,
         searchCount: 10,
+        instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
 
         displayOptions: {},
 
+        /**
+         * List of all performers (objects) who've signed up in this session
+         */
         performers: [],
 
+        performerExists: function (performerName) {
+            for (var i = 0; i < this.performers.length; i++) {
+                if (this.performers[i].performerName.toLowerCase() == performerName.toLowerCase()) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        addPerformerByName: function (performerName) {
+            this.performers.push({performerName: performerName});
+            // now resort it
+            this.performers.sort(function (a, b) {
+                return a.performerName.localeCompare(b.performerName);
+            });
+        },
+
+        /**
+         * Run the "upcoming" panel
+         */
         go: function () {
             this.initTemplates();
 
@@ -25,16 +49,29 @@ var ticketer = (function () {
             }, 10000);
         },
 
+        /**
+         * Draw an "upcoming" ticket
+         * @param ticket
+         * @returns {*}
+         */
         drawDisplayTicket: function (ticket) {
             return this.drawTemplate({ticket: ticket});
         },
 
+        /**
+         * Draw a "queue management" ticket
+         * @param ticket
+         * @returns {*}
+         */
         drawManageableTicket: function (ticket) {
             ticket.used = Number(ticket.used); // force int
 
             return this.manageTemplate({ticket: ticket});
         },
 
+        /**
+         * Reload all tickets on the upcoming page
+         */
         reloadTickets: function () {
             var that = this;
             //console.log('reloadTickets');
@@ -63,6 +100,10 @@ var ticketer = (function () {
             });
         },
 
+        /**
+         * Enable queue management ticket buttons in the specified element
+         * @param topElement
+         */
         enableButtons: function (topElement) {
             var that = this;
 
@@ -73,10 +114,6 @@ var ticketer = (function () {
             $(topElement).find('.removeButton').click(function () {
                 that.removeButtonCallback(this);
             });
-        },
-
-        drawAddTicketForm: function () {
-            $('.addTicketOuter').html(this.addTicketTemplate({performers: this.performers}));
         },
 
         enableSongSearchBox: function (songSearchInput, songSearchResultsTarget, songClickHandler) {
@@ -134,15 +171,134 @@ var ticketer = (function () {
             );
         },
 
+        /**
+         * Completely (re)generate the add ticket control panel and enable its controls
+         *
+         */
         resetAddTicketBlock: function () {
             var that = this;
 
-            this.drawAddTicketForm();
+            // Current panel state in function scope
+            var selectedInstrument = 'V';
+            var currentBand = {};
 
-            $('.addTicketButton').click(function () {
-                that.addTicketCallback();
-            });
+            var controlPanelOuter = $('.addTicketOuter');
 
+            var nextInstrumentTab = function () {
+                // find what offset we're at in instrumentOrder
+                var currentOffset = 0;
+                for (var i = 0; i < that.instrumentOrder.length; i++) {
+                    if (that.instrumentOrder[i] == selectedInstrument) {
+                        currentOffset = i;
+                    }
+                }
+                var nextOffset = currentOffset + 1;
+                if (nextOffset >= that.instrumentOrder.length) {
+                    nextOffset = 0;
+                }
+                var instrument = that.instrumentOrder[nextOffset];
+                selectedInstrument = instrument; // reset before we redraw tabs
+                var newActiveTab = setActiveTab(instrument);
+
+                console.log(['nextInstrumentTab', instrument]);
+                // make sure we switch to a *visible* tab
+                if (newActiveTab.hasClass('instrumentUnused')) {
+                    nextInstrumentTab();
+                }
+            };
+
+            /**
+             * (re)Draw the add ticket control panel in the .addTicketOuter element
+             */
+            var drawAddTicketForm = function () {
+                controlPanelOuter.html(that.addTicketTemplate({performers: that.performers}));
+                rebuildPerformerList(controlPanelOuter.find('.performers'));
+            };
+
+            var findPerformerInstrument = function (name) {
+                var instrumentPlayers;
+                for (var instrumentCode in currentBand) {
+                    if (currentBand.hasOwnProperty(instrumentCode)) {
+                        instrumentPlayers = currentBand[instrumentCode];
+                        for (var i = 0; i < instrumentPlayers.length; i++) {
+                            if (instrumentPlayers[i].toUpperCase() == name.toUpperCase()) {
+                                return instrumentCode;
+                            }
+                        }
+                    }
+                }
+                return null;
+            };
+
+            var rebuildPerformerList = function () {
+                var newButton;
+                var targetElement = controlPanelOuter.find('.performers');
+                targetElement.text(''); // remove existing list
+                console.log(['rebuildPerformerList', that.performers]);
+                for (var pIdx = 0; pIdx < that.performers.length; pIdx++) {
+                    var performerName = that.performers[pIdx].performerName;
+                    var performerInstrument = findPerformerInstrument(performerName);
+                    var isPerforming = performerInstrument ? 1 : 0;
+                    newButton = $('<span />');
+                    newButton.addClass('btn addPerformerButton');
+                    newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
+                    if (isPerforming && (performerInstrument !== selectedInstrument)) { // dim out buttons for other instruments
+                        newButton.attr('disabled', 'disabled');
+                    }
+                    newButton.text(performerName);
+                    newButton.data('selected', isPerforming); // this is where it gets fun - check if user is in band!
+                    targetElement.append(newButton);
+                }
+
+                // enable the new buttons
+                $('.addPerformerButton').click(function () {
+                    var name = $(this).text();
+                    var selected = $(this).data('selected') ? 0 : 1; // reverse to get new state
+                    if (selected) {
+                        $(this).removeClass('btn-default').addClass('btn-primary');
+                    } else {
+                        $(this).removeClass('btn-primary').addClass('btn-default');
+                    }
+                    $(this).data('selected', selected); // toggle
+
+                    //console.log('Clicked performer name: "' + name + '"');
+                    alterInstrumentPerformerList(selectedInstrument, name, selected);
+                });
+
+            };
+
+            // reset band to empty
+            for (var instrumentIdx = 0; instrumentIdx < that.instrumentOrder.length; instrumentIdx++) {
+                var instrument = that.instrumentOrder[instrumentIdx];
+                currentBand[instrument] = []; // Store all instruments as arrays - most can only be single, but vocals is 1..n potentially
+            }
+
+            drawAddTicketForm();
+
+            //enable the instrument tabs
+            var allInstrumentTabs = controlPanelOuter.find('.instrument');
+
+            var getTabByInstrument = function (instrument) {
+                return controlPanelOuter.find('.instrument[data-instrument-shortcode=' + instrument + ']');
+            };
+
+            var setActiveTab = function (selectedInstrument) {
+                allInstrumentTabs.removeClass('instrumentSelected');
+                var selectedTab = getTabByInstrument(selectedInstrument);
+                selectedTab.addClass('instrumentSelected');
+                rebuildPerformerList(); // rebuild in current context
+                return selectedTab;
+            };
+
+            allInstrumentTabs.click(
+                function () {
+                    selectedInstrument = $(this).data('instrumentShortcode');
+                    setActiveTab(selectedInstrument);
+                }
+            );
+
+
+            // Copy band name into summary area on Enter
             var ticketTitleInput = $('.addTicketTitle');
             ticketTitleInput.keydown(function (e) {
                 if (e.keyCode == 13) {
@@ -152,39 +308,60 @@ var ticketer = (function () {
                 }
             });
 
-            $('.addPerformerButton').click(function () {
-                var name = $(this).text();
-                var selected = $(this).data('selected') ? 0 : 1; // reverse to get new state
-                if (selected) {
-                    $(this).removeClass('btn-default').addClass('btn-primary');
-                } else {
-                    $(this).removeClass('btn-primary').addClass('btn-default');
-                }
-                $(this).data('selected', selected); // toggle
+            var alterInstrumentPerformerList = function (instrument, changedPerformer, isAdd) {
+                console.log(['alterPerformerList', instrument, changedPerformer, isAdd]);
+                var selectedTab = controlPanelOuter.find('.instrument[data-instrument-shortcode=' + selectedInstrument + ']');
+                var currentPerformerNameSpan = selectedTab.find('.instrumentPerformer');
+                var currentInstrumentPerformers = currentBand[selectedInstrument];
 
-                //console.log('Clicked performer name: "' + name + '"');
-
-                // split out band name and see if we need to add the new name
-                var currentBandList = ticketTitleInput.val();
-                //console.log('Current band: "' + currentBandList + '"');
-                var bandMembersRaw = currentBandList.split(/\s*,\s*/);
-                var bandMembers = [];
-                for (var i = 0; i < bandMembersRaw.length; i++) {
-                    var member = bandMembersRaw[i].trim();
+                var newInstrumentPerformers = [];
+                for (var i = 0; i < currentInstrumentPerformers.length; i++) {
+                    var member = currentInstrumentPerformers[i].trim(); // trim only required when we draw data from manual input
                     if (member.length) {
-                        // don't add the member in the ticket (we'll add below if appropriate)
-                        if (member.toUpperCase() != name.toUpperCase()) {
-                            bandMembers.push(member);
+                        if (member.toUpperCase() != changedPerformer.toUpperCase()) { // if it's not the name on our button, no change
+                            newInstrumentPerformers.push(member);
                         }
                     }
                 }
-                if (selected) {
-                    bandMembers.push(name);
+
+                if (isAdd) { // if we've just selected a new user, append them
+                    newInstrumentPerformers.push(changedPerformer);
+                    if (!that.performerExists(changedPerformer)) {
+                        that.addPerformerByName(changedPerformer);
+                    }
                 }
 
-                ticketTitleInput.val(bandMembers.sort().join(', '));
+                currentBand[selectedInstrument] = newInstrumentPerformers; // now update band with new performers of this instrument
+                console.log(['newInstrumentPerformers', newInstrumentPerformers]);
+
+                rebuildPerformerList();
+
+                //TODO Generate band name more intelligently, take both name & performers into account, probably don't sort
+                var performerString = newInstrumentPerformers.sort().join(', ');
+                if (!performerString) {
+                    performerString = '<i>Needed</i>';
+                }
+                currentPerformerNameSpan.html(performerString);
+
+                if (newInstrumentPerformers.length) { // if we've a performer for this instrument, skip to next
+                    nextInstrumentTab();
+                }
+
+            };
+
+            $('.newPerformer').keydown(function (e) {
+                if (e.keyCode == 13) {
+                    var newPerformerInput = $('.newPerformer');
+                    var newName = newPerformerInput.val();
+                    console.log('Manually entered new name: ' + newName + ' for ' + selectedInstrument);
+                    if (newName.trim().length) {
+                        alterInstrumentPerformerList(selectedInstrument, newName, true);
+                    }
+                    newPerformerInput.val('');
+                }
             });
 
+            // set up the song search box in this control panel and set the appropriate callback
             var songSearchInput = '.addSongTitle';
             var songSearchResultsTarget = '.songComplete';
             var songClickHandler = that.managePageSongSelectionClick;
@@ -284,9 +461,9 @@ var ticketer = (function () {
 
                 '<h3>Add new ticket</h3>' +
 
-                '<div>' +
+                '<div class="addTicketInner">' +
                 '<div class="addTicketSong">' +
-                '<div class="selectedFieldOuter"><span class="fa fa-music fa-2x"></span>' +
+                '<div class="ticketAspectSummary"><span class="fa fa-music fa-2x" title="Song"></span>' +
                 '<input type="hidden" class="selectedSongId"/> <span class="selectedSong"></span>' +
                 '</div>' +
                 '<div class="input-group input-group">' +
@@ -296,26 +473,60 @@ var ticketer = (function () {
 
                 '<div class="songCompleteOuter">' +
                 '<div class="songComplete"></div>' +
-                '</div>' +
-                '</div>' +
+                '</div>' + // /songCompleteOuter
+                '</div>' + // /addTicketSong
 
-                '<div class="addTicketBand">' +
-                '<div class="selectedFieldOuter"><span class="fa fa-group fa-2x"></span>' +
+                '<div class="addTicketBandColumn">' +
+
+                '<div class="ticketAspectSummary"><span class="fa fa-group fa-2x pull-left" title="Performers"></span>' +
                 '<span class="selectedBand"></span>' +
-                '</div>' +
+                '</div>' + // /ticketAspectSummary
+
+                '<div class="input-group">' +
+                '<span class="input-group-addon" id="group-addon-band"><span class="fa fa-pencil"></span> </span>' +
+                '<input class="addTicketTitle form-control" placeholder="Band name (optional)"/>' +
+                '</div>' + // /input-group
+
+                '<div class="bandControls">' +
+                '<div class="bandTabsOuter">' +
+                '<div class="instruments">' +
+                ' <div class="instrument instrumentVocals instrumentSelected" data-instrument-shortcode="V">' +
+                '  <div class="instrumentName">Vocals</div>' +
+                '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' </div>' +
+                ' <div class="instrument instrumentGuitar" data-instrument-shortcode="G">' +
+                '  <div class="instrumentName">Guitar</div>' +
+                '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' </div>' +
+                ' <div class="instrument instrumentBass" data-instrument-shortcode="B">' +
+                '  <div class="instrumentName">Bass</div>' +
+                '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' </div>' +
+                ' <div class="instrument instrumentDrums" data-instrument-shortcode="D">' +
+                '  <div class="instrumentName">Drums</div>' +
+                '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' <div class="instrument instrumentKeys instrumentUnused" data-instrument-shortcode="K">' +
+                '  <div class="instrumentName">Keyboard</div>' +
+                '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' </div>' +
+                '</div>' + // /instruments
+                '<div class="performerSelect">' +
+                    //'<div class="ticketAspectSummary">' +
+                    //'<span class="selectedBand"></span>' +
+                    //'</div>' +
                 '<div class="input-group input-group">' +
-                '<span class="input-group-addon" id="group-addon1"><span class="fa fa-plus"></span> </span>' +
-                '<input class="addTicketTitle form-control" placeholder="Band members (comma-separated)"/>' +
+                '<span class="input-group-addon" id="group-addon-performer"><span class="fa fa-plus"></span> </span>' +
+                '<input class="newPerformer form-control" placeholder="New performer (Firstname Initial)"/>' +
                 '</div>' +
 
-                '<div class="performers">{{#if performers}}{{#each performers}}' +
-                '<span class="btn btn-default addPerformerButton" data-selected="0">{{performerName}}</span>' +
-                '{{/each}}{{/if}}</div>' +
-
-                '</div>' +
-                '</div>' +
-                '<div class="clearfix"></div>' + // clear after addTicketBand
-                '</div>'
+                '<div class="performers"></div>' +
+                '</div>' + // /performerSelect
+                '</div>' + // /bandTabsOuter
+                '</div>' + // /bandControls
+                '</div>' + // /addTicketBandColumn
+                '<div class="clearfix"></div>' + // clear after addTicketBandColumn
+                '</div>' + // /addTicketInner
+                '</div>' // /addTicket
             );
 
             this.songDetailsTemplate = Handlebars.compile(

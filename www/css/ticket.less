@@ -12,7 +12,7 @@ div.page-header {
   background-color: #d0d0d0;
   .headerControls {
     position: absolute;
-    right: 0px;
+    right: 0;
     font-size: 24px;
     margin-right: 20px;
     &, a {
@@ -124,32 +124,88 @@ div.manage {
     }
 
     .addTicketSong,
-    .addTicketBand,
+    .addTicketBandColumn,
     {
       float: left;
       padding: 10px;
-      width: 500px;
-      .selectedFieldOuter {
+      .ticketAspectSummary {
         padding-left: 6px;
         min-height: 50px;
       }
     }
 
-    .addTicketBand {
-      .performers {
-        .btn {
-          margin-top: 8px;
-          margin-right: 8px;
+    .addTicketSong {
+      width: 400px;
+    }
+
+    .addTicketBandColumn {
+      width: 600px;
+
+      .addTicketTitle {
+        width: 30em;
+      }
+
+      .instrument {
+        cursor: pointer;
+        float: left;
+        width: 110px;
+        min-height: 4em;
+        border: solid 1px #ccc;
+        border-bottom: none;
+        margin-right: 6px;
+        //padding: 4px 8px;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        &.instrumentSelected {
+          background-color: #e0e0e0;
+          .instrumentName {
+            background-color: #ccc;
+          }
+        }
+        .instrumentName, .instrumentPerformer {
+          padding: 4px 8px;
+          margin-bottom: 4px;
+        }
+        .instrumentName {
+          font-weight: bold;
+          background-color: #ddd;
+        }
+        i {
+          color: #888;
+        }
+        &.instrumentUnused {
+          // hidden by default;
+          display: none;
+        }
+      }
+
+      .bandControls {
+        //border: dashed grey 1px;
+        padding-top: 14px;
+
+        .bandTabsOuter {
+
+          .performerSelect {
+            clear: both;
+            padding: 8px;
+            background-color: #e0e0e0;
+          }
+          .newPerformer {
+            width: 18em;
+          }
+        }
+
+        .performers {
+          .btn {
+            margin-top: 8px;
+            margin-right: 8px;
+          }
         }
       }
     }
 
     .addSongTitle {
-      width: 30em;
-    }
-
-    .addTicketTitle {
-      width: 30em;
+      width: 24em;
     }
 
     .input-group-addon .fa {

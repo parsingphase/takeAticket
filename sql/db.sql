@@ -23,6 +23,7 @@ CREATE TABLE performers (
 );
 
 CREATE TABLE tickets_x_performers (
-  ticketId    INT NOT NULL,
-  performerId INT NOT NULL
+  ticketId    INT  NOT NULL,
+  performerId INT  NOT NULL,
+  instrument  TEXT NOT NULL
 );
