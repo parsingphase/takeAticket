@@ -122,6 +122,12 @@ class DataSource
         return $performers;
     }
 
+    /**
+     * @deprecated Does not store instrument
+     *
+     * @param $ticketId
+     * @param $performerNames
+     */
     public function addPerformersToTicketByName($ticketId, $performerNames)
     {
         foreach ($performerNames as $performerName) {
@@ -130,6 +136,26 @@ class DataSource
             if ($performerId) {
                 $link = ['ticketId' => $ticketId, 'performerId' => $performerId];
                 $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
+            }
+        }
+    }
+
+    /**
+     * Save band to ticket
+     *
+     * @param $ticketId
+     * @param array $band ['instrumentCode' => 'name']
+     */
+    public function storeBandToTicket($ticketId, $band)
+    {
+        foreach ($band as $instrument => $performers) {
+            foreach ($performers as $performerName) {
+                $performerName = trim($performerName);
+                $performerId = $this->getPerformerIdByName($performerName, true);
+                if ($performerId) {
+                    $link = ['ticketId' => $ticketId, 'performerId' => $performerId, 'instrument' => $instrument];
+                    $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
+                }
             }
         }
     }

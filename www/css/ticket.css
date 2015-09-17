@@ -169,7 +169,7 @@ div.songSearch .songCompleteOuter {
 div.manage .songCompleteOuter .songComplete,
 div.songSearch .songCompleteOuter .songComplete {
   position: absolute;
-  width: 30em;
+  width: 24em;
   background-color: white;
   border: solid lightgrey 1px;
   display: none;

@@ -87,6 +87,7 @@ class Controller
     {
         $title = $request->get('title');
         $songKey = $request->get('songId');
+        $band = $request->get('band');
 
         $song = null;
         $songId = null;
@@ -100,13 +101,22 @@ class Controller
         if ($song) {
             $songId = $song['id'];
         }
+
+        if (!$title) {
+            $allPerformers = [];
+            foreach ($band as $instrument => $performers) {
+                $allPerformers = array_merge($allPerformers, $performers);
+            }
+            $title = join(', ', $allPerformers);
+        }
+
         $ticketId = $this->dataSource->storeNewTicket($title, $songId);
 
         if ($this->bandIdentifier === DataSource::BAND_IDENTIFIER_PERFORMERS) {
-            $performerNames = preg_split('/\s*,\s*/', $title, -1, PREG_SPLIT_NO_EMPTY);
-            $this->dataSource->addPerformersToTicketByName($ticketId, $performerNames);
+            $this->dataSource->storeBandToTicket($ticketId, $band);
         }
 
+        $ticket = [];
         $ticket['id'] = $ticketId; //FIXME re-fetch ticket by ID
         $ticket['songId'] = $songId; //FIXME re-fetch ticket by ID
 

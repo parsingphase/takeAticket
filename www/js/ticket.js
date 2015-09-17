@@ -200,7 +200,7 @@ var ticketer = (function () {
                 selectedInstrument = instrument; // reset before we redraw tabs
                 var newActiveTab = setActiveTab(instrument);
 
-                console.log(['nextInstrumentTab', instrument]);
+                //console.log(['nextInstrumentTab', instrument]);
                 // make sure we switch to a *visible* tab
                 if (newActiveTab.hasClass('instrumentUnused')) {
                     nextInstrumentTab();
@@ -234,12 +234,12 @@ var ticketer = (function () {
                 var newButton;
                 var targetElement = controlPanelOuter.find('.performers');
                 targetElement.text(''); // remove existing list
-                console.log(['rebuildPerformerList', that.performers]);
+                //console.log(['rebuildPerformerList', that.performers]);
                 for (var pIdx = 0; pIdx < that.performers.length; pIdx++) {
                     var performerName = that.performers[pIdx].performerName;
                     var performerInstrument = findPerformerInstrument(performerName);
                     var isPerforming = performerInstrument ? 1 : 0;
-                    newButton = $('<span />');
+                    newButton = $('<span></span>');
                     newButton.addClass('btn addPerformerButton');
                     newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
                     if (isPerforming && (performerInstrument !== selectedInstrument)) { // dim out buttons for other instruments
@@ -273,7 +273,53 @@ var ticketer = (function () {
                 currentBand[instrument] = []; // Store all instruments as arrays - most can only be single, but vocals is 1..n potentially
             }
 
+            var addTicketCallback = function () {
+                //var that = this;
+                var titleInput = $('.addTicketTitle');
+                var newTitle = titleInput.val();
+                var songInput = $('.selectedSongId');
+                var songId = songInput.val();
+                //console.log('addTicket: ' + newTitle);
+                var data = {
+                    title: newTitle,
+                    songId: songId,
+                    band: currentBand
+                };
+
+                //console.log(['newTicket', data]);
+
+                $.ajax({
+                        method: 'POST',
+                        data: data,
+                        url: '/api/newTicket',
+                        success: function (data, status) {
+                            void(status);
+                            titleInput.val('');
+                            songInput.val('');
+                            $('#target').append(that.drawManageableTicket(data.ticket));
+                            var ticketId = data.ticket.id;
+                            var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+                            that.enableButtons(ticketBlock);
+
+                            if (data.performers) {
+                                that.performers = data.performers;
+                            }
+
+                            that.resetAddTicketBlock();
+
+                        },
+                        error: function (xhr, status, error) {
+                            void(error);
+                            //console.log('addTicketTitle post ERROR: ' + status);
+                        }
+                    }
+                );
+            };
+
             drawAddTicketForm();
+
+            // enable 'Add' button
+            $('.addTicketButton').click(addTicketCallback);
 
             //enable the instrument tabs
             var allInstrumentTabs = controlPanelOuter.find('.instrument');
@@ -309,7 +355,7 @@ var ticketer = (function () {
             });
 
             var alterInstrumentPerformerList = function (instrument, changedPerformer, isAdd) {
-                console.log(['alterPerformerList', instrument, changedPerformer, isAdd]);
+                //console.log(['alterPerformerList', instrument, changedPerformer, isAdd]);
                 var selectedTab = controlPanelOuter.find('.instrument[data-instrument-shortcode=' + selectedInstrument + ']');
                 var currentPerformerNameSpan = selectedTab.find('.instrumentPerformer');
                 var currentInstrumentPerformers = currentBand[selectedInstrument];
@@ -332,7 +378,7 @@ var ticketer = (function () {
                 }
 
                 currentBand[selectedInstrument] = newInstrumentPerformers; // now update band with new performers of this instrument
-                console.log(['newInstrumentPerformers', newInstrumentPerformers]);
+                //console.log(['newInstrumentPerformers', newInstrumentPerformers]);
 
                 rebuildPerformerList();
 
@@ -353,7 +399,7 @@ var ticketer = (function () {
                 if (e.keyCode == 13) {
                     var newPerformerInput = $('.newPerformer');
                     var newName = newPerformerInput.val();
-                    console.log('Manually entered new name: ' + newName + ' for ' + selectedInstrument);
+                    //console.log('Manually entered new name: ' + newName + ' for ' + selectedInstrument);
                     if (newName.trim().length) {
                         alterInstrumentPerformerList(selectedInstrument, newName, true);
                     }
@@ -553,8 +599,6 @@ var ticketer = (function () {
                 }
             );
 
-            //console.log(['New order', idOrder]);
-
             $.ajax({
                 method: 'POST',
                 data: {
@@ -569,44 +613,6 @@ var ticketer = (function () {
                     void(error);
                 }
             });
-        },
-
-        addTicketCallback: function () {
-            var that = this;
-            var titleInput = $('.addTicketTitle');
-            var newTitle = titleInput.val();
-            var songInput = $('.selectedSongId');
-            var songId = songInput.val();
-            //console.log('addTicket: ' + newTitle);
-            $.ajax({
-                    method: 'POST',
-                    data: {
-                        title: newTitle,
-                        songId: songId
-                    },
-                    url: '/api/newTicket',
-                    success: function (data, status) {
-                        void(status);
-                        titleInput.val('');
-                        songInput.val('');
-                        $('#target').append(that.drawManageableTicket(data.ticket));
-                        var ticketId = data.ticket.id;
-                        var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
-                        that.enableButtons(ticketBlock);
-
-                        if (data.performers) {
-                            that.performers = data.performers;
-                        }
-
-                        that.resetAddTicketBlock();
-
-                    },
-                    error: function (xhr, status, error) {
-                        void(error);
-                        //console.log('addTicketTitle post ERROR: ' + status);
-                    }
-                }
-            );
         },
 
         performButtonCallback: function (button) {
