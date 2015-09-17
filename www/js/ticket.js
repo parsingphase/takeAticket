@@ -343,14 +343,27 @@ var ticketer = (function () {
                 }
             );
 
+            var ticketTitleInput = $('.addTicketTitle');
+
+            var updateBandSummary = function () {
+                var bandName = $('.addTicketTitle').val();
+                var members = [];
+                for (var instrument in currentBand) {
+                    if (currentBand.hasOwnProperty(instrument)) {
+                        for (var i = 0; i < currentBand[instrument].length; i++) {
+                            members.push(currentBand[instrument][i]);
+                        }
+                    }
+                }
+                var memberList = members.join(', ');
+                var summaryHtml = (bandName ? bandName + '<br />' : '') + memberList;
+                $('.selectedBand').html(summaryHtml);
+            };
 
             // Copy band name into summary area on Enter
-            var ticketTitleInput = $('.addTicketTitle');
             ticketTitleInput.keydown(function (e) {
                 if (e.keyCode == 13) {
-                    //that.addTicketCallback();
-                    var bandName = $('.addTicketTitle').val();
-                    $('.selectedBand').text(bandName);
+                    updateBandSummary();
                 }
             });
 
@@ -388,6 +401,8 @@ var ticketer = (function () {
                     performerString = '<i>Needed</i>';
                 }
                 currentPerformerNameSpan.html(performerString);
+
+                updateBandSummary();
 
                 if (newInstrumentPerformers.length) { // if we've a performer for this instrument, skip to next
                     nextInstrumentTab();
