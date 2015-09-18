@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+{# <!--suppress HtmlExtraClosingTag, HtmlUnknownTag --> #}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>RCL | Upcoming songs</title>
@@ -11,7 +12,11 @@
         {% set i = 1 %}
         {% for ticket in tickets %}
         <item>
-            <title>{{ i }}) {{ ticket.title }}</title>
+            <title>{{ i }}) {%- if ticket.title %}{{ ticket.title }}: {% endif -%}
+                {% for perfomer in ticket.performers -%}
+                {{ perfomer.performerName }}{% if not loop.last %}, {% endif %}
+                {%- endfor -%}
+            </title>
             {#<link>{{ url('songs',{songCode: ticket.song.codeNumber}) }}</link>#}
             <guid>{{ url('songs',{songCode: ticket.song.codeNumber}) }}</guid>
             {#<pubDate>{{ "now"|date(constant('DATE_RFC1123')) }}</pubDate>#}

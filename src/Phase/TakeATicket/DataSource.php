@@ -79,6 +79,8 @@ class DataSource
         if ($ticket['songId']) {
             $ticket['song'] = $this->fetchSongById($ticket['songId']);
         }
+        //FIXME inefficient, but different pages expect different structure while we refactor
+        $ticket['band'] = $this->fetchPerformersWithInstrumentByTicketId($ticket['id']);
         $ticket['performers'] = $this->fetchPerformersByTicketId($ticket['id']);
         return $ticket;
     }
@@ -179,6 +181,7 @@ class DataSource
     /**
      * Fetch all performers on a song with their stats
      *
+     * @deprecated Use fetchPerformersWithInstrumentByTicketId()
      * @param $ticketId
      * @return array[]
      */
@@ -199,6 +202,38 @@ class DataSource
             }
         }
         return $trackPerformers;
+    }
+
+
+
+    public function fetchPerformersWithInstrumentByTicketId($ticketId)
+    {
+        $ticketPerformerSql = 'SELECT performerId, instrument FROM tickets_x_performers WHERE ticketId = :ticketId';
+        $performerRows = $this->getDbConn()->fetchAll($ticketPerformerSql, ['ticketId' => $ticketId]);
+        $performerIds = [];
+        $instrumentsByPerformer = [];
+        foreach ($performerRows as $row) {
+            $performerId = $row['performerId'];
+            $performerIds[] = $performerId;
+            $instrumentsByPerformer[$performerId] = $row['instrument'];
+        }
+
+        //todo Can probably clean up this algorithm
+        $allPerformers = $this->generatePerformerStats();
+        $trackPerformers = [];
+        $trackPerformersByInstrument = [];
+        foreach ($allPerformers as $performer) {
+            $performerId = $performer['performerId'];
+            if (in_array($performerId, $performerIds)) {
+                $instrument = $instrumentsByPerformer[$performerId];
+                if (!isset($trackPerformersByInstrument[$instrument])) {
+                    $trackPerformersByInstrument[$instrument] = [];
+                }
+                $trackPerformers[] = $performer;
+                $trackPerformersByInstrument[$instrument][] = $performer;
+            }
+        }
+        return $trackPerformersByInstrument;
     }
 
 

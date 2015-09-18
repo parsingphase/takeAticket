@@ -5,7 +5,7 @@ var ticketer = (function () {
     'use strict';
     //noinspection JSUnusedGlobalSymbols
     return {
-        drawTemplate: null,
+        upcomingTicketTemplate: null,
         manageTemplate: null,
         songAutocompleteItemTemplate: null,
         addTicketTemplate: null,
@@ -51,11 +51,21 @@ var ticketer = (function () {
 
         /**
          * Draw an "upcoming" ticket
-         * @param ticket
+         * @param ticket {{band}}
          * @returns {*}
          */
         drawDisplayTicket: function (ticket) {
-            return this.drawTemplate({ticket: ticket});
+            // sort band into standard order
+            var unsortedBand = ticket.band;
+            var sortedBand = {};
+            for (var i = 0; i < this.instrumentOrder.length; i++) {
+                var instrument = this.instrumentOrder[i];
+                if (unsortedBand.hasOwnProperty(instrument)) {
+                    sortedBand[instrument] = unsortedBand[instrument];
+                }
+            }
+            ticket.band = sortedBand;
+            return this.upcomingTicketTemplate({ticket: ticket});
         },
 
         /**
@@ -93,7 +103,7 @@ var ticketer = (function () {
                         var scale = 1.05 * Math.min(this.scrollWidth / this.clientWidth); // extra scale to fit neatly
                         var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
                         //console.log(['width', outerWidth, outerScroll, innerWidth, innerScroll, font]);
-                        $(this).css('font-size', (font / scale) + 'px');
+                        $(this).css('font-size', Number(font / scale).toFixed() + 'px');
                     }
                 );
 
@@ -422,12 +432,36 @@ var ticketer = (function () {
                 }
             });
 
+            /**
+             *
+             * @param {{id, title, artist, hasKeys, hasHarmony}} song
+             */
+            var managePageSongSelectionClick = function (song) {
+                var selectedId = song.id;
+                var selectedSong = song.artist + ': ' + song.title;
+
+                // perform actions with selected song
+                var addTicketBlock = $('.addTicket');
+                addTicketBlock.find('input.selectedSongId').val(selectedId);
+                addTicketBlock.find('.selectedSong').text(selectedSong);
+                //console.log(['selected song', song]);
+                var keysTab = controlPanelOuter.find('.instrumentKeys');
+                if (song.hasKeys) {
+                    keysTab.removeClass('instrumentUnused');
+                } else {
+                    keysTab.addClass('instrumentUnused');
+                    // also uncheck any performer for instrument (allow use elsewhere)
+                    currentBand.K = [];
+                    keysTab.find('.instrumentPerformer').html('<i>Needed</i>');
+                    rebuildPerformerList();
+                }
+            };
+
             // set up the song search box in this control panel and set the appropriate callback
             var songSearchInput = '.addSongTitle';
             var songSearchResultsTarget = '.songComplete';
-            var songClickHandler = that.managePageSongSelectionClick;
 
-            this.enableSongSearchBox(songSearchInput, songSearchResultsTarget, songClickHandler);
+            this.enableSongSearchBox(songSearchInput, songSearchResultsTarget, managePageSongSelectionClick);
         },
 
         manage: function (tickets) {
@@ -465,6 +499,20 @@ var ticketer = (function () {
         },
 
         initTemplates: function () {
+            // commaList = each, with commas joining. Returns value at t as tuple {k,v}
+            //TODO work out how to use options to more closely mimic 'each'
+            Handlebars.registerHelper('commalist', function (context, options) {
+                var retList = [];
+
+                for (var key in context) {
+                    if (context.hasOwnProperty(key)) {
+                        retList.push(options.fn({k: key, v: context[key]}));
+                    }
+                }
+
+                return retList.join(', ');
+            });
+
             this.manageTemplate = Handlebars.compile(
                 '<div class="ticket well {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
                 '        <div class="pull-right">' +
@@ -495,12 +543,20 @@ var ticketer = (function () {
             //var block = '<div class="ticket well"><p class="text-center">' + title + '</p></div>';
 
             //noinspection JSUnresolvedVariable
-            this.drawTemplate = Handlebars.compile(
+            this.upcomingTicketTemplate = Handlebars.compile(
                 '<div class="ticket well ' +
                 (this.displayOptions.songInPreview ? 'withSong' : 'noSong') +
+                ' ' +
+                (this.displayOptions.title ? 'withTitle' : 'noTitle') +
                 '" data-ticket-id="{{ ticket.id }}">' +
-                '        <div class="ticket-inner">' +
-                '        <p class="text-center band auto-font">{{ticket.title}}</p>' +
+                '  <div class="ticket-inner">' +
+                '    <p class="text-center band auto-font">{{ticket.title}}</p>' +
+                '    <p class="performers auto-font">' +
+                '{{#commalist ticket.band}}' +
+                '<span class="instrumentCode">{{this.k}} </span>' +
+                '<span class="instrumentPerformers">{{#commalist v}}{{v.performerName}}{{/commalist}}</span>' +
+                '{{/commalist}}' +
+                '    </p>' +
                 (this.displayOptions.songInPreview ? '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : '') +
                 '        </div>' +
                 '</div>  '
@@ -566,6 +622,7 @@ var ticketer = (function () {
                 ' <div class="instrument instrumentDrums" data-instrument-shortcode="D">' +
                 '  <div class="instrumentName">Drums</div>' +
                 '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+                ' </div>' +
                 ' <div class="instrument instrumentKeys instrumentUnused" data-instrument-shortcode="K">' +
                 '  <div class="instrumentName">Keyboard</div>' +
                 '  <div class="instrumentPerformer"><i>Needed</i></div>' +
@@ -695,20 +752,6 @@ var ticketer = (function () {
             );
         },
 
-        /**
-         *
-         * @param {{id, title, artist}} song
-         */
-        managePageSongSelectionClick: function (song) {
-            var selectedId = song.id;
-            var selectedSong = song.artist + ': ' + song.title;
-
-            // perform actions with selected song
-            var addTicketBlock = $('.addTicket');
-            addTicketBlock.find('input.selectedSongId').val(selectedId);
-            addTicketBlock.find('.selectedSong').text(selectedSong);
-            //console.log(['selected song', selectedId, selectedSong]);
-        },
 
         searchPageSongSelectionClick: function (song) {
             var target = $('#searchTarget');

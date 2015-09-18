@@ -29,12 +29,21 @@ div#target {
   margin-top: 20px;
 }
 div.ticket p.band {
-  font-size: 100px;
+  font-size: 40px;
   font-weight: bolder;
 }
 div.ticket p.song {
-  font-size: 80px;
+  font-size: 30px;
   font-weight: bolder;
+}
+div.ticket .performers {
+  font-size: 90px;
+  text-align: center;
+  font-weight: bolder;
+}
+div.ticket .performers .instrumentCode {
+  vertical-align: text-top;
+  font-size: 30px;
 }
 div.upcoming {
   margin-bottom: 100px;

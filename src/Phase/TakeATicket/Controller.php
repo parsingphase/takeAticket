@@ -103,11 +103,12 @@ class Controller
         }
 
         if (!$title) {
-            $allPerformers = [];
-            foreach ($band as $instrument => $performers) {
-                $allPerformers = array_merge($allPerformers, $performers);
-            }
-            $title = join(', ', $allPerformers);
+//            $allPerformers = [];
+//            foreach ($band as $instrument => $performers) {
+//                $allPerformers = array_merge($allPerformers, $performers);
+//            }
+//            $title = join(', ', $allPerformers);
+            $title = null;
         }
 
         $ticketId = $this->dataSource->storeNewTicket($title, $songId);
