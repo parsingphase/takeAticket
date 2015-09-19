@@ -6,7 +6,7 @@ Feature Requests
 * Announcements on private list -- create a dedicated 'backstage' page (output only)?
 * Add code tests
 * ~~Display band members rather than stored ticket title if available~~
-* Warn on duplicate submission
+* Warn on duplicate submission - warns on song search for now
 * Fix done / upcoming to be appropriate to that point
 * Total done/remaining indicator
 * Duration data? - time left, estimated completion

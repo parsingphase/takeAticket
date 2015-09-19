@@ -205,7 +205,6 @@ class DataSource
     }
 
 
-
     public function fetchPerformersWithInstrumentByTicketId($ticketId)
     {
         $ticketPerformerSql = 'SELECT performerId, instrument FROM tickets_x_performers WHERE ticketId = :ticketId';
@@ -257,18 +256,24 @@ class DataSource
 
         // this may be unnecessary - chances of a code number hitting anything else is minimal
         if ($this->potentialCodeNumber($searchString)) {
-            $sql = "SELECT * FROM songs
-            WHERE (title = :searchString)
+            $sql = "SELECT s.*, max(CASE WHEN t.id IS NOT NULL THEN 1 ELSE 0 END) as queued
+            FROM songs s
+            LEFT OUTER JOIN tickets t ON s.id = t.songId AND t.deleted=0
+            WHERE (s.title = :searchString)
             OR (codeNumber = :searchString)
+            GROUP BY s.id
             ORDER BY artist, title
             LIMIT $howMany";
             //allow title just in case
         } else {
-            $sql = "SELECT * FROM songs
-            WHERE (title || ' ' || artist LIKE :internalPattern)
-            OR (artist || ' ' || title LIKE :internalPattern)
+            $sql = "SELECT s.*, max(CASE WHEN t.id IS NOT NULL THEN 1 ELSE 0 END) as queued
+            FROM songs s
+            LEFT OUTER JOIN tickets t ON s.id = t.songId AND t.deleted=0
+            WHERE (s.title || ' ' || artist LIKE :internalPattern)
+            OR (artist || ' ' || s.title LIKE :internalPattern)
             OR (codeNumber LIKE :leadingPattern)
-            OR (id = :searchString)
+            OR (s.id = :searchString)
+            GROUP BY s.id
             ORDER BY artist, title
             LIMIT $howMany";
         }
@@ -381,6 +386,8 @@ class DataSource
     }
 
     /**
+     * Normalise datatypes returned in song query
+     *
      * @param $song
      * @return mixed
      */
@@ -389,6 +396,9 @@ class DataSource
         $song['id'] = (int)$song['id'];
         $song['hasHarmony'] = (bool)$song['hasHarmony'];
         $song['hasKeys'] = (bool)$song['hasKeys'];
+        if (isset($song['queued'])) {
+            $song['queued'] = (bool)$song['queued'];
+        }
         return $song;
     }
 }

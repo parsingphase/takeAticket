@@ -231,6 +231,11 @@ div.manage .acSong.selected,
 div.songSearch .acSong.selected {
   background-color: lightblue;
 }
+div.manage .acSong .queued,
+div.songSearch .acSong .queued {
+  font-style: italic;
+  color: #bbb;
+}
 div.songSearch .searchContent {
   padding-top: 20px;
 }

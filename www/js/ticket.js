@@ -621,7 +621,7 @@ var ticketer = (function () {
 
             this.songAutocompleteItemTemplate = Handlebars.compile(
                 '<div class="acSong" data-song-id="{{ song.id }}">' +
-                '        <div class="acSong-inner">' +
+                '        <div class="acSong-inner {{#if song.queued}}queued{{/if}}">' +
                 '        {{song.artist}}: {{song.title}}' +
                 '        </div>' +
                 '</div>  '
