@@ -272,11 +272,27 @@ var ticketer = (function () {
                 var newButton;
                 var targetElement = controlPanelOuter.find('.performers');
                 targetElement.text(''); // remove existing list
+
+                var lastInitial = '';
                 //console.log(['rebuildPerformerList', that.performers]);
-                for (var pIdx = 0; pIdx < that.performers.length; pIdx++) {
+                var performerCount = that.performers.length;
+                var letterSpan;
+                for (var pIdx = 0; pIdx < performerCount; pIdx++) {
                     var performerName = that.performers[pIdx].performerName;
                     var performerInstrument = findPerformerInstrument(performerName);
                     var isPerforming = performerInstrument ? 1 : 0;
+                    var initialLetter = performerName.charAt(0).toUpperCase();
+                    if (lastInitial !== initialLetter) {
+                        if(letterSpan) {
+                            targetElement.append(letterSpan);
+                        }
+                        letterSpan = $('<span class="letterSpan" />');
+                        if ((performerCount > 15)) {
+                            letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
+                        }
+                    }
+                    lastInitial = initialLetter;
+
                     newButton = $('<span></span>');
                     newButton.addClass('btn addPerformerButton');
                     newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
@@ -285,8 +301,9 @@ var ticketer = (function () {
                     }
                     newButton.text(performerName);
                     newButton.data('selected', isPerforming); // this is where it gets fun - check if user is in band!
-                    targetElement.append(newButton);
+                    letterSpan.append(newButton);
                 }
+                targetElement.append(letterSpan);
 
                 // enable the new buttons
                 $('.addPerformerButton').click(function () {

@@ -16,7 +16,7 @@ Feature Requests
 * Edit existing
     * tickets - add performers)
     * performers - names
-* Letter dividers in name button list? | or M:
+* ~~Letter dividers in name button list? | or M:~~
 * Self-submission
 * Add note 'Firstname initial, please'
 * Make footers dynamic?

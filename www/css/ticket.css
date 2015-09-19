@@ -177,6 +177,20 @@ div.manage div.addTicket .addTicketBandColumn .bandControls .bandTabsOuter .perf
 div.manage div.addTicket .addTicketBandColumn .bandControls .bandTabsOuter .newPerformer {
   width: 18em;
 }
+div.manage div.addTicket .addTicketBandColumn .bandControls .performers .letterSpan {
+  display: inline-block;
+}
+div.manage div.addTicket .addTicketBandColumn .bandControls .performers .initialLetter {
+  margin: 8px 4px 0 0;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-color: #ccc;
+  display: inline-block;
+  padding: 4px 10px 4px 6px;
+  vertical-align: middle;
+  font-weight: bolder;
+  color: #555;
+}
 div.manage div.addTicket .addTicketBandColumn .bandControls .performers .btn {
   margin-top: 8px;
   margin-right: 8px;
