@@ -48,7 +48,7 @@ var ticketer = (function () {
 
             ticketer.reloadTickets();
             setInterval(function () {
-                //ticketer.reloadTickets();
+                ticketer.reloadTickets();
             }, 10000);
         },
 
