@@ -1,6 +1,10 @@
 .container {
   padding: 0;
 }
+.auto-font {
+  text-wrap: none;
+  white-space: nowrap;
+}
 div.page-header {
   padding: 0;
   font-size: 50px;
@@ -28,23 +32,6 @@ div.page-header:hover .headerControls a {
 div#target {
   margin-top: 20px;
 }
-div.ticket p.band {
-  font-size: 40px;
-  font-weight: bolder;
-}
-div.ticket p.song {
-  font-size: 30px;
-  font-weight: bolder;
-}
-div.ticket .performers {
-  font-size: 90px;
-  text-align: center;
-  font-weight: bolder;
-}
-div.ticket .performers .instrumentCode {
-  vertical-align: text-top;
-  font-size: 30px;
-}
 div.upcoming {
   margin-bottom: 100px;
 }
@@ -59,9 +46,42 @@ div.upcoming div.well.ticket.noSong {
   padding-bottom: 6px;
   min-height: 100px;
 }
-div.upcoming div.well.ticket .auto-font {
-  text-wrap: none;
-  white-space: nowrap;
+div.upcoming div.well.ticket p {
+  margin-bottom: 5px;
+}
+div.upcoming div.well.ticket p.band {
+  font-size: 50px;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket p.song {
+  font-size: 30px;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket .performers {
+  font-size: 100px;
+  text-align: center;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket .performers .instrumentTag {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+div.upcoming div.well.ticket .performers .instrumentTag .instrumentTextIcon {
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 20px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  font-size: 32px;
+  line-height: 38px;
+  vertical-align: 0.25em;
+}
+div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
+  margin-bottom: 14px;
 }
 div.manage div.ticket .ticketId {
   float: left;

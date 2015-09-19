@@ -13,6 +13,9 @@ var ticketer = (function () {
         searchCount: 10,
         instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
 
+        /**
+         * @var {{songInPreview,upcomingCount,iconMapHtml}}
+         */
         displayOptions: {},
 
         /**
@@ -45,7 +48,7 @@ var ticketer = (function () {
 
             ticketer.reloadTickets();
             setInterval(function () {
-                ticketer.reloadTickets();
+                //ticketer.reloadTickets();
             }, 10000);
         },
 
@@ -65,7 +68,9 @@ var ticketer = (function () {
                 }
             }
             ticket.band = sortedBand;
-            return this.upcomingTicketTemplate({ticket: ticket});
+            var ticketParams = {ticket: ticket, icons: this.displayOptions.iconMapHtml};
+            console.log(['upcomingTicketTemplate', ticketParams]);
+            return this.upcomingTicketTemplate(ticketParams);
         },
 
         /**
@@ -100,9 +105,32 @@ var ticketer = (function () {
 
                 target.find('.auto-font').each(
                     function () {
-                        var scale = 1.05 * Math.min(this.scrollWidth / this.clientWidth); // extra scale to fit neatly
+                        var fixedWidth = $(this).data('fixed-assetwidth');
+                        if (!fixedWidth) {
+                            fixedWidth = 0;
+                        }
+                        fixedWidth = Number(fixedWidth);
+
+                        var spaceUsedByText = (this.scrollWidth - fixedWidth);
+                        var spaceAvailableForText = (this.clientWidth - fixedWidth);
+                        var rawScale = Math.max(spaceUsedByText / spaceAvailableForText, 1);
+                        var scale = 1.05 * rawScale;
+
+                        if (fixedWidth) {
+                            console.log({
+                                'Full drawn width': this.scrollWidth,
+                                'Available width': this.clientWidth,
+                                'fixedWidth': fixedWidth,
+                                'Drawn width used by text': spaceUsedByText,
+                                'Available width usable': spaceAvailableForText,
+                                rawScale: rawScale,
+                                scale: scale,
+                                contents: $(this).text()
+                            });
+                        }
+
+                        // 1.05 extra scale to fit neatly, fixedWidth is non-scaling elements
                         var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
-                        //console.log(['width', outerWidth, outerScroll, innerWidth, innerScroll, font]);
                         $(this).css('font-size', Number(font / scale).toFixed() + 'px');
                     }
                 );
@@ -499,6 +527,8 @@ var ticketer = (function () {
         },
 
         initTemplates: function () {
+            var that = this;
+
             // commaList = each, with commas joining. Returns value at t as tuple {k,v}
             //TODO work out how to use options to more closely mimic 'each'
             Handlebars.registerHelper('commalist', function (context, options) {
@@ -513,8 +543,18 @@ var ticketer = (function () {
                 return retList.join(', ');
             });
 
+            Handlebars.registerHelper('instrumentIcon', function (instrumentCode) {
+                var icon = '<span class="instrumentTextIcon">' + instrumentCode + '</span>';
+                if (that.displayOptions.hasOwnProperty('iconMapHtml')) {
+                    if (that.displayOptions.iconMapHtml.hasOwnProperty(instrumentCode)) {
+                        icon = that.displayOptions.iconMapHtml[instrumentCode];
+                    }
+                }
+                return new Handlebars.SafeString(icon);
+            });
+
             this.manageTemplate = Handlebars.compile(
-                '<div class="ticket well {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
+                '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
                 '        <div class="pull-right">' +
                 '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
                 '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
@@ -551,11 +591,11 @@ var ticketer = (function () {
                 '" data-ticket-id="{{ ticket.id }}">' +
                 '  <div class="ticket-inner">' +
                 '    <p class="text-center band auto-font">{{ticket.title}}</p>' +
-                '    <p class="performers auto-font">' +
-                '{{#commalist ticket.band}}' +
-                '<span class="instrumentCode">{{this.k}} </span>' +
-                '<span class="instrumentPerformers">{{#commalist v}}{{v.performerName}}{{/commalist}}</span>' +
-                '{{/commalist}}' +
+                '    <p class="performers auto-font" data-fixed-assetwidth="200">' +
+                '{{#each ticket.band}}' +
+                '<span class="instrumentTag">{{instrumentIcon @key}}</span>' +
+                '<span class="instrumentPerformers">{{#commalist this}}{{v.performerName}}{{/commalist}}</span>' +
+                '{{/each}}' +
                 '    </p>' +
                 (this.displayOptions.songInPreview ? '{{#if ticket.song}}<p class="text-center song auto-font">{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : '') +
                 '        </div>' +
