@@ -1,14 +1,14 @@
 Feature Requests
 ================
 
-* Include instrument (rotate through icons)
-* Add CONTRIBUTING doc
+* ~~Include instrument (rotate through icons)~~
+* ~~Add CONTRIBUTING doc~~
 * Announcements on private list -- create a dedicated 'backstage' page (output only)?
 * Add code tests
-* Display band members rather than stored ticket title if available
+* ~~Display band members rather than stored ticket title if available~~
 * Warn on duplicate submission
 * Fix done / upcoming to be appropriate to that point
-* Done/remaining indicator
+* Total done/remaining indicator
 * Duration data? - time left, estimated completion
 * Colour codes/patches for names? Bold Zeros?
 * Record ticket color?
