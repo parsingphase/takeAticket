@@ -7,7 +7,7 @@ Feature Requests
 * Add code tests
 * ~~Display band members rather than stored ticket title if available~~
 * Warn on duplicate submission - warns on song search for now
-* Fix done / upcoming to be appropriate to that point
+* ~~Fix done / upcoming to be appropriate to that point~~
 * Total done/remaining indicator
 * Duration data? - time left, estimated completion
 * Colour codes/patches for names? Bold Zeros?
@@ -26,3 +26,4 @@ Feature Requests
 * Put "done" text in right place when clicking "Performing" button
 * Enable use of MySQL as a backend
 * Integrate simpleuser better (ensure all css etc is local)
+* Get jshint to complain when I leave console logging in. Anyone knows how to fix this in .jshintrc, please tell me!

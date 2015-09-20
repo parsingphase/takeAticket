@@ -69,7 +69,6 @@ var ticketer = (function () {
             }
             ticket.band = sortedBand;
             var ticketParams = {ticket: ticket, icons: this.displayOptions.iconMapHtml};
-            console.log(['upcomingTicketTemplate', ticketParams]);
             return this.upcomingTicketTemplate(ticketParams);
         },
 
@@ -89,7 +88,6 @@ var ticketer = (function () {
          */
         reloadTickets: function () {
             var that = this;
-            //console.log('reloadTickets');
 
             $.get('/api/next', function (tickets) {
 
@@ -116,18 +114,18 @@ var ticketer = (function () {
                         var rawScale = Math.max(spaceUsedByText / spaceAvailableForText, 1);
                         var scale = 1.05 * rawScale;
 
-                        if (fixedWidth) {
-                            console.log({
-                                'Full drawn width': this.scrollWidth,
-                                'Available width': this.clientWidth,
-                                'fixedWidth': fixedWidth,
-                                'Drawn width used by text': spaceUsedByText,
-                                'Available width usable': spaceAvailableForText,
-                                rawScale: rawScale,
-                                scale: scale,
-                                contents: $(this).text()
-                            });
-                        }
+                        //if (fixedWidth) {
+                        //    console.log({
+                        //        'Full drawn width': this.scrollWidth,
+                        //        'Available width': this.clientWidth,
+                        //        'fixedWidth': fixedWidth,
+                        //        'Drawn width used by text': spaceUsedByText,
+                        //        'Available width usable': spaceAvailableForText,
+                        //        rawScale: rawScale,
+                        //        scale: scale,
+                        //        contents: $(this).text()
+                        //    });
+                        //}
 
                         // 1.05 extra scale to fit neatly, fixedWidth is non-scaling elements
                         var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
@@ -161,7 +159,6 @@ var ticketer = (function () {
                     var songComplete = $(songSearchResultsTarget);
                     var input = $(this);
                     var searchString = input.val();
-                    //console.log('SS: ' + searchString);
                     if (searchString.length >= 3) {
                         //console.log('SS+: ' + searchString);
                         $.ajax({
@@ -283,10 +280,10 @@ var ticketer = (function () {
                     var isPerforming = performerInstrument ? 1 : 0;
                     var initialLetter = performerName.charAt(0).toUpperCase();
                     if (lastInitial !== initialLetter) {
-                        if(letterSpan) {
+                        if (letterSpan) {
                             targetElement.append(letterSpan);
                         }
-                        letterSpan = $('<span class="letterSpan" />');
+                        letterSpan = $('<span class="letterSpan"></span>');
                         if ((performerCount > 15)) {
                             letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
                         }
@@ -360,6 +357,7 @@ var ticketer = (function () {
                                 that.performers = data.performers;
                             }
 
+                            that.updatePerformanceStats();
                             that.resetAddTicketBlock();
 
                         },
@@ -450,8 +448,7 @@ var ticketer = (function () {
 
                 rebuildPerformerList();
 
-                //TODO Generate band name more intelligently, take both name & performers into account, probably don't sort
-                var performerString = newInstrumentPerformers.sort().join(', ');
+                var performerString = newInstrumentPerformers.join(', ');
                 if (!performerString) {
                     performerString = '<i>Needed</i>';
                 }
@@ -533,6 +530,8 @@ var ticketer = (function () {
 
             this.enableButtons($sortContainer);
 
+            this.updatePerformanceStats();
+
             this.resetAddTicketBlock();
 
         },
@@ -583,7 +582,9 @@ var ticketer = (function () {
                     // Display performers with metadata if valid, else just the band title.
                 '{{#if ticket.performers}}' +
                 '{{#each ticket.performers}}' +
-                '<span class="performer"> {{performerName}} ({{songsDone}}/{{songsPending}}) </span>' +
+                '<span class="performer performerDoneCount{{songsDone}}" data-performer-id="{{performerId}}"> {{performerName}} ' +
+                ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
+                '</span>' +
                 '{{/each}}' +
                 '{{else}}' +
                 '{{ ticket.title }}' +
@@ -742,6 +743,8 @@ var ticketer = (function () {
                     void(error);
                 }
             });
+
+            this.updatePerformanceStats();
         },
 
         performButtonCallback: function (button) {
@@ -815,8 +818,41 @@ var ticketer = (function () {
             target.html(this.songDetailsTemplate({song: song}));
         },
 
-        dumpSongInfo: function (song) {
-            console.log(['song', song]);
+        updatePerformanceStats: function () {
+            var performed = {};
+
+            // first check number of songs performed before this one
+            $('.sortContainer').find('.ticket').each(function () {
+                $(this).find('.performer').each(function () {
+                    var performerId = $(this).data('performer-id');
+                    if (!performed.hasOwnProperty(performerId)) {
+                        performed[performerId] = 0;
+                    }
+                    $(this).find('.songsDone').text(performed[performerId]);
+
+                    $(this).removeClass(
+                        function (i, oldClass) {
+                            void(i);
+                            var classes = oldClass.split(' ');
+                            var toRemove = [];
+                            for (var cIdx = 0; cIdx < classes.length; cIdx++) {
+                                if (classes[cIdx].match(/^performerDoneCount/)) {
+                                    toRemove.push(classes[cIdx]);
+                                }
+                            }
+                            return toRemove.join(' ');
+                        }
+                    ).addClass('performerDoneCount' + performed[performerId]);
+                    performed[performerId]++;
+                });
+            });
+
+            // then update all totals
+            $('.sortContainer').find('.performer').each(function () {
+                var performerId = $(this).data('performer-id');
+                var totalPerformed = performed[performerId];
+                $(this).find('.songsTotal').text(totalPerformed);
+            });
         }
     };
 }());

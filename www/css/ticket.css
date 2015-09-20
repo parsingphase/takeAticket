@@ -92,6 +92,13 @@ div.manage div.ticket .ticketId {
 div.manage div.ticket .pendingSong .fa {
   width: 16px;
 }
+div.manage div.ticket .pendingSong .performerDoneCount0 {
+  font-weight: bolder;
+  font-size: 1.3em;
+}
+div.manage div.ticket .pendingSong .performerDoneCount1 {
+  font-weight: bold;
+}
 div.manage div.ticket.well {
   padding-top: 10px;
   padding-bottom: 10px;

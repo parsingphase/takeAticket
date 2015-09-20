@@ -114,7 +114,8 @@ class DataSource
         $conn = $this->getDbConn();
         $sql = 'SELECT p.id AS performerId, p.name AS performerName,
                   sum(CASE WHEN t.id IS NOT NULL AND t.used=0 AND t.deleted=0 THEN 1 ELSE 0 END) AS songsPending,
-                  sum(CASE WHEN t.id IS NOT NULL AND t.used=1 AND t.deleted=0 THEN 1 ELSE 0 END) AS songsDone
+                  sum(CASE WHEN t.id IS NOT NULL AND t.used=1 AND t.deleted=0 THEN 1 ELSE 0 END) AS songsDone,
+                  sum(CASE WHEN t.id IS NOT NULL AND t.deleted=0 THEN 1 ELSE 0 END) AS songsTotal
                FROM performers p
                     LEFT OUTER JOIN tickets_x_performers txp ON p.id=txp.performerId
                     LEFT OUTER JOIN tickets t ON txp.ticketId = t.id
