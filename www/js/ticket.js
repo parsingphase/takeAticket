@@ -866,7 +866,7 @@ var ticketer = (function () {
                 var realTime;
                 var ticketId = $(this).data('ticket-id');
                 var ticketData = $(this).data('ticket');
-                console.log({ticketData: ticketData});
+                //console.log({ticketData: ticketData});
 
                 if (ticketData.startTime) {
                     realTime = new Date(ticketData.startTime * 1000);
@@ -878,13 +878,14 @@ var ticketer = (function () {
                     ticketTime = realTime;
                 } else if (ticketTime) {
                     // if last song had an implicit time, add 6 minutes to it and assume next song starts then
-                    // if this is in the path, assume it starts now!
-
+                    // if this is in the past, assume it starts now!
                     ticketTime = new Date(Math.max(ticketTime.getTime() + songOffsetMs,Date.now()));
                 } else {
                     ticketTime = new Date();
                 }
                 $(this).find('.ticketTime').text(pad(ticketTime.getHours()) + ':' + pad(ticketTime.getMinutes()));
+
+                //update performer stats (done/total)
                 $(this).find('.performer').each(function () {
                     var performerId = $(this).data('performer-id');
                     if (!performed.hasOwnProperty(performerId)) {
@@ -915,6 +916,9 @@ var ticketer = (function () {
                         } else {
                             $(this).removeClass('proximityIssue');
                         }
+                    } else {
+                        // make sure they've not got a proximity marker on a ticket that's been dragged to top
+                        $(this).removeClass('proximityIssue');
                     }
                     lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
                 });
