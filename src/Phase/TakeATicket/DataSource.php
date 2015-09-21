@@ -297,7 +297,7 @@ class DataSource
     public function markTicketUsedById($id)
     {
         $conn = $this->getDbConn();
-        $res = $conn->update(DataSource::TICKETS_TABLE, ['used' => 1], ['id' => $id]);
+        $res = $conn->update(DataSource::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
         return $res;
     }
 

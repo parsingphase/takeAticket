@@ -12,6 +12,8 @@ var ticketer = (function () {
         songDetailsTemplate: null,
         searchCount: 10,
         instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
+        defaultSongLengthSeconds: 300,
+        defaultSongIntervalSeconds: 60,
 
         /**
          * @var {{songInPreview,upcomingCount,iconMapHtml}}
@@ -351,6 +353,7 @@ var ticketer = (function () {
                             $('#target').append(that.drawManageableTicket(data.ticket));
                             var ticketId = data.ticket.id;
                             var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+                            ticketBlock.data('ticket', data.ticket);
                             that.enableButtons(ticketBlock);
 
                             if (data.performers) {
@@ -510,13 +513,23 @@ var ticketer = (function () {
             var that = this;
             this.initTemplates();
             //console.log(tickets);
+            var ticket, ticketBlock; // for loop iterations
 
             var out = '';
             for (var i = 0; i < tickets.length; i++) {
-                var ticket = tickets[i];
+                ticket = tickets[i];
                 out += that.drawManageableTicket(ticket);
+                ticketBlock = $('.ticket[data-ticket-id="' + ticket.id + '"]');
+                ticketBlock.data('ticket', ticket);
             }
             $('#target').html(out);
+
+            // find new tickets (now they're DOM'd) and add data to them
+            for (i = 0; i < tickets.length; i++) {
+                ticket = tickets[i];
+                ticketBlock = $('.ticket[data-ticket-id="' + ticket.id + '"]');
+                ticketBlock.data('ticket', ticket);
+            }
 
             var $sortContainer = $('.sortContainer');
             $sortContainer.sortable({
@@ -575,7 +588,12 @@ var ticketer = (function () {
                 '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
                 '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
                 '        </div>' +
-                '        <div class="ticketId">#{{ ticket.id }}:</div> ' +
+                '<div class="ticketOrder">' +
+                '<div class="ticketOrdinal"></div>' +
+                '<div class="ticketTime"></div>' +
+                '</div>' +
+                '<div class="ticketId">' +
+                '<span class="fa fa-ticket"></span> {{ ticket.id }}</div> ' +
                 '<div class="pendingSong">' +
                 '<span class="fa fa-group"></span> ' +
 
@@ -590,7 +608,7 @@ var ticketer = (function () {
                 '{{ ticket.title }}' +
                 '{{/if}}' +
 
-                '{{#if ticket.used}} (done){{/if}}' +
+                //'{{#if ticket.used}} (done){{/if}}' +
                 '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: ' +
                 '{{ticket.song.title}}' +
                 '{{/if}}' +
@@ -748,7 +766,7 @@ var ticketer = (function () {
         },
 
         performButtonCallback: function (button) {
-            //var that = this;
+            var that = this;
 
             button = $(button);
             var ticketId = button.data('ticketId');
@@ -764,7 +782,14 @@ var ticketer = (function () {
                         void(status);
                         var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                         ticketBlock.addClass('used');
-                        ticketBlock.append(' (done)');
+                        //ticketBlock.append(' (done)');
+
+                        //fixme receive updated ticket info from API
+                        var ticket = ticketBlock.data('ticket');
+                        ticket.startTime = Date.now()/1000;
+                        ticketBlock.data('ticket',ticket);
+
+                        that.updatePerformanceStats();
                     },
                     error: function (xhr, status, error) {
                         void(xhr);
@@ -776,6 +801,7 @@ var ticketer = (function () {
         },
 
         removeButtonCallback: function (button) {
+            var that = this;
             button = $(button);
             var ticketId = button.data('ticketId');
             //console.log('removeButtonCallback: ' + ticketId);
@@ -789,6 +815,7 @@ var ticketer = (function () {
                         void(status);
                         var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
                         ticketBlock.remove();
+                        that.updatePerformanceStats();
                     },
                     error: function (xhr, status, error) {
                         void(error);
@@ -819,13 +846,45 @@ var ticketer = (function () {
         },
 
         updatePerformanceStats: function () {
+            var that = this;
             var performed = {};
             var lastByPerformer = {};
             var ticketOrdinal = 1;
+            var ticketTime = null;
+
+            var pad = function (number) {
+                if (number < 10) {
+                    return '0' + number;
+                }
+                return number;
+            };
+            var songOffsetMs = (that.defaultSongIntervalSeconds + that.defaultSongLengthSeconds) * 1000;
 
             // first check number of songs performed before this one
-            $('.sortContainer').find('.ticket').each(function () {
+            var sortContainer = $('.sortContainer');
+            sortContainer.find('.ticket').each(function () {
+                var realTime;
                 var ticketId = $(this).data('ticket-id');
+                var ticketData = $(this).data('ticket');
+                console.log({ticketData: ticketData});
+
+                if (ticketData.startTime) {
+                    realTime = new Date(ticketData.startTime * 1000);
+                }
+
+                $(this).find('.ticketOrdinal').text('# ' + ticketOrdinal);
+                //fixme read ticketStart from data if present
+                if (realTime) {
+                    ticketTime = realTime;
+                } else if (ticketTime) {
+                    // if last song had an implicit time, add 6 minutes to it and assume next song starts then
+                    // if this is in the path, assume it starts now!
+
+                    ticketTime = new Date(Math.max(ticketTime.getTime() + songOffsetMs,Date.now()));
+                } else {
+                    ticketTime = new Date();
+                }
+                $(this).find('.ticketTime').text(pad(ticketTime.getHours()) + ':' + pad(ticketTime.getMinutes()));
                 $(this).find('.performer').each(function () {
                     var performerId = $(this).data('performer-id');
                     if (!performed.hasOwnProperty(performerId)) {
@@ -863,7 +922,7 @@ var ticketer = (function () {
             });
 
             // then update all totals
-            $('.sortContainer').find('.performer').each(function () {
+            sortContainer.find('.performer').each(function () {
                 var performerId = $(this).data('performer-id');
                 var totalPerformed = performed[performerId];
                 $(this).find('.songsTotal').text(totalPerformed);

@@ -9,7 +9,7 @@ Feature Requests
 * Warn on duplicate submission - warns on song search for now
 * ~~Fix done / upcoming to be appropriate to that point~~
 * Total done/remaining indicator
-* Duration data? - time left, estimated completion
+* ~~Duration data? - time left, estimated completion~~ - per-ticket
 * Colour codes/patches for names? Bold Zeros?
 * Record ticket color?
 * ~~Background image?~~ - drop 'background.jpg' in 'www/local'
@@ -22,8 +22,8 @@ Feature Requests
 * Make footers dynamic?
 * ~~Proximity warning - highlight any performer repeats within 3 songs~~
 * Flag any user with more than 5 performances
-* Show ticket number AND position (include deleted in position - probably not, they'll be sorted to null)
-* Put "done" text in right place when clicking "Performing" button
+* ~~Show ticket number AND position (include deleted in position - probably not, they'll be sorted to null)~~
+* ~~Put "done" text in right place when clicking "Performing" button~~ - removed for now
 * Enable use of MySQL as a backend
 * Integrate simpleuser better (ensure all css etc is local)
 * Get jshint to complain when I leave console logging in. Anyone knows how to fix this in .jshintrc, please tell me!

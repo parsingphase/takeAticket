@@ -4,7 +4,8 @@ CREATE TABLE tickets (
   title   TEXT,
   songId  INT DEFAULT NULL,
   used    INT DEFAULT 0,
-  deleted INT DEFAULT 0
+  deleted INT DEFAULT 0,
+  startTime INT DEFAULT NULL -- seconds
 );
 
 CREATE TABLE songs (

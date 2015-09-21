@@ -91,11 +91,20 @@ div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
 div.manage div.ticket .proximityIssue {
   color: red;
 }
+div.manage div.ticket .ticketOrder {
+  float: left;
+  height: 2em;
+  width: 4em;
+}
+div.manage div.ticket .ticketOrder .ticketOrdinal,
+div.manage div.ticket .ticketOrder .ticketTime {
+  font-size: 1.1em;
+}
 div.manage div.ticket .ticketId {
   float: left;
   height: 2em;
-  font-size: 2em;
-  width: 2em;
+  font-size: 1.8em;
+  width: 3em;
 }
 div.manage div.ticket .pendingSong .fa {
   width: 16px;

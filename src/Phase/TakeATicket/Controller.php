@@ -157,6 +157,7 @@ class Controller
 
         $id = $request->get('ticketId');
         $res = $this->dataSource->markTicketUsedById($id);
+        //FIXME fetch ticket with extra data
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
