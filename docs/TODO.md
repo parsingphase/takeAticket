@@ -12,7 +12,7 @@ Feature Requests
 * Duration data? - time left, estimated completion
 * Colour codes/patches for names? Bold Zeros?
 * Record ticket color?
-* Background image?
+* ~~Background image?~~ - drop 'background.jpg' in 'www/local'
 * Edit existing
     * tickets - add performers)
     * performers - names
