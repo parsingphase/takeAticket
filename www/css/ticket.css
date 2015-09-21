@@ -83,6 +83,9 @@ div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
   vertical-align: middle;
   margin-bottom: 14px;
 }
+div.manage div.ticket .proximityIssue {
+  color: red;
+}
 div.manage div.ticket .ticketId {
   float: left;
   height: 2em;

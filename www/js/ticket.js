@@ -820,9 +820,12 @@ var ticketer = (function () {
 
         updatePerformanceStats: function () {
             var performed = {};
+            var lastByPerformer = {};
+            var ticketOrdinal = 1;
 
             // first check number of songs performed before this one
             $('.sortContainer').find('.ticket').each(function () {
+                var ticketId = $(this).data('ticket-id');
                 $(this).find('.performer').each(function () {
                     var performerId = $(this).data('performer-id');
                     if (!performed.hasOwnProperty(performerId)) {
@@ -844,7 +847,19 @@ var ticketer = (function () {
                         }
                     ).addClass('performerDoneCount' + performed[performerId]);
                     performed[performerId]++;
+
+                    // now check proximity of last song by this performer
+                    if (lastByPerformer.hasOwnProperty(performerId)) {
+                        var distance = ticketOrdinal - lastByPerformer[performerId].idx;
+                        if (distance < 3) {
+                            $(this).addClass('proximityIssue');
+                        } else {
+                            $(this).removeClass('proximityIssue');
+                        }
+                    }
+                    lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
                 });
+                ticketOrdinal++;
             });
 
             // then update all totals
