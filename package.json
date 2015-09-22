@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "./node_modules/.bin/jshint www/js"
+    "test": "./node_modules/.bin/jshint www/js && ./node_modules/.bin/jscs www/js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/parsingphase/takeAticket",
   "devDependencies": {
+    "jscs": "^2.1.1",
     "jshint": "^2.8.0"
   }
 }
