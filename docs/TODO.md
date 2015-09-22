@@ -4,7 +4,6 @@ Feature Requests
 ### To Do
 
 * Update usage docs
-* Get jshint to complain when I leave console logging in. Anyone knows how to fix this in .jshintrc, please tell me!
 * Edit existing
     * tickets - add performers)
     * performers - names
@@ -24,6 +23,8 @@ Feature Requests
 * ~~Proximity warning - highlight any performer repeats within 3 songs~~
 * ~~Show ticket number AND position (include deleted in position - probably not, they'll be sorted to null)~~
 * ~~Put "done" text in right place when clicking "Performing" button~~ - removed for now
+* ~~Get jshint to complain when I leave console logging in. Anyone knows how to fix this in .jshintrc, please tell me!~~
+
 
 ### Deferred
 

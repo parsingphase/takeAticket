@@ -3,7 +3,7 @@
  */
 var ticketer = (function () {
     'use strict';
-    //noinspection JSUnusedGlobalSymbols
+
     return {
         upcomingTicketTemplate: null,
         manageTemplate: null,
@@ -116,19 +116,6 @@ var ticketer = (function () {
                         var rawScale = Math.max(spaceUsedByText / spaceAvailableForText, 1);
                         var scale = 1.05 * rawScale;
 
-                        //if (fixedWidth) {
-                        //    console.log({
-                        //        'Full drawn width': this.scrollWidth,
-                        //        'Available width': this.clientWidth,
-                        //        'fixedWidth': fixedWidth,
-                        //        'Drawn width used by text': spaceUsedByText,
-                        //        'Available width usable': spaceAvailableForText,
-                        //        rawScale: rawScale,
-                        //        scale: scale,
-                        //        contents: $(this).text()
-                        //    });
-                        //}
-
                         // 1.05 extra scale to fit neatly, fixedWidth is non-scaling elements
                         var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
                         $(this).css('font-size', Number(font / scale).toFixed() + 'px');
@@ -162,7 +149,6 @@ var ticketer = (function () {
                     var input = $(this);
                     var searchString = input.val();
                     if (searchString.length >= 3) {
-                        //console.log('SS+: ' + searchString);
                         $.ajax({
                             method: 'POST',
                             data: {
@@ -174,7 +160,6 @@ var ticketer = (function () {
                              * @param {{songs, searchString}} data
                              */
                             success: function (data) {
-                                //console.log(['songSearch returned', data]);
                                 var songs = data.songs;
                                 if (input.val() == data.searchString) {
                                     // ensure autocomplete response is still valid for current input value
@@ -197,7 +182,6 @@ var ticketer = (function () {
                                 }
                             },
                             error: function (xhr, status, error) {
-                                //console.log('songSearch post ERROR: ' + status);
                                 void(error);
                             }
                         });
@@ -237,7 +221,6 @@ var ticketer = (function () {
                 selectedInstrument = instrument; // reset before we redraw tabs
                 var newActiveTab = setActiveTab(instrument);
 
-                //console.log(['nextInstrumentTab', instrument]);
                 // make sure we switch to a *visible* tab
                 if (newActiveTab.hasClass('instrumentUnused')) {
                     nextInstrumentTab();
@@ -273,7 +256,6 @@ var ticketer = (function () {
                 targetElement.text(''); // remove existing list
 
                 var lastInitial = '';
-                //console.log(['rebuildPerformerList', that.performers]);
                 var performerCount = that.performers.length;
                 var letterSpan;
                 for (var pIdx = 0; pIdx < performerCount; pIdx++) {
@@ -315,7 +297,6 @@ var ticketer = (function () {
                     }
                     $(this).data('selected', selected); // toggle
 
-                    //console.log('Clicked performer name: "' + name + '"');
                     alterInstrumentPerformerList(selectedInstrument, name, selected);
                 });
 
@@ -333,14 +314,11 @@ var ticketer = (function () {
                 var newTitle = titleInput.val();
                 var songInput = $('.selectedSongId');
                 var songId = songInput.val();
-                //console.log('addTicket: ' + newTitle);
                 var data = {
                     title: newTitle,
                     songId: songId,
                     band: currentBand
                 };
-
-                //console.log(['newTicket', data]);
 
                 $.ajax({
                         method: 'POST',
@@ -366,7 +344,7 @@ var ticketer = (function () {
                         },
                         error: function (xhr, status, error) {
                             void(error);
-                            //console.log('addTicketTitle post ERROR: ' + status);
+                            //FIXME handle error
                         }
                     }
                 );
@@ -424,7 +402,6 @@ var ticketer = (function () {
             });
 
             var alterInstrumentPerformerList = function (instrument, changedPerformer, isAdd) {
-                //console.log(['alterPerformerList', instrument, changedPerformer, isAdd]);
                 var selectedTab = controlPanelOuter.find('.instrument[data-instrument-shortcode=' + selectedInstrument + ']');
                 var currentPerformerNameSpan = selectedTab.find('.instrumentPerformer');
                 var currentInstrumentPerformers = currentBand[selectedInstrument];
@@ -447,7 +424,6 @@ var ticketer = (function () {
                 }
 
                 currentBand[selectedInstrument] = newInstrumentPerformers; // now update band with new performers of this instrument
-                //console.log(['newInstrumentPerformers', newInstrumentPerformers]);
 
                 rebuildPerformerList();
 
@@ -469,7 +445,6 @@ var ticketer = (function () {
                 if (e.keyCode == 13) {
                     var newPerformerInput = $('.newPerformer');
                     var newName = newPerformerInput.val();
-                    //console.log('Manually entered new name: ' + newName + ' for ' + selectedInstrument);
                     if (newName.trim().length) {
                         alterInstrumentPerformerList(selectedInstrument, newName, true);
                     }
@@ -489,7 +464,6 @@ var ticketer = (function () {
                 var addTicketBlock = $('.addTicket');
                 addTicketBlock.find('input.selectedSongId').val(selectedId);
                 addTicketBlock.find('.selectedSong').text(selectedSong);
-                //console.log(['selected song', song]);
                 var keysTab = controlPanelOuter.find('.instrumentKeys');
                 if (song.hasKeys) {
                     keysTab.removeClass('instrumentUnused');
@@ -512,7 +486,6 @@ var ticketer = (function () {
         manage: function (tickets) {
             var that = this;
             this.initTemplates();
-            //console.log(tickets);
             var ticket, ticketBlock; // for loop iterations
 
             var out = '';
@@ -735,14 +708,11 @@ var ticketer = (function () {
         },
 
         ticketOrderChanged: function () {
-            //console.log('Ticket order changed');
             var idOrder = [];
             $('#target').find('.ticket').each(
                 function () {
                     var ticketBlock = $(this);
-                    //console.log(ticketBlock.data());
                     var ticketId = ticketBlock.data('ticketId');
-                    //console.log('Id: ' + ticketId);
                     idOrder.push(ticketId);
                 }
             );
@@ -754,10 +724,9 @@ var ticketer = (function () {
                 },
                 url: '/api/newOrder',
                 success: function (data, status) {
-                    //console.log('ticketOrderChanged post OK: ' + status);
+                    //FIXME check return status
                 },
                 error: function (xhr, status, error) {
-                    //console.log('ticketOrderChanged post ERROR: ' + status);
                     void(error);
                 }
             });
@@ -770,7 +739,6 @@ var ticketer = (function () {
 
             button = $(button);
             var ticketId = button.data('ticketId');
-            //console.log('performButtonCallback: ' + ticketId);
             $.ajax({
                     method: 'POST',
                     data: {
@@ -794,7 +762,6 @@ var ticketer = (function () {
                     error: function (xhr, status, error) {
                         void(xhr);
                         void(error);
-                        //console.log('performButtonCallback post ERROR: ' + status);
                     }
                 }
             );
@@ -804,7 +771,6 @@ var ticketer = (function () {
             var that = this;
             button = $(button);
             var ticketId = button.data('ticketId');
-            //console.log('removeButtonCallback: ' + ticketId);
             $.ajax({
                     method: 'POST',
                     data: {
@@ -819,7 +785,6 @@ var ticketer = (function () {
                     },
                     error: function (xhr, status, error) {
                         void(error);
-                        //console.log('removeButtonCallback post ERROR: ' + status);
                     }
                 }
             );
@@ -866,7 +831,6 @@ var ticketer = (function () {
                 var realTime;
                 var ticketId = $(this).data('ticket-id');
                 var ticketData = $(this).data('ticket');
-                //console.log({ticketData: ticketData});
 
                 if (ticketData.startTime) {
                     realTime = new Date(ticketData.startTime * 1000);
