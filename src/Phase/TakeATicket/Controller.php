@@ -8,6 +8,8 @@
 
 namespace Phase\TakeATicket;
 
+use Phase\TakeATicket\DataSource\AbstractSql;
+use Phase\TakeATicket\DataSource\Factory as DataSourceFactory;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,8 @@ class Controller
 {
 
     const MANAGER_REQUIRED_ROLE = 'ROLE_ADMIN';
+    const BAND_IDENTIFIER_BAND_NAME = 1;
+    const BAND_IDENTIFIER_PERFORMERS = 2;
 
     /**
      * @var Application
@@ -25,19 +29,19 @@ class Controller
     protected $app;
 
     /**
-     * @var DataSource
+     * @var AbstractSql;
      */
     protected $dataSource;
 
     /**
      * @var int Whether to identify band by its name or a list of performers
      */
-    protected $bandIdentifier = DataSource::BAND_IDENTIFIER_PERFORMERS;
+    protected $bandIdentifier = self::BAND_IDENTIFIER_PERFORMERS;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->dataSource = new DataSource($this->app['db']);
+        $this->dataSource = DataSourceFactory::datasourceFromDbConnection($this->app['db']);
         $upcomingCount = $this->getUpcomingCount();
         if ($upcomingCount) {
             $this->dataSource->setUpcomingCount($upcomingCount);
@@ -79,7 +83,7 @@ class Controller
 
         return $this->app['twig']->render(
             'manage.html.twig',
-            ['config' => $this->app['config'], 'tickets' => $tickets, 'performers' => $performers]
+            ['tickets' => $tickets, 'performers' => $performers]
         );
     }
 
@@ -113,7 +117,7 @@ class Controller
 
         $ticketId = $this->dataSource->storeNewTicket($title, $songId);
 
-        if ($this->bandIdentifier === DataSource::BAND_IDENTIFIER_PERFORMERS) {
+        if ($this->bandIdentifier === self::BAND_IDENTIFIER_PERFORMERS) {
             $this->dataSource->storeBandToTicket($ticketId, $band);
         }
 
@@ -228,7 +232,7 @@ class Controller
      */
     protected function getDisplayOptions()
     {
-        $displayOptions = isset($this->app['config']['displayOptions']) ? $this->app['config']['displayOptions'] : [];
+        $displayOptions = isset($this->app['displayOptions']) ? $this->app['displayOptions'] : [];
         if ($this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE)) {
             $displayOptions['songInPreview'] = true; // force for logged-in users
         }

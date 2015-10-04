@@ -26,13 +26,17 @@ class SongLoader
 
     public function run($sourceFile, Connection $dbConn)
     {
+        $driverType = $dbConn->getDriver()->getName();
+        $sqlite = preg_match('/sqlite/i', $driverType);
+
         $objPHPExcel = \PHPExcel_IOFactory::load($sourceFile);
 
-        $dbConn->exec('delete from songs'); // empty table
+        $dbConn->exec($sqlite ? 'DELETE FROM songs' : 'TRUNCATE TABLE songs');
+        // empty table - reset autoincrement if it has one
 
         $iterator = $objPHPExcel->getSheet()->getRowIterator($this->startRow);
 
-        $i = 0;
+        $i = 1;
         $codeStored = [];
 
         foreach ($iterator as $row) {
@@ -55,7 +59,7 @@ class SongLoader
             }
 
             if (strlen(join($storable, ''))) {
-                if (!isset($storable['id'])) {
+                if ($sqlite && (!isset($storable['id']))) {
                     $storable['id'] = $i;
                 }
 
@@ -67,23 +71,25 @@ class SongLoader
                     print("\nDuplicate: " . $storable['artist'] . ': ' . $storable['title'] . "\n");
                 } else {
                     $dbConn->insert('songs', $storable);
+                    if (!($i % 100)) {
+                        echo $i;
+                    } else {
+                        if (!($i % 10)) {
+                            echo '.';
+                        }
+                    }
+                    if (!($i % 1000)) {
+                        echo "\n";
+                    }
                     $i++;
                     $codeStored[$storable['codeNumber']] = true;
                 }
 
-                if (!($i % 100)) {
-                    echo $i;
-                } else {
-                    if (!($i % 10)) {
-                        echo '.';
-                    }
-                }
-                if (!($i % 1000)) {
-                    echo "\n";
-                }
+
             }
         }
-        echo "\nImported $i songs\n";
+        $total = $i - 1;
+        echo "\nImported $total songs\n";
     }
 
     public function usage($scriptname = null)

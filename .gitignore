@@ -2,9 +2,10 @@
 .idea
 composer.phar
 components
-app.db
+db/*.db
 log
 tmp
 config.php
 node_modules
 www/local
+testConfig.php

@@ -22,26 +22,28 @@ date_default_timezone_set('Europe/London');
 
 $app = new \Silex\Application();
 
-$app['config'] = require(dirname(__DIR__) . '/config/config.php');
+$config = require(dirname(__DIR__) . '/config/config.php');
 
-//$app['twig.cache.dir'] = dirname(__DIR__).'/cache';
-$app['monolog.logfile'] = dirname(__DIR__) . '/log/app.log';
+foreach ($config as $k => $v) {
+    $app[$k] = $v;
+}
 
-$app['db.options'] = [
+//defaults
+
+$defaults = [];
+
+$defaults['monolog.logfile'] = dirname(__DIR__) . '/log/app.log';
+
+$defaults['db.options'] = [
     'driver' => 'pdo_sqlite',
     'path' => dirname(__DIR__) . '/db/app.db',
 ];
 
-// simpleuser - requires mysql? - nope
-// Database config. See http://silex.sensiolabs.org/doc/providers/doctrine.html
-//$app['db.options'] = array(
-//    'driver'   => 'pdo_mysql',
-//    'host' => 'localhost',
-//    'dbname' => 'mydbname',
-//    'user' => 'mydbuser',
-//    'password' => 'mydbpassword',
-//);
-
+foreach ($defaults as $k => $v) {
+    if (!isset($app[$k])) {
+        $app[$k] = $v;
+    }
+}
 
 $app->register(new MonologServiceProvider());
 $app->register(new DoctrineServiceProvider());

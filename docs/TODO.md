@@ -8,6 +8,7 @@ Feature Requests
     * tickets - add performers)
     * performers - names
 * Enable use of MySQL as a backend
+    * Update startup docs to include MySQL setup / DB imports
 * Integrate simpleuser better (ensure all css etc is local)
 * Display performers in instrument order on manage page
     

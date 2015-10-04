@@ -6,18 +6,17 @@
  * Time: 20:45
  */
 
-namespace Phase\TakeATicket;
+namespace Phase\TakeATicket\DataSource;
 
 use Doctrine\DBAL\Connection;
+use Phase\TakeATicket\SongLoader;
 
-class DataSource
+abstract class AbstractSql
 {
 
     const TICKETS_TABLE = 'tickets';
     const PERFORMERS_TABLE = 'performers';
     const TICKETS_X_PERFORMERS_TABLE = 'tickets_x_performers';
-    const BAND_IDENTIFIER_BAND_NAME = 1;
-    const BAND_IDENTIFIER_PERFORMERS = 2;
 
     /**
      * @var Connection
@@ -267,11 +266,14 @@ class DataSource
             LIMIT $howMany";
             //allow title just in case
         } else {
+            $matchingTokens = ['s.title', '" "', 's.artist'];
+            $concatSearchFields = $this->concatenateEscapedFields($matchingTokens);
+            $concatSearchFieldsReverse = $this->concatenateEscapedFields(array_reverse($matchingTokens));
             $sql = "SELECT s.*, max(CASE WHEN t.id IS NOT NULL THEN 1 ELSE 0 END) as queued
             FROM songs s
             LEFT OUTER JOIN tickets t ON s.id = t.songId AND t.deleted=0
-            WHERE (s.title || ' ' || artist LIKE :internalPattern)
-            OR (artist || ' ' || s.title LIKE :internalPattern)
+            WHERE ( $concatSearchFields LIKE :internalPattern)
+            OR ($concatSearchFieldsReverse LIKE :internalPattern)
             OR (codeNumber LIKE :leadingPattern)
             OR (s.id = :searchString)
             GROUP BY s.id
@@ -281,7 +283,7 @@ class DataSource
 
         $songs = $conn->fetchAll($sql, $params);
 
-        // normalise datatypes
+        // normalise data types
         foreach ($songs as &$song) {
             $song = $this->normaliseSongRecord($song);
         }
@@ -297,7 +299,7 @@ class DataSource
     public function markTicketUsedById($id)
     {
         $conn = $this->getDbConn();
-        $res = $conn->update(DataSource::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
+        $res = $conn->update(self::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
         return $res;
     }
 
@@ -308,7 +310,7 @@ class DataSource
     public function deleteTicketById($id)
     {
         $conn = $this->getDbConn();
-        $res = $conn->update(DataSource::TICKETS_TABLE, ['deleted' => 1], ['id' => $id]);
+        $res = $conn->update(self::TICKETS_TABLE, ['deleted' => 1], ['id' => $id]);
         return $res;
     }
 
@@ -319,7 +321,7 @@ class DataSource
      */
     public function updateTicketOffsetById($id, $offset)
     {
-        return $this->getDbConn()->update(DataSource::TICKETS_TABLE, ['offset' => $offset], ['id' => $id]);
+        return $this->getDbConn()->update(self::TICKETS_TABLE, ['offset' => $offset], ['id' => $id]);
     }
 
     /**
@@ -382,7 +384,7 @@ class DataSource
             'offset' => $maxOffset + 1,
             'songId' => $songId
         ];
-        $res = $conn->insert(DataSource::TICKETS_TABLE, $ticket);
+        $res = $conn->insert(self::TICKETS_TABLE, $ticket);
         return $res ? $ticket['id'] : false;
     }
 
@@ -402,4 +404,12 @@ class DataSource
         }
         return $song;
     }
+
+    /**
+     * Return SQL in appropriate dialect to concatenate the listed values
+     *
+     * @param array $fields
+     * @return string
+     */
+    abstract protected function concatenateEscapedFields($fields);
 }

@@ -2,7 +2,7 @@
 <project name="takeAticket" default="test-mindeps">
     <target name="test-mindeps" depends="phplint,phpcs"
             description="Perform all tests that only require basic dependencies"/>
-    <target name="test-all" depends="phplint,phpcs,jstests"
+    <target name="test-all" depends="phplint,phpcs,jstests,phpunit"
             description="Perform all tests, including those which may require extra dependencies"/>
 
     <target name="phplint"
@@ -33,6 +33,17 @@
                 <exclude name="vendor/"/>
             </fileset>
         </phpcodesniffer>
+    </target>
+
+    <target name="phpunit">
+        <phpunit codecoverage="false" haltonfailure="true" haltonerror="true">
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset dir="tests">
+                    <include name="**/*Test*.php"/>
+                </fileset>
+            </batchtest>
+        </phpunit>
     </target>
 
 

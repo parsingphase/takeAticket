@@ -1,3 +1,4 @@
+-- One statement per line in order for tests to use this file
 INSERT INTO songs (id, artist, title, source, hasHarmony, hasKeys, codeNumber) VALUES (29, 'The Acro-brats', 'Day Late, Dollar Short', 'Rock Band', 1, 0, 'E2F9FA');
 INSERT INTO songs (id, artist, title, source, hasHarmony, hasKeys, codeNumber) VALUES (39, 'Aerosmith', 'Train Kept A Rollin'' (Cover version)', 'Rock Band', 1, 0, '5CC438');
 INSERT INTO songs (id, artist, title, source, hasHarmony, hasKeys, codeNumber) VALUES (83, 'Anarchy Club', 'Blood Doll', 'Rock Band', 1, 0, '68442A');
