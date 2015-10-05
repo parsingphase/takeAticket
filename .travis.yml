@@ -7,6 +7,8 @@ php:
 os:
   - linux
 # osx/php testing not supported by travis
+before_script:
+  - mysql -e 'create database travis_app_test;'
 install:
  - composer install
  - npm install

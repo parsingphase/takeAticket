@@ -18,7 +18,15 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $configFile = dirname(dirname(dirname(__DIR__))) . '/config/testConfig.php';
+        $configDir = dirname(dirname(dirname(__DIR__))) . '/config/';
+
+        $configFile = $configDir . 'testConfig.dist.php'; // default
+        if (file_exists($configDir . 'testConfig.php')) {
+            $configFile = $configDir . 'testConfig.php';
+        } elseif (getenv('TRAVIS') === 'true') {
+            $configFile = $configDir . 'testConfig.travis.php';
+        }
+
         $this->assertTrue(file_exists($configFile), 'Test config file muse be present');
         /** @noinspection PhpIncludeInspection */
         $config = require($configFile);

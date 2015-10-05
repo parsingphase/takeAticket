@@ -35,7 +35,8 @@
         </phpcodesniffer>
     </target>
 
-    <target name="phpunit">
+    <target name="phpunit"
+            description="Run PHPUnit tests">
         <phpunit codecoverage="false" haltonfailure="true" haltonerror="true">
             <formatter type="plain" usefile="false"/>
             <batchtest>
