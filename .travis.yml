@@ -18,3 +18,8 @@ script: vendor/bin/phing test-all
 matrix:
   allow_failures:
     - php: nightly
+
+branches:
+  only:
+    - master
+    - dev
