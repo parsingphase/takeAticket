@@ -65,8 +65,8 @@ class ControllerProvider implements ControllerProviderInterface
         );
 
         $controllers->match(
-            '/api/newTicket',
-            'ticket.controller:newTicketPostAction'
+            '/api/saveTicket',
+            'ticket.controller:saveTicketPostAction'
         );
         $controllers->match(
             '/api/newOrder',

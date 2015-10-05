@@ -87,11 +87,12 @@ class Controller
         );
     }
 
-    public function newTicketPostAction(Request $request)
+    public function saveTicketPostAction(Request $request)
     {
         $title = $request->get('title');
         $songKey = $request->get('songId');
         $band = $request->get('band');
+        $existingTicketId = $request->get('existingTicketId');
 
         $song = null;
         $songId = null;
@@ -107,24 +108,21 @@ class Controller
         }
 
         if (!$title) {
-//            $allPerformers = [];
-//            foreach ($band as $instrument => $performers) {
-//                $allPerformers = array_merge($allPerformers, $performers);
-//            }
-//            $title = join(', ', $allPerformers);
             $title = null;
         }
 
-        $ticketId = $this->dataSource->storeNewTicket($title, $songId);
+        if ($existingTicketId) {
+            $ticketId = $existingTicketId;
+            $this->dataSource->updateTicketById($existingTicketId, ['title' => $title, 'songId' => $songId]);
+        } else {
+            $ticketId = $this->dataSource->storeNewTicket($title, $songId);
+        }
 
         if ($this->bandIdentifier === self::BAND_IDENTIFIER_PERFORMERS) {
             $this->dataSource->storeBandToTicket($ticketId, $band);
         }
 
-        $ticket = [];
-        $ticket['id'] = $ticketId; //FIXME re-fetch ticket by ID
-        $ticket['songId'] = $songId; //FIXME re-fetch ticket by ID
-        $ticket['title'] = $title; //FIXME re-fetch ticket by ID
+        $ticket = $this->dataSource->fetchTicketById($ticketId);
 
         $ticket = $this->dataSource->expandTicketData($ticket);
 

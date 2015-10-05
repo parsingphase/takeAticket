@@ -145,6 +145,9 @@ div.manage div.editTicket h3 {
   margin-top: 0;
   margin-left: 12px;
 }
+div.manage div.editTicket .editTicketButtons button {
+  margin-left: 4px;
+}
 div.manage div.editTicket .editTicketSong,
 div.manage div.editTicket .editTicketBandColumn {
   float: left;

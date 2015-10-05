@@ -197,9 +197,9 @@ var ticketer = (function() {
 
     /**
      * Completely (re)generate the add ticket control panel and enable its controls
-     * @param {?number} ticket Optional
+     * @param {?number} currentTicket Optional
      */
-    resetEditTicketBlock: function(ticket) {
+    resetEditTicketBlock: function(currentTicket) {
       var that = this;
 
       // Current panel state in function scope
@@ -208,17 +208,28 @@ var ticketer = (function() {
 
       var controlPanelOuter = $('.editTicketOuter');
 
-      // Reset band to empty
+      // Reset band to empty (or to ticket band state)
       for (var instrumentIdx = 0; instrumentIdx < that.instrumentOrder.length; instrumentIdx++) {
         var instrument = that.instrumentOrder[instrumentIdx];
         currentBand[instrument] = [];
+
+        if (currentTicket && currentTicket.band) {
+          // Ticket.band is a complex datatype. Current band is just one array of names per instrument. Unpack to show.
+          if (currentTicket.band.hasOwnProperty(instrument)) {
+            var instrumentPerformerObjects = currentTicket.band[instrument];
+            for (var pIdx = 0; pIdx < instrumentPerformerObjects.length; pIdx++) {
+              currentBand[instrument].push(instrumentPerformerObjects[pIdx].performerName);
+            }
+          }
+        }
         // Store all instruments as arrays - most can only be single, but vocals is 1..n potentially
       }
 
-      drawEditTicketForm(ticket);
+      drawEditTicketForm(currentTicket);
 
       // Enable 'Add' button
       $('.editTicketButton').click(editTicketCallback);
+      $('.cancelTicketButton').click(cancelTicketCallback);
 
       // Enable the instrument tabs
       var allInstrumentTabs = controlPanelOuter.find('.instrument');
@@ -254,9 +265,12 @@ var ticketer = (function() {
       var songSearchInput = '.addSongTitle';
       var songSearchResultsTarget = '.songComplete';
 
-      this.enableSongSearchBox(songSearchInput, songSearchResultsTarget, managePageSongSelectionClick);
+      this.enableSongSearchBox(songSearchInput, songSearchResultsTarget, applyNewSong);
 
       // ************* Inner functions **************
+      /**
+       * Switch to the next visible instrument tab
+       */
       function nextInstrumentTab() {
         // Find what offset we're at in instrumentOrder
         var currentOffset = 0;
@@ -288,7 +302,11 @@ var ticketer = (function() {
           templateParams.ticket = ticket;
         }
         controlPanelOuter.html(that.editTicketTemplate(templateParams));
+        updateInstrumentTabs();
         rebuildPerformerList(controlPanelOuter.find('.performers'));
+        if (ticket && ticket.song) {
+          applyNewSong(ticket.song);
+        }
       }
 
       function findPerformerInstrument(name) {
@@ -361,28 +379,44 @@ var ticketer = (function() {
         });
       }
 
+      /**
+       * Handle click on edit ticket button
+       */
       function editTicketCallback() {
         var titleInput = $('.editTicketTitle');
-        var newTitle = titleInput.val();
+        var ticketTitle = titleInput.val();
         var songInput = $('.selectedSongId');
         var songId = songInput.val();
         var data = {
-          title: newTitle,
+          title: ticketTitle,
           songId: songId,
           band: currentBand
         };
 
+        if (currentTicket) {
+          data.existingTicketId = currentTicket.id;
+        }
+
         $.ajax({
             method: 'POST',
             data: data,
-            url: '/api/newTicket',
+            url: '/api/saveTicket',
             success: function(data, status) {
               void(status);
-              titleInput.val('');
-              songInput.val('');
-              $('#target').append(that.drawManageableTicket(data.ticket));
               var ticketId = data.ticket.id;
-              var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
+
+              var ticketBlockSelector = '.ticket[data-ticket-id="' + ticketId + '"]';
+              var existingTicketBlock = $(ticketBlockSelector);
+              if (existingTicketBlock.length) {
+                // Replace existing
+                existingTicketBlock.after(that.drawManageableTicket(data.ticket));
+                existingTicketBlock.remove();
+              } else {
+                // Append new
+                $('#target').append(that.drawManageableTicket(data.ticket));
+              }
+
+              var ticketBlock = $(ticketBlockSelector);
               ticketBlock.data('ticket', data.ticket);
               that.enableButtons(ticketBlock);
 
@@ -400,6 +434,10 @@ var ticketer = (function() {
             }
           }
         );
+      }
+
+      function cancelTicketCallback() {
+        that.resetEditTicketBlock();
       }
 
       function getTabByInstrument(instrument) {
@@ -429,15 +467,34 @@ var ticketer = (function() {
         $('.selectedBand').html(summaryHtml);
       }
 
+      function updateInstrumentTabs() {
+        var performersSpan;
+        var performerString;
+
+        for (var iIdx = 0; iIdx < that.instrumentOrder.length; iIdx++) {
+          var instrument = that.instrumentOrder[iIdx];
+
+          performersSpan = controlPanelOuter.
+            find('.instrument[data-instrument-shortcode=' + instrument + ']').
+            find('.instrumentPerformer');
+
+          performerString = currentBand[instrument].join(', ');
+          if (!performerString) {
+            performerString = '<i>Needed</i>';
+          }
+          performersSpan.html(performerString);
+        }
+
+        updateBandSummary();
+      }
+
       /**
-       * Alter the performer list for the specified instrument tab (on button / text input)
+       * Handle performer add / remove by performer button / text input
        * @param instrument
        * @param changedPerformer
        * @param isAdd
        */
       function alterInstrumentPerformerList(instrument, changedPerformer, isAdd) {
-        var selectedTab = controlPanelOuter.find('.instrument[data-instrument-shortcode=' + selectedInstrument + ']');
-        var currentPerformerNameSpan = selectedTab.find('.instrumentPerformer');
         var currentInstrumentPerformers = currentBand[selectedInstrument];
 
         var newInstrumentPerformers = [];
@@ -461,15 +518,8 @@ var ticketer = (function() {
         currentBand[selectedInstrument] = newInstrumentPerformers;
         // Now update band with new performers of this instrument
 
+        updateInstrumentTabs();
         rebuildPerformerList();
-
-        var performerString = newInstrumentPerformers.join(', ');
-        if (!performerString) {
-          performerString = '<i>Needed</i>';
-        }
-        currentPerformerNameSpan.html(performerString);
-
-        updateBandSummary();
 
         if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
           nextInstrumentTab();
@@ -481,7 +531,7 @@ var ticketer = (function() {
        *
        * @param {{id, title, artist, hasKeys, hasHarmony}} song
        */
-      function managePageSongSelectionClick(song) {
+      function applyNewSong(song) {
         var selectedId = song.id;
         var selectedSong = song.artist + ': ' + song.title;
 
@@ -643,8 +693,9 @@ var ticketer = (function() {
 
       this.editTicketTemplate = Handlebars.compile(
         '<div class="editTicket well">' +
-        '<div class="pull-right">' +
+        '<div class="pull-right editTicketButtons">' +
         '<button class="editTicketButton btn btn-success">Save</button>' +
+        '<button class="cancelTicketButton btn">Cancel</button>' +
         '</div>' +
 
         '{{# if ticket}}<h3>Edit ticket <span class="fa fa-ticket"></span> {{ticket.id}}</h3>' +
@@ -820,7 +871,6 @@ var ticketer = (function() {
 
       var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
       var ticket = ticketBlock.data('ticket'); // TODO possibly load from ajax instead?
-      console.log(['Edit ticket ' + ticketId, ticket]);
       that.resetEditTicketBlock(ticket);
     },
 

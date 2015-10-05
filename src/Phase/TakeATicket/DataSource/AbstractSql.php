@@ -150,6 +150,13 @@ abstract class AbstractSql
      */
     public function storeBandToTicket($ticketId, $band)
     {
+        if (!is_array($band)) {
+            throw new \InvalidArgumentException('Band must be array');
+        }
+
+        // remove existing performers
+        $this->getDbConn()->delete(self::TICKETS_X_PERFORMERS_TABLE, ['ticketId' => $ticketId]);
+
         foreach ($band as $instrument => $performers) {
             foreach ($performers as $performerName) {
                 $performerName = trim($performerName);
@@ -321,7 +328,8 @@ abstract class AbstractSql
      */
     public function updateTicketOffsetById($id, $offset)
     {
-        return $this->getDbConn()->update(self::TICKETS_TABLE, ['offset' => $offset], ['id' => $id]);
+        $fields = ['offset' => $offset];
+        return $this->updateTicketById($id, $fields);
     }
 
     /**
@@ -369,7 +377,7 @@ abstract class AbstractSql
     /**
      * @param $title
      * @param $songId
-     * @return int|false
+     * @return int|false Row ID
      */
     public function storeNewTicket($title, $songId)
     {
@@ -402,6 +410,33 @@ abstract class AbstractSql
         if (isset($song['queued'])) {
             $song['queued'] = (bool)$song['queued'];
         }
+        return $song;
+    }
+
+
+    /**
+     * @param $id
+     * @param $fields
+     * @return int Number of updated rows
+     */
+    public function updateTicketById($id, $fields)
+    {
+        if (isset($fields['id'])) {
+            throw new \InvalidArgumentException('Fields must not include id');
+        }
+        return $this->getDbConn()->update(self::TICKETS_TABLE, $fields, ['id' => $id]);
+    }
+
+    /**
+     * Fetch core ticket data (not band, etc) by ticket id
+     *
+     * @param $id
+     * @return array
+     */
+    public function fetchTicketById($id)
+    {
+        $conn = $this->getDbConn();
+        $song = $conn->fetchAssoc('SELECT * FROM ' . self::TICKETS_TABLE . ' WHERE id = :id', ['id' => $id]);
         return $song;
     }
 

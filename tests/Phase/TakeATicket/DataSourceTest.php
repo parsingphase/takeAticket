@@ -113,7 +113,49 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         $existingUserId = $dataSource->getPerformerIdByName(strtolower('Bob'), false);
         // strtolower - check that we don't need case matching
         $this->assertEquals($firstUserId, $existingUserId, "Second search for same user must return same ID ($dbName)");
+    }
 
+    /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testInsertAndUpdateTickets($dbName, $conn)
+    {
+        // Note: we start these tests with an empty, truncated user table
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+        $newTicketId = $dataSource->storeNewTicket('AC/DC', 114);
+        $this->assertTrue(is_numeric($newTicketId), "Storing ticket must return an ID ($dbName)");
+
+        $rawTicket = $dataSource->fetchTicketById($newTicketId);
+        $this->assertTrue(is_array($rawTicket));
+        $this->assertEquals('AC/DC', $rawTicket['title']);
+
+        $updateResult = $dataSource->updateTicketById($newTicketId, ['title' => 'The Wurzels']);
+        $this->assertEquals(1, $updateResult);
+
+        $revisedTicket = $dataSource->fetchTicketById($newTicketId);
+        $this->assertEquals('The Wurzels', $revisedTicket['title']);
+
+        $dataSource->storeBandToTicket(1, ['V' => ['Bob']]);
+
+        $populatedTicket = $dataSource->expandTicketData($revisedTicket);
+        $this->assertTrue(is_array($populatedTicket['band']));
+        $this->assertEquals(1, count($populatedTicket['band']));
+        $this->assertEquals(1, count($populatedTicket['band']['V']));
+
+        // change the band
+        $dataSource->storeBandToTicket(1, ['V' => ['Steve'], 'G' => ['Eric']]);
+        $newBandTicket = $dataSource->fetchTicketById(1);
+        $newBandTicket = $dataSource->expandTicketData($newBandTicket);
+
+        $this->assertTrue(is_array($newBandTicket['band']));
+        $this->assertEquals(2, count($newBandTicket['band']));
+        $this->assertEquals(
+            1,
+            count($newBandTicket['band']['V']),
+            "Should only be one vocalist after update ($dbName)"
+        );
     }
 
     /**
