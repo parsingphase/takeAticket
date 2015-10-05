@@ -49,6 +49,32 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Make sure we're testing the correct subclasses of the DB source
+     *
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testFactory($dbName, $conn)
+    {
+        $expectedFactoryClasses = [
+            'mysql' => '/mysql$/i',
+            'sqlite' => '/sqlite$/i',
+        ];
+
+        $this->assertArrayHasKey($dbName, $expectedFactoryClasses, "Must recognise Data Source for $dbName");
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+        $this->assertTrue(is_object($dataSource));
+        $dataSourceClass = get_class($dataSource);
+
+        $this->assertRegExp(
+            $expectedFactoryClasses[$dbName],
+            $dataSourceClass,
+            "Data Source Class for $dbName must be as expected"
+        );
+    }
+
+    /**
      * @dataProvider databasesProvider
      * @param string $dbName
      * @param Connection $conn
@@ -62,6 +88,32 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         $hits = $dataSource->findSongsBySearchString($searchString);
         $this->assertTrue(is_array($hits));
         $this->assertEquals(1, count($hits), 'Should return 1 hit for search with DB ' . $dbName);
+    }
+
+    /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testInsertAndFetchUsers($dbName, $conn)
+    {
+        // Note: we start these tests with an empty, truncated user table
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+        $noSuchUser = $dataSource->getPerformerIdByName('Bob');
+        $this->assertFalse($noSuchUser, "Nonexistent user must not be found ($dbName)");
+
+        $firstUserId = $dataSource->getPerformerIdByName('Bob', true);
+        $this->assertEquals(1, $firstUserId, "Creating first user must return ID=1 ($dbName)");
+        // Only works for DBs with monotonic int IDs - may need later revision
+
+        $secondUserId = $dataSource->getPerformerIdByName('Harry', true);
+        $this->assertTrue($secondUserId > 1, "Creating second user must return ID>1 ($dbName)");
+        // Only works for DBs with monotonic int IDs - may need later revision
+
+        $existingUserId = $dataSource->getPerformerIdByName(strtolower('Bob'), false);
+        // strtolower - check that we don't need case matching
+        $this->assertEquals($firstUserId, $existingUserId, "Second search for same user must return same ID ($dbName)");
+
     }
 
     /**
