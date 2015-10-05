@@ -8,9 +8,9 @@ Canonical source: https://github.com/parsingphase/takeAticket
 
 ## Setup
 
-Currently runs using PHP's built-in webserver & a sqlite3 database.
+The tool can use either a sqlite3 or mySQL database, and run under a standard server or PHP's internal server mode.
 
-To install (requires Composer - https://getcomposer.org):
+To install the source code (requires Composer - https://getcomposer.org):
 
     git clone git@github.com:parsingphase/takeAticket.git
     cd takeAticket
@@ -18,35 +18,43 @@ To install (requires Composer - https://getcomposer.org):
  
 To create database file/schema:
 
-    sqlite3 db/app.db < sql/db.sql
+    sqlite3 db/app.db < sql/db-sqlite.sql
     sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
+
+or create a mysql database and a user with  DROP,SELECT,INSERT,UPDATE,DELETE permissions on that database, and load the following schema files:
+
+*  `sql/db-mysql.sql`
+*  `vendor/jasongrimes/silex-simpleuser/sql/mysql.sql`
  
 A symlink is currently required to make certain frontend resources available:
 
     ln -s ../components www/components
  
-To configure
+To configure the database and optional settings
  
     cp config/config.sample.php config/config.php
+
+The sample file is documented to help with setup.
  
-To load song library
+To load song the library from a spreadsheet:
 
     php cli/loadSongsDb path/to/songlib.xls
     
 (file format to follow but see `Phase\TakeATicket\SongLoader::$fileFields`)
  
-To start server
+To start the app in PHP's internal server.
 
     ./startServer.sh
-    
-To run tests 
 
-    ./vendor/bin/phing
+Running the app under any other server is left as an exercise to the reader. The document root is `/web`; 
+refer to [Silex setup documentation](http://silex.sensiolabs.org/doc/web_servers.html) for further details. 
 
 ## Usage
 
-Runs on localhost & all attached IPs at port 8080 (copy & edit startServer.sh to change this).
-Visit http://localhost:8080 when server is running
+Using the startServer script, the app runs on localhost & all attached IPs at port 8080 
+(copy & edit startServer.sh to change this).
+Visit http://localhost:8080 when the server is running. The URLs in the documentation below all assume that this is the 
+server being used.
 
 ### Navigation
 **Icons:** Upcoming, Search, RSS feed, Queue Management, Login
@@ -75,16 +83,28 @@ Accessible to admins only.
 ![Management interface](docs/images/QueueManagement.png)
 
 Tracks can be dragged into a new order. When a group starts performing, click "performing" and it'll be greyed out here and
-vanish from the "upcoming" page. Tracks can be removed completely (eg if a band fails to appear) by clicking "remove". 
+vanish from the "upcoming" page. This also logs the time at which the track starts, which is used to estimate times for
+upcoming tickets.
 
-Don't remove performed tracks as statistics (work in progress) won't work. (Ignore numbers on band members for now).
+Tracks can be removed completely (eg if a band fails to appear) by clicking "remove". 
+Don't remove performed tracks as it'll skew statistics and times. 
 
-Add a song by searching in the song field and clicking the appropriate result. Add a band by typing a comma-separated list 
-of names into the band field (hit enter when band is complete) and/or clicking name buttons. 
+The statistics for each performer on each track show the number of songs performed by this user *before* 
+the displayed track, and the total number they've signed up for. Performers are shown in red if they're scheduled to be 
+on stage twice in quick succession.
 
-New name buttons will appear as tickets are saved with new participants. 
+Add a song by searching in the song field and clicking the appropriate result. 
 
-Click "Add" once song names and band member lists appear above their respective inputs:
+Build a band by assigning performers to instruments. You *can* assign any number of performers to each instrument, but
+in most cases (except vocals) this won't make sense. Assign by clicking name buttons or typing a new name into the New 
+Performer field and hitting enter. Remove a name by clicking when the appropriate instrument is selected.
+
+Assigning a performer will skip to the next instrument, so to add multiple performers you'll need to re-select the 
+instrument.
+
+You can also add a band name if you want, but this is optional.
+
+Click "Add" to store the track once song names and band member lists appear above their respective inputs:
 
 ![Management interface](docs/images/AddTicketFormFilled.png)
 
@@ -109,8 +129,10 @@ You can now log in, and will be able to use the 'manage' page. Once logged in, t
 
 ## TODO 
 
-See [docs/TODO.md](./docs/TODO.md)
+See [docs/TODO.md](./docs/TODO.md) for intended further work; 
+feel free to [open issues on github](https://github.com/parsingphase/takeAticket/issues) to make feature requests, 
+report bugs, or "upvote" existing tasks.
 
 ## CONTRIBUTING 
 
-See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md)
+See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for details on how to run included tests and/or contribute to the project.

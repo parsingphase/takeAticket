@@ -2,13 +2,8 @@ Feature Requests
 ================
 
 ### To Do
-
-* Update usage docs
-* Edit existing
-    * tickets - add performers)
-    * performers - names
-* Enable use of MySQL as a backend
-    * Update startup docs to include MySQL setup / DB imports
+    
+* Edit existing performers (change names)
 * Integrate simpleuser better (ensure all css etc is local)
 * Display performers in instrument order on manage page
     
@@ -25,7 +20,10 @@ Feature Requests
 * ~~Show ticket number AND position (include deleted in position - probably not, they'll be sorted to null)~~
 * ~~Put "done" text in right place when clicking "Performing" button~~ - removed for now
 * ~~Get jshint to complain when I leave console logging in. Anyone knows how to fix this in .jshintrc, please tell me!~~
-
+* ~~Edit existing tickets - modify performers, song~~
+* ~~Update usage docs~~
+* ~~Enable use of MySQL as a backend~~
+    * ~~Update startup docs to include MySQL setup / DB imports~~
 
 ### Deferred
 
