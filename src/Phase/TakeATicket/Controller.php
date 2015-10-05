@@ -124,6 +124,7 @@ class Controller
         $ticket = [];
         $ticket['id'] = $ticketId; //FIXME re-fetch ticket by ID
         $ticket['songId'] = $songId; //FIXME re-fetch ticket by ID
+        $ticket['title'] = $title; //FIXME re-fetch ticket by ID
 
         $ticket = $this->dataSource->expandTicketData($ticket);
 

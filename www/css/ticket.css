@@ -126,39 +126,45 @@ div.manage div.ticket.used {
   font-style: italic;
   background-color: #fefefe !important;
 }
+div.manage div.ticket button {
+  min-height: 2.5em;
+}
+div.manage div.ticket button span.fa {
+  font-size: 1.3em;
+}
 div.manage div.ticket.used button.performButton {
   display: none;
 }
-div.manage div.addTicketOuter {
+div.manage div.editTicketOuter {
   margin-bottom: 80px;
 }
-div.manage div.addTicket {
+div.manage div.editTicket {
   min-height: 500px;
 }
-div.manage div.addTicket h3 {
+div.manage div.editTicket h3 {
   margin-top: 0;
   margin-left: 12px;
 }
-div.manage div.addTicket .addTicketSong,
-div.manage div.addTicket .addTicketBandColumn {
+div.manage div.editTicket .editTicketSong,
+div.manage div.editTicket .editTicketBandColumn {
   float: left;
   padding: 10px;
 }
-div.manage div.addTicket .addTicketSong .ticketAspectSummary,
-div.manage div.addTicket .addTicketBandColumn .ticketAspectSummary {
+div.manage div.editTicket .editTicketSong .ticketAspectSummary,
+div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary {
   padding-left: 6px;
   min-height: 50px;
 }
-div.manage div.addTicket .addTicketSong {
+div.manage div.editTicket .editTicketSong {
   width: 400px;
 }
-div.manage div.addTicket .addTicketBandColumn {
+div.manage div.editTicket .editTicketBandColumn {
   width: 600px;
 }
-div.manage div.addTicket .addTicketBandColumn .addTicketTitle {
+div.manage div.editTicket .editTicketBandColumn .editTicketTitle {
   width: 30em;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument {
+div.manage div.editTicket .editTicketBandColumn .instrument {
   cursor: pointer;
   float: left;
   width: 110px;
@@ -169,42 +175,42 @@ div.manage div.addTicket .addTicketBandColumn .instrument {
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument.instrumentSelected {
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentSelected {
   background-color: #e0e0e0;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument.instrumentSelected .instrumentName {
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentSelected .instrumentName {
   background-color: #ccc;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument .instrumentName,
-div.manage div.addTicket .addTicketBandColumn .instrument .instrumentPerformer {
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentName,
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentPerformer {
   padding: 4px 8px;
   margin-bottom: 4px;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument .instrumentName {
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentName {
   font-weight: bold;
   background-color: #ddd;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument i {
+div.manage div.editTicket .editTicketBandColumn .instrument i {
   color: #888;
 }
-div.manage div.addTicket .addTicketBandColumn .instrument.instrumentUnused {
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentUnused {
   display: none;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls {
+div.manage div.editTicket .editTicketBandColumn .bandControls {
   padding-top: 14px;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls .bandTabsOuter .performerSelect {
+div.manage div.editTicket .editTicketBandColumn .bandControls .bandTabsOuter .performerSelect {
   clear: both;
   padding: 8px;
   background-color: #e0e0e0;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls .bandTabsOuter .newPerformer {
+div.manage div.editTicket .editTicketBandColumn .bandControls .bandTabsOuter .newPerformer {
   width: 18em;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls .performers .letterSpan {
+div.manage div.editTicket .editTicketBandColumn .bandControls .performers .letterSpan {
   display: inline-block;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls .performers .initialLetter {
+div.manage div.editTicket .editTicketBandColumn .bandControls .performers .initialLetter {
   margin: 8px 4px 0 0;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -215,14 +221,14 @@ div.manage div.addTicket .addTicketBandColumn .bandControls .performers .initial
   font-weight: bolder;
   color: #555;
 }
-div.manage div.addTicket .addTicketBandColumn .bandControls .performers .btn {
+div.manage div.editTicket .editTicketBandColumn .bandControls .performers .btn {
   margin-top: 8px;
   margin-right: 8px;
 }
-div.manage div.addTicket .addSongTitle {
+div.manage div.editTicket .addSongTitle {
   width: 24em;
 }
-div.manage div.addTicket .input-group-addon .fa {
+div.manage div.editTicket .input-group-addon .fa {
   width: 16px;
 }
 div.manage div.page-header {

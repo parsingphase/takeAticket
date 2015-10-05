@@ -170,16 +170,23 @@ div.manage {
       background-color: #fefefe !important;
     }
 
+    button {
+      min-height: 2.5em;
+      span.fa {
+        font-size: 1.3em;
+      }
+    }
+
     &.used button.performButton {
       display: none;
     }
   }
 
-  div.addTicketOuter {
+  div.editTicketOuter {
     margin-bottom: 80px;
   }
 
-  div.addTicket {
+  div.editTicket {
     min-height: 500px;
 
     h3 {
@@ -187,8 +194,8 @@ div.manage {
       margin-left: 12px;
     }
 
-    .addTicketSong,
-    .addTicketBandColumn,
+    .editTicketSong,
+    .editTicketBandColumn,
     {
       float: left;
       padding: 10px;
@@ -198,14 +205,14 @@ div.manage {
       }
     }
 
-    .addTicketSong {
+    .editTicketSong {
       width: 400px;
     }
 
-    .addTicketBandColumn {
+    .editTicketBandColumn {
       width: 600px;
 
-      .addTicketTitle {
+      .editTicketTitle {
         width: 30em;
       }
 
