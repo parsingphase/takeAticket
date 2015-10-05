@@ -78,11 +78,12 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         // should return The Killers: When You Were Young
 
         foreach ($this->databases as $k => $conn) {
+            print("Test search for DB: $k\n");
             $dataSource = Factory::datasourceFromDbConnection($conn);
             $hits = $dataSource->findSongsBySearchString($searchString);
             $this->assertTrue(is_array($hits));
 //            var_dump($hits);
-            $this->assertEquals(1, count($hits), 'Should return 1 hit for search');
+            $this->assertEquals(1, count($hits), 'Should return 1 hit for search with DB '.$k);
         }
     }
 

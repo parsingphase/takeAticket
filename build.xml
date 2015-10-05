@@ -37,7 +37,7 @@
 
     <target name="phpunit"
             description="Run PHPUnit tests">
-        <phpunit codecoverage="false" haltonfailure="true" haltonerror="true">
+        <phpunit codecoverage="false" haltonfailure="true" haltonerror="true" printsummary="true">
             <formatter type="plain" usefile="false"/>
             <batchtest>
                 <fileset dir="tests">
