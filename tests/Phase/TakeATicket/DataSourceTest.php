@@ -12,37 +12,13 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Doctrine\DBAL\Connection[]
+     * Loaded on demand by ::getConfiguredDatabases
      */
-    protected $databases;
-
+    protected $databases = false;
 
     public function setUp()
     {
-        $configDir = dirname(dirname(dirname(__DIR__))) . '/config/';
-
-        $configFile = $configDir . 'testConfig.dist.php'; // default
-        if (file_exists($configDir . 'testConfig.php')) {
-            $configFile = $configDir . 'testConfig.php';
-        } elseif (getenv('TRAVIS') === 'true') {
-            $configFile = $configDir . 'testConfig.travis.php';
-        }
-
-        $this->assertTrue(file_exists($configFile), 'Test config file muse be present');
-        /** @noinspection PhpIncludeInspection */
-        $config = require($configFile);
-
-        $this->assertArrayHasKey('databases', $config, 'Databases must be configured');
-        $this->assertTrue(
-            is_array($config['databases']) && count($config['databases']),
-            'At least one DB must be configured'
-        );
-
-        foreach ($config['databases'] as $k => $v) {
-//            print("Got config for $k");
-            $connection = $this->makeDbalConnection($v);
-            $this->assertTrue($connection instanceof Connection, 'DBAL connection must be created');
-            $this->databases[$k] = $connection;
-        }
+        $databases = $this->getConfiguredDatabases();
 
         $sqlDir = dirname(dirname(dirname(__DIR__))) . '/sql/';
 
@@ -58,33 +34,35 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         foreach ($sqlSourceFiles as $k => $v) {
             $sqlClauses = $this->schemaFileToClauses($v);
 
-            if (isset($this->databases[$k])) {
+            if (isset($databases[$k])) {
                 foreach ($sqlClauses as $sql) {
-                    $this->databases[$k]->exec($sql);
+                    $databases[$k]->exec($sql);
                 }
 
                 foreach ($songInserts as $insertSql) {
                     if ($insertSql && !preg_match('/^\s+-- /', $insertSql)) {
-                        $this->databases[$k]->exec($insertSql);
+                        $databases[$k]->exec($insertSql);
                     }
                 }
             }
         }
     }
 
-    public function testSearch()
+    /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testSearch($dbName, $conn)
     {
         $searchString = 'When you';
         // should return The Killers: When You Were Young
 
-        foreach ($this->databases as $k => $conn) {
-            print("Test search for DB: $k\n");
-            $dataSource = Factory::datasourceFromDbConnection($conn);
-            $hits = $dataSource->findSongsBySearchString($searchString);
-            $this->assertTrue(is_array($hits));
-//            var_dump($hits);
-            $this->assertEquals(1, count($hits), 'Should return 1 hit for search with DB '.$k);
-        }
+        print("Test search for DB: $dbName\n");
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+        $hits = $dataSource->findSongsBySearchString($searchString);
+        $this->assertTrue(is_array($hits));
+        $this->assertEquals(1, count($hits), 'Should return 1 hit for search with DB ' . $dbName);
     }
 
     /**
@@ -129,5 +107,53 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
             }
         }
         return $sqlClauses;
+    }
+
+    public function databasesProvider()
+    {
+        $databases = $this->getConfiguredDatabases();
+        $packedDbs = [];
+        foreach ($databases as $k => $v) {
+            $packedDbs[] = [$k, $v];
+        }
+        return $packedDbs;
+    }
+
+    /**
+     * @return Connection[]
+     */
+    protected function getConfiguredDatabases()
+    {
+        if ($this->databases === false) {
+            $databases = [];
+
+            $configDir = dirname(dirname(dirname(__DIR__))) . '/config/';
+
+            $configFile = $configDir . 'testConfig.dist.php'; // default
+            if (file_exists($configDir . 'testConfig.php')) {
+                $configFile = $configDir . 'testConfig.php';
+            } elseif (getenv('TRAVIS') === 'true') {
+                $configFile = $configDir . 'testConfig.travis.php';
+            }
+
+            $this->assertTrue(file_exists($configFile), 'Test config file muse be present');
+            /** @noinspection PhpIncludeInspection */
+            $config = require($configFile);
+
+            $this->assertArrayHasKey('databases', $config, 'Databases must be configured');
+            $this->assertTrue(
+                is_array($config['databases']) && count($config['databases']),
+                'At least one DB must be configured'
+            );
+
+            foreach ($config['databases'] as $k => $v) {
+                $connection = $this->makeDbalConnection($v);
+                $this->assertTrue($connection instanceof Connection, 'DBAL connection must be created');
+                $databases[$k] = $connection;
+            }
+            $this->databases = $databases;
+        }
+
+        return $this->databases;
     }
 }
