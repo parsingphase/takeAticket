@@ -58,7 +58,6 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         $searchString = 'When you';
         // should return The Killers: When You Were Young
 
-        print("Test search for DB: $dbName\n");
         $dataSource = Factory::datasourceFromDbConnection($conn);
         $hits = $dataSource->findSongsBySearchString($searchString);
         $this->assertTrue(is_array($hits));
