@@ -66,7 +66,11 @@ abstract class AbstractSql
      */
     public function fetchSongById($songId)
     {
-        return $this->getDbConn()->fetchAssoc('SELECT * FROM songs WHERE id = :code', ['code' => $songId]);
+        $song = $this->getDbConn()->fetchAssoc('SELECT * FROM songs WHERE id = :code', ['code' => $songId]);
+        if ($song) {
+            $song = $this->normaliseSongRecord($song);
+        }
+        return $song;
     }
 
     /**
@@ -341,6 +345,9 @@ abstract class AbstractSql
         $conn = $this->getDbConn();
 
         $song = $conn->fetchAssoc('SELECT * FROM songs WHERE codeNumber = :code', ['code' => $songKey]);
+        if ($song) {
+            $song = $this->normaliseSongRecord($song);
+        }
         return $song;
     }
 
