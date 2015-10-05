@@ -6,6 +6,7 @@ Feature Requests
 * Edit existing performers (change names)
 * Integrate simpleuser better (ensure all css etc is local)
 * Display performers in instrument order on manage page
+* Use foreign keys in MySQL
     
 ### Done
 
