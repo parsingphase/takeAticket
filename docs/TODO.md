@@ -5,6 +5,8 @@ Feature Requests
     
 * Edit existing performers (change names)
 * Integrate simpleuser better (ensure all css etc is local)
+* Fix Z-index issue in manage page ([screenshot](images/zindex.png))
+    * Workaround for narrow screen - clear song search box after selecting song
 * Display performers in instrument order on manage page
 * Use foreign keys in MySQL
     
