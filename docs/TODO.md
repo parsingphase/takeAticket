@@ -9,6 +9,8 @@ Feature Requests
     * Workaround for narrow screen - clear song search box after selecting song
 * Display performers in instrument order on manage page
 * Use foreign keys in MySQL
+* Allow customisation of instrument selection, order, default usage
+    * Eg for non-instrumental karaoke, possibly multiple vocal parts
     
 ### Done
 
