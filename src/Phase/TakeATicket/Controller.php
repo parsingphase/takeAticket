@@ -42,6 +42,7 @@ class Controller
     {
         $this->app = $app;
         $this->dataSource = DataSourceFactory::datasourceFromDbConnection($this->app['db']);
+        $this->dataSource->setLogger($app['logger']);
         $upcomingCount = $this->getUpcomingCount();
         if ($upcomingCount) {
             $this->dataSource->setUpcomingCount($upcomingCount);
@@ -142,6 +143,12 @@ class Controller
 
         $idOrder = $request->get('idOrder');
 
+        if (!is_array($idOrder)) {
+            throw new \InvalidArgumentException('Order must be array!');
+        }
+
+        $this->app['logger']->debug("New order: " . print_r($idOrder, true));
+
         $res = true;
         foreach ($idOrder as $offset => $id) {
             $res = $res && $this->dataSource->updateTicketOffsetById($id, $offset);
@@ -149,7 +156,8 @@ class Controller
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
-            $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
+            $this->app['logger']->warn("Failed to store track order: ". print_r($idOrder, true));
+            $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
         return $jsonResponse;
     }

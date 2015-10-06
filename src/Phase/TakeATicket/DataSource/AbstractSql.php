@@ -9,7 +9,9 @@
 namespace Phase\TakeATicket\DataSource;
 
 use Doctrine\DBAL\Connection;
+use Monolog\Logger;
 use Phase\TakeATicket\SongLoader;
+use Psr\Log\NullLogger;
 
 abstract class AbstractSql
 {
@@ -26,6 +28,11 @@ abstract class AbstractSql
      * @var int
      */
     protected $upcomingCount = 3;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
 
     /**
      * DataSource constructor.
@@ -59,6 +66,26 @@ abstract class AbstractSql
     {
         $this->upcomingCount = $upcomingCount;
     }
+
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            $this->logger = new NullLogger();
+        }
+        return $this->logger;
+    }
+
+    /**
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
 
     /**
      * @param $songId
@@ -332,8 +359,23 @@ abstract class AbstractSql
      */
     public function updateTicketOffsetById($id, $offset)
     {
+        $id = (int)$id;
+        $offset = (int)$offset;
         $fields = ['offset' => $offset];
-        return $this->updateTicketById($id, $fields);
+        $currentTrack = $this->fetchTicketById($id);
+        $oldOffset = (int)$currentTrack['offset'];
+        $ok = ($oldOffset === $offset);
+
+        $this->getLogger()->debug(
+            "Update track $id offset: $oldOffset => $offset: " .
+            ($ok ? ' already set' : ' will update')
+        );
+
+        if (!$ok) {
+            $ok = $this->updateTicketById($id, $fields);
+        }
+
+        return $ok;
     }
 
     /**

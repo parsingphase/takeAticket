@@ -159,6 +159,58 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testChangeSongOrder($dbName, $conn)
+    {
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+        $upcoming = $dataSource->fetchUpcomingTickets();
+        $this->assertTrue(is_array($upcoming));
+        $this->assertEquals(0, count($upcoming), "Should start with no songs after setup ($dbName)");
+
+        //645,647,941
+        $trackOrder = [];
+        $trackOrder[] = $dataSource->storeNewTicket('first', 647);
+        $trackOrder[] = $dataSource->storeNewTicket('second', 941);
+        $trackOrder[] = $dataSource->storeNewTicket('third', 645);
+        $upcoming = $dataSource->fetchUpcomingTickets();
+        $this->assertTrue(is_array($upcoming));
+        $this->assertEquals(3, count($trackOrder), "Should have inserted 3 songs ($dbName)");
+        $this->assertEquals(3, count($upcoming), "Should have 3 upcoming songs ($dbName)");
+
+
+        // same order
+        $ok = true;
+        foreach ($trackOrder as $offset => $id) {
+            $ok = $ok && $dataSource->updateTicketOffsetById($id, $offset);
+        }
+        $this->assertTrue($ok, "Can update tracks to same order ($dbName)");
+
+        // same order, bad data types
+        $ok = true;
+        foreach ($trackOrder as $offset => $id) {
+            $ok = $ok && $dataSource->updateTicketOffsetById("$id", $offset);
+        }
+        $this->assertTrue($ok, "Can update tracks to same order, even with string ids ($dbName)");
+
+        // same order, bad data types
+        $ok = true;
+        foreach ($trackOrder as $offset => $id) {
+            $ok = $ok && $dataSource->updateTicketOffsetById($id, "$offset");
+        }
+        $this->assertTrue($ok, "Can update tracks to same order, even with string offsets ($dbName)");
+
+        $reversed = array_reverse($trackOrder);
+        $ok = true;
+        foreach ($reversed as $offset => $id) {
+            $ok = $ok && $dataSource->updateTicketOffsetById($id, $offset);
+        }
+        $this->assertTrue($ok, "Can update tracks to reversed order ($dbName)");
+    }
+
+    /**
      * @param $connectionParams
      * @return \Doctrine\DBAL\Connection
      * @throws \Doctrine\DBAL\DBALException
