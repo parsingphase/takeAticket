@@ -68,6 +68,11 @@ class Controller
         return $this->app['twig']->render('songSearch.html.twig', $viewParams);
     }
 
+    /**
+     * @return JsonResponse
+     *
+     * FIXME does not honour config.displayOptions.songInPreview - always shows track!
+     */
     public function nextJsonAction()
     {
         $next = $this->dataSource->fetchUpcomingTickets();

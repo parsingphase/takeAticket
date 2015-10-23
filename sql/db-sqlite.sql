@@ -22,6 +22,9 @@ CREATE TABLE songs (
   source     TEXT DEFAULT NULL,
   hasHarmony INT  DEFAULT 0,
   hasKeys    INT  DEFAULT 0,
+  duration   INT  DEFAULT NULL,
+  inRb3      INT  DEFAULT 0,
+  inRb4      INT  DEFAULT 0,
   codeNumber TEXT
 );
 

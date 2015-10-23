@@ -453,10 +453,18 @@ abstract class AbstractSql
      */
     public function normaliseSongRecord($song)
     {
-        $song['id'] = (int)$song['id'];
-        $song['hasHarmony'] = (bool)$song['hasHarmony'];
-        $song['hasKeys'] = (bool)$song['hasKeys'];
-        if (isset($song['queued'])) {
+        $boolFields = ['hasHarmony', 'hasKeys', 'inRb3', 'inRb4'];
+        $intFields = ['id', 'duration'];
+
+        foreach ($intFields as $k) {
+            $song[$k] = is_null($song[$k]) ? null : (int)$song[$k];
+        }
+
+        foreach ($boolFields as $k) {
+            $song[$k] = (bool)$song[$k];
+        }
+
+        if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
             $song['queued'] = (bool)$song['queued'];
         }
         return $song;

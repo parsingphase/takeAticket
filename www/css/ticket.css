@@ -276,6 +276,13 @@ div.songSearch .searchTargetOuter {
   min-height: 180px;
   padding-top: 0;
 }
+div.songSearch .searchTargetOuter table th {
+  padding-right: 1.2em;
+}
+div.songSearch .searchTargetOuter table th,
+div.songSearch .searchTargetOuter table tr {
+  padding-bottom: 0.3em;
+}
 div.end {
   position: fixed;
   bottom: 0;

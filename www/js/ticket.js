@@ -12,8 +12,8 @@ var ticketer = (function() {
     songDetailsTemplate: null,
     searchCount: 10,
     instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
-    defaultSongLengthSeconds: 300,
-    defaultSongIntervalSeconds: 60,
+    defaultSongLengthSeconds: 240,
+    defaultSongIntervalSeconds: 120,
 
     /**
      * @var {{songInPreview,upcomingCount,iconMapHtml}}
@@ -624,6 +624,14 @@ var ticketer = (function() {
         return new Handlebars.SafeString(icon);
       });
 
+      Handlebars.registerHelper('durationToMS', function(duration) {
+        var seconds = (duration % 60);
+        if (seconds < 10) {
+          seconds = '0' + seconds;
+        }
+        return Math.floor(duration / 60) + ':' + seconds;
+      });
+
       this.manageTemplate = Handlebars.compile(
         '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
@@ -772,10 +780,14 @@ var ticketer = (function() {
 
       this.songDetailsTemplate = Handlebars.compile(
         '<div class="songDetails"><h3>{{song.artist}}: {{song.title}}</h3>' +
-        'Code: {{song.codeNumber}}<br /> ' +
-        'Harmony? {{#if song.hasHarmony}}Yes{{else}}No{{/if}}<br /> ' +
-        'Keys? {{#if song.hasKeys}}Yes{{else}}No{{/if}}<br /> ' +
-        'Source: {{song.source}}' +
+        '<table>' +
+        '<tr><th>Duration</th><td>{{durationToMS song.duration}}</td></tr> ' +
+        '<tr><th>Code</th><td>{{song.codeNumber}}</td></tr> ' +
+        '<tr><th>Harmony? </th><td>{{#if song.hasHarmony}}Yes{{else}}No{{/if}}</td></tr> ' +
+        '<tr><th>Keys?</th><td>{{#if song.hasKeys}}Yes{{else}}No{{/if}}</td></tr> ' +
+        '<tr><th>Games</th><td>{{#if song.inRb3}}RB3{{/if}} {{#if song.inRb4}}RB4{{/if}}</td></tr> ' +
+        '<tr><th>Source</th><td>{{song.source}}</td></tr> ' +
+        '</table>' +
         '</div>'
       );
 
@@ -900,6 +912,7 @@ var ticketer = (function() {
       var lastByPerformer = {};
       var ticketOrdinal = 1;
       var ticketTime = null;
+      var lastDuration = null;
 
       var pad = function(number) {
         if (number < 10) {
@@ -907,10 +920,12 @@ var ticketer = (function() {
         }
         return number;
       };
-      var songOffsetMs = (that.defaultSongIntervalSeconds + that.defaultSongLengthSeconds) * 1000;
+      var defaultSongOffsetMs = (that.defaultSongIntervalSeconds + that.defaultSongLengthSeconds) * 1000;
 
       // First check number of songs performed before this one
       var sortContainer = $('.sortContainer');
+      var lastSongDuration = null;
+
       sortContainer.find('.ticket').each(function() {
         var realTime;
         var ticketId = $(this).data('ticket-id');
@@ -925,8 +940,12 @@ var ticketer = (function() {
         if (realTime) {
           ticketTime = realTime;
         } else if (ticketTime) {
-          // If last song had an implicit time, add 6 minutes to it and assume next song starts then
+          // If last song had an implicit time, add defaultSongOffsetMs to it and assume next song starts then
           // If this is in the past, assume it starts now!
+          var songOffsetMs = defaultSongOffsetMs;
+          if (lastSongDuration) {
+            songOffsetMs = (that.defaultSongIntervalSeconds + lastSongDuration) * 1000;
+          }
           ticketTime = new Date(Math.max(ticketTime.getTime() + songOffsetMs, Date.now()));
         } else {
           ticketTime = new Date();
@@ -971,6 +990,7 @@ var ticketer = (function() {
           lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
         });
         ticketOrdinal++;
+        lastSongDuration = ticketData.song.duration;
       });
 
       // Then update all totals
