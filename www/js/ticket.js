@@ -632,6 +632,17 @@ var ticketer = (function() {
         return Math.floor(duration / 60) + ':' + seconds;
       });
 
+      Handlebars.registerHelper('gameList', function(song) {
+        var all = [];
+        if (song.inRb3) {
+          all.push('RB3');
+        }
+        if (song.inRb4) {
+          all.push('RB4');
+        }
+        return all.join(', ');
+      });
+
       this.manageTemplate = Handlebars.compile(
         '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
@@ -664,6 +675,7 @@ var ticketer = (function() {
 
         '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: ' +
         '{{ticket.song.title}}' +
+        ' ({{gameList ticket.song}})' +
         '{{/if}}' +
         '</div>' +
         '</div>'
@@ -694,7 +706,7 @@ var ticketer = (function() {
       this.songAutocompleteItemTemplate = Handlebars.compile(
         '<div class="acSong" data-song-id="{{ song.id }}">' +
         '        <div class="acSong-inner {{#if song.queued}}queued{{/if}}">' +
-        '        {{song.artist}}: {{song.title}}' +
+        '        {{song.artist}}: {{song.title}} ({{gameList song}}) ' +
         '        </div>' +
         '</div>  '
       );
