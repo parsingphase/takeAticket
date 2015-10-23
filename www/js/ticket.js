@@ -648,6 +648,8 @@ var ticketer = (function() {
         ' {{#if ticket.song.inRb3}}rb3ticket{{/if}} {{#if ticket.song.inRb4}}rb4ticket{{/if}}"' +
         ' data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
+        '        <div class="gameMarker">{{#if ticket.song.inRb3}}RB3{{/if}}</div>' +
+        '        <div class="gameMarker">{{#if ticket.song.inRb4}}RB4{{/if}}</div>' +
         '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
         '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
         '        <button class="btn editButton" data-ticket-id="{{ ticket.id }}">' +

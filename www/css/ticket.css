@@ -121,19 +121,17 @@ div.manage div.ticket.well {
   padding-bottom: 10px;
   min-height: 62px;
 }
-div.manage div.ticket.rb3ticket {
-  background-color: #f4f4e4;
-}
-div.manage div.ticket.rb4ticket {
-  background-color: #eaeafe;
-}
-div.manage div.ticket.rb3ticket.rb4ticket {
-  background-color: #e4f4e0;
-}
 div.manage div.ticket.used {
   color: #777;
   font-style: italic;
   background-color: #fefefe !important;
+}
+div.manage div.ticket .gameMarker {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 2em;
+  font-weight: bold;
+  width: 70px;
 }
 div.manage div.ticket button {
   min-height: 2.5em;
