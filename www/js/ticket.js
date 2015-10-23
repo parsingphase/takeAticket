@@ -644,7 +644,9 @@ var ticketer = (function() {
       });
 
       this.manageTemplate = Handlebars.compile(
-        '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}" data-ticket-id="{{ ticket.id }}">' +
+        '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}' +
+        ' {{#if ticket.song.inRb3}}rb3ticket{{/if}} {{#if ticket.song.inRb4}}rb4ticket{{/if}}"' +
+        ' data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
         '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
         '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
