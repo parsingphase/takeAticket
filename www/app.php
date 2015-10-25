@@ -33,6 +33,7 @@ foreach ($config as $k => $v) {
 $defaults = [];
 
 $defaults['monolog.logfile'] = dirname(__DIR__) . '/log/app.log';
+$defaults['monolog.level'] = \Monolog\Logger::NOTICE;
 
 $defaults['db.options'] = [
     'driver' => 'pdo_sqlite',
@@ -77,7 +78,11 @@ $app['user.options'] = [
     ],
     'emailConfirmation' => [
         'required' => true // force manual enabling
+    ],
+    'templates' => [
+        'layout' => 'simpleuser/layout.html.twig'
     ]
+
 ];
 
 // Security config. See http://silex.sensiolabs.org/doc/providers/security.html for details.

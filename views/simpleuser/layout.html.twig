@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block headerText %}User Management{% endblock %}
+
+{% block appTarget %}
+    <div id="target">
+        <div class="well">{% block content %}{% endblock %}</div>
+        <div class="well">
+            <h1>Notice</h1>
+            <p>User logins are only used and enabled for administrators.</p>
+            <p>You will not receive the email notification mentioned as no outgoing mail path is defined.
+            Consult the project documentation for how to enable and configure admin accounts once created.</p>
+        </div>
+    </div>
+{% endblock %}

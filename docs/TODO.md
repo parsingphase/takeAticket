@@ -3,7 +3,6 @@ Feature Requests
 
 ### To Do
     
-* Integrate simpleuser better (ensure all css etc is local)
 * "Processing" and "Error" indicators on management interface
 * Non-song tickets
     * Private and "blocks queue" options
@@ -36,6 +35,7 @@ Feature Requests
 * ~~Update usage docs~~
 * ~~Enable use of MySQL as a backend~~
     * ~~Update startup docs to include MySQL setup / DB imports~~
+* ~~Integrate simpleuser better (ensure all css etc is local)~~
 
 ### Deferred
 
