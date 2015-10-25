@@ -179,7 +179,6 @@ class SongLoader
                 $storable[self::INPUT_FIELD_DURATION] = ($matches[1] * 60) + $matches[2];
             }
         }
-        print_r($storable);
         return $storable;
     }
 }
