@@ -10,6 +10,7 @@ var ticketer = (function() {
     songAutocompleteItemTemplate: null,
     editTicketTemplate: null,
     songDetailsTemplate: null,
+    appMessageTarget: null,
     searchCount: 10,
     instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
     defaultSongLengthSeconds: 240,
@@ -397,11 +398,15 @@ var ticketer = (function() {
           data.existingTicketId = currentTicket.id;
         }
 
+        that.showAppMessage('Saving new ticket');
+
         $.ajax({
             method: 'POST',
             data: data,
             url: '/api/saveTicket',
             success: function(data, status) {
+              that.showAppMessage('Saved new ticket', 'success');
+
               void(status);
               var ticketId = data.ticket.id;
 
@@ -429,6 +434,8 @@ var ticketer = (function() {
 
             },
             error: function(xhr, status, error) {
+              that.showAppMessage('Ticket save failed ' + error, 'danger');
+
               void(error);
               // FIXME handle error
             }
@@ -554,6 +561,7 @@ var ticketer = (function() {
 
     manage: function(tickets) {
       var that = this;
+      this.appMessageTarget = $('#appMessages');
       this.initTemplates();
       var ticket, ticketBlock; // For loop iterations
 
@@ -700,10 +708,10 @@ var ticketer = (function() {
         '{{/each}}' +
         '    </p>' +
         (this.displayOptions.songInPreview ?
-          '{{#if ticket.song}}<p class="text-center song auto-font">' +
-          '{{ticket.song.artist}}: {{ticket.song.title}}' +
-          ' ({{gameList ticket.song}})' +
-          '</p>{{/if}}' : '') +
+        '{{#if ticket.song}}<p class="text-center song auto-font">' +
+        '{{ticket.song.artist}}: {{ticket.song.title}}' +
+        ' ({{gameList ticket.song}})' +
+        '</p>{{/if}}' : '') +
         '        </div>' +
         '</div>  '
       );
@@ -811,6 +819,7 @@ var ticketer = (function() {
     },
 
     ticketOrderChanged: function() {
+      var that = this;
       var idOrder = [];
       $('#target').find('.ticket').each(
         function() {
@@ -828,9 +837,11 @@ var ticketer = (function() {
         url: '/api/newOrder',
         success: function(data, status) {
           // FIXME check return status
+          that.showAppMessage('Saved revised order', 'success');
         },
         error: function(xhr, status, error) {
-          void(error);
+          that.showAppMessage('Failed to save revised order' + error, 'danger');
+          // X void(error);
         }
       });
 
@@ -1016,6 +1027,23 @@ var ticketer = (function() {
         var totalPerformed = performed[performerId];
         $(this).find('.songsTotal').text(totalPerformed);
       });
+    },
+
+    /**
+     * Show a message in the defined appMessageTarget (f any)
+     *
+     * @param message {string} Message to show (replaces any other)
+     * @param className {string} 'info','success','warning','danger'
+     */
+    showAppMessage: function(message, className) {
+      if (!className) {
+        className = 'info';
+      }
+      if (this.appMessageTarget) {
+        var block = $('<div />').addClass('alert alert-' + className);
+        block.text(message);
+        this.appMessageTarget.html('').append(block);
+      }
     }
   };
 }());

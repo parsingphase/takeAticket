@@ -320,3 +320,6 @@ div.end:hover .docslink,
 div.end:hover .docslink a {
   color: #999;
 }
+div.end #appMessages .alert {
+  margin-bottom: 0;
+}

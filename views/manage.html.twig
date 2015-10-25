@@ -18,3 +18,14 @@
         <div id="target" class="sortContainer"></div>
         <div class="editTicketOuter"></div>
     {% endblock %}
+
+{% block footer %}
+    <div class="end">
+        <div id="appMessages"></div>
+        {#{% if app.session.flashbag.has('alert') %}#}
+            {#{% for flashMessage in app.session.flashbag.get('alert') %}#}
+                {#<div class="alert alert-info">{{ flashMessage }}</div>#}
+            {#{% endfor %}#}
+        {#{% endif %}#}
+    </div>
+{% endblock %}
