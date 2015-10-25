@@ -3,14 +3,21 @@ Feature Requests
 
 ### To Do
     
-* Edit existing performers (change names)
 * Integrate simpleuser better (ensure all css etc is local)
+* "Processing" and "Error" indicators on management interface
+* Non-song tickets
+    * Private and "blocks queue" options
+* Floating Performing button in manage interface when edit panel is off screen?
+* Clearer display of when manage edit panel is editing existing rather than new ticket?
+* Edit existing performers (change names)
 * Fix Z-index issue in manage page ([screenshot](images/zindex.png))
     * Workaround for narrow screen - clear song search box after selecting song
 * Display performers in instrument order on manage page
 * Use foreign keys in MySQL
+* Add "platform" concept to replace temporary inRb3, inRb4 hack 
 * Allow customisation of instrument selection, order, default usage
     * Eg for non-instrumental karaoke, possibly multiple vocal parts
+* Add "session" concept to allow multiple sessions to be stored in DB without reset
     
 ### Done
 

@@ -701,8 +701,9 @@ var ticketer = (function() {
         '    </p>' +
         (this.displayOptions.songInPreview ?
           '{{#if ticket.song}}<p class="text-center song auto-font">' +
-          '{{ticket.song.artist}}: {{ticket.song.title}}</p>{{/if}}' : ''
-        ) +
+          '{{ticket.song.artist}}: {{ticket.song.title}}' +
+          ' ({{gameList ticket.song}})' +
+          '</p>{{/if}}' : '') +
         '        </div>' +
         '</div>  '
       );
