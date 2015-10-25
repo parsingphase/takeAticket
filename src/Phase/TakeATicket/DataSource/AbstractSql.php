@@ -410,6 +410,8 @@ abstract class AbstractSql
     }
 
     /**
+     * Fetch all non-deleted tickets in offset order
+     *
      * @return array|mixed
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -417,6 +419,22 @@ abstract class AbstractSql
     {
         $conn = $this->getDbConn();
         $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 ORDER BY offset ASC');
+        $statement->execute();
+        $tickets = $statement->fetchAll();
+        $tickets = $this->expandTicketsData($tickets);
+        return $tickets;
+    }
+
+    /**
+     * Fetch all performed tickets in offset order
+     *
+     * @return array
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function fetchPerformedTickets()
+    {
+        $conn = $this->getDbConn();
+        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 and used=1 ORDER BY offset ASC');
         $statement->execute();
         $tickets = $statement->fetchAll();
         $tickets = $this->expandTicketsData($tickets);
