@@ -15,6 +15,7 @@ var ticketer = (function() {
     instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
     defaultSongLengthSeconds: 240,
     defaultSongIntervalSeconds: 120,
+    messageTimer: null,
 
     /**
      * @var {{songInPreview,upcomingCount,iconMapHtml}}
@@ -398,14 +399,14 @@ var ticketer = (function() {
           data.existingTicketId = currentTicket.id;
         }
 
-        that.showAppMessage('Saving new ticket');
+        that.showAppMessage('Saving ticket');
 
         $.ajax({
             method: 'POST',
             data: data,
             url: '/api/saveTicket',
             success: function(data, status) {
-              that.showAppMessage('Saved new ticket', 'success');
+              that.showAppMessage('Saved ticket', 'success');
 
               void(status);
               var ticketId = data.ticket.id;
@@ -434,8 +435,8 @@ var ticketer = (function() {
 
             },
             error: function(xhr, status, error) {
-              that.showAppMessage('Ticket save failed ' + error, 'danger');
-
+              var message = 'Ticket save failed';
+              that.reportAjaxError(message, xhr, status, error);
               void(error);
               // FIXME handle error
             }
@@ -829,6 +830,7 @@ var ticketer = (function() {
         }
       );
 
+      that.showAppMessage('Updating ticket order');
       $.ajax({
         method: 'POST',
         data: {
@@ -840,8 +842,8 @@ var ticketer = (function() {
           that.showAppMessage('Saved revised order', 'success');
         },
         error: function(xhr, status, error) {
-          that.showAppMessage('Failed to save revised order' + error, 'danger');
-          // X void(error);
+          var message = 'Failed to save revised order';
+          that.reportAjaxError(message, xhr, status, error);
         }
       });
 
@@ -853,6 +855,7 @@ var ticketer = (function() {
 
       button = $(button);
       var ticketId = button.data('ticketId');
+      that.showAppMessage('Mark ticket used');
       $.ajax({
           method: 'POST',
           data: {
@@ -860,6 +863,7 @@ var ticketer = (function() {
           },
           url: '/api/useTicket',
           success: function(data, status) {
+            that.showAppMessage('Marked ticket used', 'success');
             void(data);
             void(status);
             var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
@@ -874,8 +878,8 @@ var ticketer = (function() {
             that.updatePerformanceStats();
           },
           error: function(xhr, status, error) {
-            void(xhr);
-            void(error);
+            var message = 'Failed to mark ticket used';
+            that.reportAjaxError(message, xhr, status, error);
           }
         }
       );
@@ -885,6 +889,7 @@ var ticketer = (function() {
       var that = this;
       button = $(button);
       var ticketId = button.data('ticketId');
+      that.showAppMessage('Deleting ticket');
       $.ajax({
           method: 'POST',
           data: {
@@ -892,13 +897,15 @@ var ticketer = (function() {
           },
           url: '/api/deleteTicket',
           success: function(data, status) {
+            that.showAppMessage('Deleted ticket', 'success');
             void(status);
             var ticketBlock = $('.ticket[data-ticket-id="' + ticketId + '"]');
             ticketBlock.remove();
             that.updatePerformanceStats();
           },
           error: function(xhr, status, error) {
-            void(error);
+            var message = 'Failed to deleted ticket';
+            that.reportAjaxError(message, xhr, status, error);
           }
         }
       );
@@ -1033,9 +1040,18 @@ var ticketer = (function() {
      * Show a message in the defined appMessageTarget (f any)
      *
      * @param message {string} Message to show (replaces any other)
-     * @param className {string} 'info','success','warning','danger'
+     * @param [className='info'] {string} 'info','success','warning','danger'
      */
     showAppMessage: function(message, className) {
+      var that = this;
+      if (this.messageTimer) {
+        clearTimeout(this.messageTimer);
+      }
+
+      this.messageTimer = setTimeout(function() {
+        that.appMessageTarget.html('');
+      }, 5000);
+
       if (!className) {
         className = 'info';
       }
@@ -1044,6 +1060,17 @@ var ticketer = (function() {
         block.text(message);
         this.appMessageTarget.html('').append(block);
       }
+    },
+
+    ucFirst: function(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
+    reportAjaxError: function(message, xhr, status, error) {
+      this.showAppMessage(
+        this.ucFirst(status) + ': ' + message + ': ' + error + ', ' + xhr.responseJSON.error,
+        'danger'
+      );
     }
   };
 }());

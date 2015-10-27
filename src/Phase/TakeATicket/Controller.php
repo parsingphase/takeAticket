@@ -75,6 +75,8 @@ class Controller
      */
     public function nextJsonAction()
     {
+        $this->setJsonErrorHandler();
+
         $next = $this->dataSource->fetchUpcomingTickets();
         return new JsonResponse($next);
     }
@@ -95,6 +97,8 @@ class Controller
 
     public function saveTicketPostAction(Request $request)
     {
+        $this->setJsonErrorHandler();
+
         $title = $request->get('title');
         $songKey = $request->get('songId');
         $band = $request->get('band');
@@ -144,6 +148,8 @@ class Controller
 
     public function newTicketOrderPostAction(Request $request)
     {
+        $this->setJsonErrorHandler();
+
         $this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
         $idOrder = $request->get('idOrder');
@@ -161,7 +167,7 @@ class Controller
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
-            $this->app['logger']->warn("Failed to store track order: ". print_r($idOrder, true));
+            $this->app['logger']->warn("Failed to store track order: " . print_r($idOrder, true));
             $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
         return $jsonResponse;
@@ -169,6 +175,8 @@ class Controller
 
     public function useTicketPostAction(Request $request)
     {
+        $this->setJsonErrorHandler();
+
         $this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
         $id = $request->get('ticketId');
@@ -184,6 +192,8 @@ class Controller
 
     public function deleteTicketPostAction(Request $request)
     {
+        $this->setJsonErrorHandler();
+
         $this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
         $id = $request->get('ticketId');
@@ -198,6 +208,8 @@ class Controller
 
     public function songSearchApiAction(Request $request)
     {
+        $this->setJsonErrorHandler();
+
         $searchString = $request->get('searchString');
         $searchCount = 10;
         if ($request->get('searchCount')) {
@@ -211,6 +223,8 @@ class Controller
 
     public function getPerformersAction()
     {
+        $this->setJsonErrorHandler();
+
         $performers = $this->dataSource->generatePerformerStats();
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'performers' => $performers]);
@@ -259,5 +273,13 @@ class Controller
     {
         $displayOptions = $this->getDisplayOptions();
         return isset($displayOptions['upcomingCount']) ? $displayOptions['upcomingCount'] : null;
+    }
+
+    protected function setJsonErrorHandler()
+    {
+        $this->app->error(function (\Exception $e, $code) {
+            $message = 'Threw ' . get_class($e) . ': ' . $e->getMessage();
+            return new JsonResponse(['error' => $message]);
+        });
     }
 }
