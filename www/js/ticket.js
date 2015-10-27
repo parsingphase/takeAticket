@@ -1025,7 +1025,7 @@ var ticketer = (function() {
           lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
         });
         ticketOrdinal++;
-        lastSongDuration = ticketData.song.duration;
+        lastSongDuration = ticketData.song ? ticketData.song.duration : null;
       });
 
       // Then update all totals

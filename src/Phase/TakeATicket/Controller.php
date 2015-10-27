@@ -101,7 +101,7 @@ class Controller
 
         $title = $request->get('title');
         $songKey = $request->get('songId');
-        $band = $request->get('band');
+        $band = $request->get('band') ?: []; // band must be array even if null (as passed by AJAX if no performers)
         $existingTicketId = $request->get('existingTicketId');
 
         $song = null;
