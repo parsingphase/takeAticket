@@ -106,6 +106,8 @@ abstract class AbstractSql
      */
     public function expandTicketData($ticket)
     {
+        $ticket = $this->normaliseTicketRecord($ticket);
+
         if ($ticket['songId']) {
             $ticket['song'] = $this->fetchSongById($ticket['songId']);
         }
@@ -522,4 +524,23 @@ abstract class AbstractSql
      * @return string
      */
     abstract protected function concatenateEscapedFields($fields);
+
+    /**
+     * @param $ticket
+     * @return mixed
+     */
+    protected function normaliseTicketRecord($ticket)
+    {
+        $boolFields = ['used', 'deleted', 'private', 'blocking'];
+        $intFields = ['id', 'songId'];
+
+        foreach ($intFields as $k) {
+            $ticket[$k] = is_null($ticket[$k]) ? null : (int)$ticket[$k];
+        }
+
+        foreach ($boolFields as $k) {
+            $ticket[$k] = (bool)$ticket[$k];
+        }
+        return $ticket;
+    }
 }

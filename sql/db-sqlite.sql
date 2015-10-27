@@ -9,6 +9,8 @@ CREATE TABLE tickets (
   songId  INT DEFAULT NULL,
   used    INT DEFAULT 0,
   deleted INT DEFAULT 0,
+  private INT DEFAULT 0,
+  blocking INT DEFAULT 0,
   startTime INT DEFAULT NULL
 );
 -- startTime is unix epoch seconds

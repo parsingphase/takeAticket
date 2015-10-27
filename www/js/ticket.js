@@ -99,6 +99,9 @@ var ticketer = (function() {
         for (var i = 0; i < tickets.length; i++) {
           var ticket = tickets[i];
           out += that.drawDisplayTicket(ticket);
+          if (ticket.blocking) {
+            break;
+          }
         }
 
         var target = $('#target');
