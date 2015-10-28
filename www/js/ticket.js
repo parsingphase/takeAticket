@@ -99,9 +99,6 @@ var ticketer = (function() {
         for (var i = 0; i < tickets.length; i++) {
           var ticket = tickets[i];
           out += that.drawDisplayTicket(ticket);
-          if (ticket.blocking) {
-            break;
-          }
         }
 
         var target = $('#target');
@@ -235,6 +232,13 @@ var ticketer = (function() {
       // Enable 'Add' button
       $('.editTicketButton').click(editTicketCallback);
       $('.cancelTicketButton').click(cancelTicketCallback);
+
+      $('.toggleButton').click(
+        function() {
+          var check = $(this).find('input[type=checkbox]');
+          check.prop('checked', !check.prop('checked'));
+        }
+      );
 
       // Enable the instrument tabs
       var allInstrumentTabs = controlPanelOuter.find('.instrument');
@@ -392,10 +396,17 @@ var ticketer = (function() {
         var ticketTitle = titleInput.val();
         var songInput = $('.selectedSongId');
         var songId = songInput.val();
+        var privateCheckbox = $('input.privateCheckbox');
+        var isPrivate = privateCheckbox.is(':checked');
+        var blockingCheckbox = $('input.blockingCheckbox');
+        var isBlocked = blockingCheckbox.is(':checked');
+
         var data = {
           title: ticketTitle,
           songId: songId,
-          band: currentBand
+          band: currentBand,
+          private: isPrivate,
+          blocking: isBlocked
         };
 
         if (currentTicket) {
@@ -675,8 +686,12 @@ var ticketer = (function() {
         '<div class="ticketId">' +
         '<span class="fa fa-ticket"></span> {{ ticket.id }}</div> ' +
         '<div class="ticketMeta">' +
-        '<div class="blocking">{{#if ticket.blocking}}<span class="fa fa-hand-stop-o" title="Blocking" />{{/if}}</div>' +
-        '<div class="private">{{#if ticket.private}}<span class="fa fa-eye-slash" title="Private" />{{/if}}</div>' +
+        '<div class="blocking">' +
+        '{{#if ticket.blocking}}<span class="fa fa-hand-stop-o" title="Blocking" />{{/if}}' +
+        '</div>' +
+        '<div class="private">' +
+        '{{#if ticket.private}}<span class="fa fa-eye-slash" title="Private" />{{/if}}' +
+        '</div>' +
         '</div>' +
         '<div class="pendingSong">' +
         '<span class="fa fa-group"></span> ' +
@@ -707,6 +722,16 @@ var ticketer = (function() {
         ' ' +
         (this.displayOptions.title ? 'withTitle' : 'noTitle') +
         '" data-ticket-id="{{ ticket.id }}">' +
+
+        '<div class="ticketMeta">' +
+        '<div class="blocking">' +
+        '{{#if ticket.blocking}}<span class="fa fa-hand-stop-o" title="Blocking" />{{/if}}' +
+        '</div>' +
+        '<div class="private">' +
+        '{{#if ticket.private}}<span class="fa fa-eye-slash" title="Private" />{{/if}}' +
+        '</div>' +
+        '</div>' +
+
         '  <div class="ticket-inner">' +
         '    <p class="text-center band auto-font">{{ticket.title}}</p>' +
         '    <p class="performers auto-font" data-fixed-assetwidth="200">' +
@@ -735,10 +760,12 @@ var ticketer = (function() {
       this.editTicketTemplate = Handlebars.compile(
         '<div class="editTicket well">' +
         '<div class="pull-right editTicketButtons">' +
-        '<button class="privacyButton btn btn-warning">Private ' +
-        ' <input type="checkbox" {{#if ticket}}{{# if ticket.private }}checked="checked"/>{{/if}}{{/if}}</button>' +
-        '<button class="blockingButton btn btn-warning">Blocking ' +
-        ' <input type="checkbox" {{#if ticket}}{{# if ticket.blocking }}checked="checked"/>{{/if}}{{/if}}</button>' +
+        '<button class="blockingButton btn btn-warning toggleButton">Blocking ' +
+        ' <input type="checkbox" class="blockingCheckbox" ' +
+        '  {{#if ticket}}{{# if ticket.blocking }}checked="checked"{{/if}}{{/if}} /></button>' +
+        '<button class="privacyButton btn btn-warning toggleButton">Private ' +
+        ' <input type="checkbox" class="privateCheckbox" ' +
+        '  {{#if ticket}}{{# if ticket.private }}checked="checked"{{/if}}{{/if}} /></button>' +
         '<button class="editTicketButton btn btn-success">Save</button>' +
         '<button class="cancelTicketButton btn">Cancel</button>' +
         '</div>' +
@@ -771,7 +798,7 @@ var ticketer = (function() {
 
         '<div class="input-group">' +
         '<span class="input-group-addon" id="group-addon-band"><span class="fa fa-pencil"></span> </span>' +
-        '<input class="editTicketTitle form-control" placeholder="Band name (optional)"' +
+        '<input class="editTicketTitle form-control" placeholder="Band name or message (optional)"' +
         ' value="{{#if ticket}}{{ticket.title}}{{/if}}"/>' +
         '</div>' + // /input-group
 
@@ -1036,7 +1063,7 @@ var ticketer = (function() {
           lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
         });
         ticketOrdinal++;
-        lastSongDuration = ticketData.song ? ticketData.song.duration : null;
+        lastSongDuration = ticketData.song ? ticketData.song.duration : 0;
       });
 
       // Then update all totals

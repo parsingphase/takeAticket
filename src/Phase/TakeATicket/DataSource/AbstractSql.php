@@ -396,14 +396,17 @@ abstract class AbstractSql
     }
 
     /**
+     * @param bool $includePrivate
      * @return array|mixed
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function fetchUpcomingTickets()
+    public function fetchUpcomingTickets($includePrivate = false)
     {
         $conn = $this->getDbConn();
         $statement = $conn->prepare(
-            'SELECT * FROM tickets WHERE deleted=0 AND used=0 ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
+            'SELECT * FROM tickets WHERE deleted=0 AND used=0 ' .
+            ($includePrivate ? '' : ' AND private = 0 ') .
+            'ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
         );
         $statement->execute();
         $next = $statement->fetchAll();

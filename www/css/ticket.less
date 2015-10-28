@@ -63,6 +63,10 @@ div.upcoming {
         min-height: 100px;
       }
 
+      .ticketMeta {
+        display: none;
+      }
+
       p {
         margin-bottom: 5px;
       }
@@ -109,6 +113,21 @@ div.upcoming {
         }
       }
 
+    }
+  }
+}
+
+.asAdmin {
+  div.upcoming {
+    .ticketMeta {
+      display: block !important;
+      position: absolute;
+      .blocking, .private {
+        float: left;
+        font-size: 2em;
+        padding-top: 0.4em;
+        padding-right: 0.4em;
+      }
     }
   }
 }

@@ -51,6 +51,9 @@ div.upcoming div.well.ticket.noSong {
   padding-bottom: 6px;
   min-height: 100px;
 }
+div.upcoming div.well.ticket .ticketMeta {
+  display: none;
+}
 div.upcoming div.well.ticket p {
   margin-bottom: 5px;
 }
@@ -87,6 +90,17 @@ div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
   height: 40px;
   vertical-align: middle;
   margin-bottom: 14px;
+}
+.asAdmin div.upcoming .ticketMeta {
+  display: block !important;
+  position: absolute;
+}
+.asAdmin div.upcoming .ticketMeta .blocking,
+.asAdmin div.upcoming .ticketMeta .private {
+  float: left;
+  font-size: 2em;
+  padding-top: 0.4em;
+  padding-right: 0.4em;
 }
 div.manage div.ticket .proximityIssue {
   color: red;

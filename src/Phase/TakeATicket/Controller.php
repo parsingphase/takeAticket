@@ -76,9 +76,20 @@ class Controller
     public function nextJsonAction()
     {
         $this->setJsonErrorHandler();
-
-        $next = $this->dataSource->fetchUpcomingTickets();
-        return new JsonResponse($next);
+        $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
+        $next = $this->dataSource->fetchUpcomingTickets($includePrivate);
+        if ($includePrivate) {
+            $show = $next;
+        } else {
+            $show = [];
+            foreach ($next as $k => $ticket) {
+                $show[$k] = $ticket;
+                if ($ticket['blocking']) {
+                    break;
+                }
+            }
+        }
+        return new JsonResponse($show);
     }
 
     public function manageAction()
@@ -102,6 +113,8 @@ class Controller
         $title = $request->get('title');
         $songKey = $request->get('songId');
         $band = $request->get('band') ?: []; // band must be array even if null (as passed by AJAX if no performers)
+        $private = $request->get('private') === 'true' ? 1 : 0;
+        $blocking = $request->get('blocking') === 'true' ? 1 : 0;
         $existingTicketId = $request->get('existingTicketId');
 
         $song = null;
@@ -123,10 +136,18 @@ class Controller
 
         if ($existingTicketId) {
             $ticketId = $existingTicketId;
-            $this->dataSource->updateTicketById($existingTicketId, ['title' => $title, 'songId' => $songId]);
         } else {
             $ticketId = $this->dataSource->storeNewTicket($title, $songId);
         }
+
+        // update even new tickets so that we can add any new columns easily
+        $updated = ['title' => $title, 'songId' => $songId, 'blocking' => $blocking, 'private' => $private];
+
+        $this->app['logger']->debug("Updating ticket", $updated);
+        $this->dataSource->updateTicketById(
+            $existingTicketId,
+            $updated
+        );
 
         if ($this->bandIdentifier === self::BAND_IDENTIFIER_PERFORMERS) {
             $this->dataSource->storeBandToTicket($ticketId, $band);
@@ -235,7 +256,8 @@ class Controller
     {
         $viewParams = [];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
-        $viewParams['tickets'] = $this->dataSource->fetchUpcomingTickets();
+        $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
+        $viewParams['tickets'] = $this->dataSource->fetchUpcomingTickets($includePrivate);
         $data = $this->app['twig']->render('upcoming.rss.twig', $viewParams);
         $headers = empty($_GET['nt']) ? ['Content-type' => 'application/rss+xml'] : ['Content-type' => 'text/plain'];
         $response = new Response($data, 200, $headers);
