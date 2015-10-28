@@ -731,6 +731,10 @@ var ticketer = (function() {
       this.editTicketTemplate = Handlebars.compile(
         '<div class="editTicket well">' +
         '<div class="pull-right editTicketButtons">' +
+        '<button class="privacyButton btn btn-warning">Private ' +
+        ' <input type="checkbox" {{#if ticket}}{{# if ticket.private }}checked="checked"/>{{/if}}{{/if}}</button>' +
+        '<button class="blockingButton btn btn-warning">Blocking ' +
+        ' <input type="checkbox" {{#if ticket}}{{# if ticket.blocking }}checked="checked"/>{{/if}}{{/if}}</button>' +
         '<button class="editTicketButton btn btn-success">Save</button>' +
         '<button class="cancelTicketButton btn">Cancel</button>' +
         '</div>' +
