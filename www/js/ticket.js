@@ -674,6 +674,10 @@ var ticketer = (function() {
         '</div>' +
         '<div class="ticketId">' +
         '<span class="fa fa-ticket"></span> {{ ticket.id }}</div> ' +
+        '<div class="ticketMeta">' +
+        '<div class="blocking">{{#if ticket.blocking}}<span class="fa fa-hand-stop-o" title="Blocking" />{{/if}}</div>' +
+        '<div class="private">{{#if ticket.private}}<span class="fa fa-eye-slash" title="Private" />{{/if}}</div>' +
+        '</div>' +
         '<div class="pendingSong">' +
         '<span class="fa fa-group"></span> ' +
 

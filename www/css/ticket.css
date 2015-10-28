@@ -104,7 +104,20 @@ div.manage div.ticket .ticketId {
   float: left;
   height: 2em;
   font-size: 1.8em;
-  width: 3em;
+  width: 2.4em;
+}
+div.manage div.ticket .ticketMeta {
+  float: left;
+  height: 3.2em;
+  padding-right: 14px;
+}
+div.manage div.ticket .ticketMeta .blocking,
+div.manage div.ticket .ticketMeta .private {
+  width: 16px;
+  font-size: 1.2em;
+}
+div.manage div.ticket .ticketMeta .blocking {
+  height: 22px;
 }
 div.manage div.ticket .pendingSong .fa {
   width: 16px;
