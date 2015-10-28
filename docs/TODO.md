@@ -7,7 +7,6 @@ Feature Requests
 * Edit existing performers (change names)
 * Fix Z-index issue in manage page ([screenshot](images/zindex.png))
     * Workaround for narrow screen - clear song search box after selecting song
-* Display performers in instrument order on manage page
 * Use foreign keys in MySQL
 * Add "platform" concept to replace temporary inRb3, inRb4 hack 
 * Allow customisation of instrument selection, order, default usage
@@ -36,6 +35,7 @@ Feature Requests
 * ~~Non-song tickets~~
     * ~~Private and "blocks queue" options~~
 * ~~Clearer display of when manage edit panel is editing existing rather than new ticket?~~
+* ~~Display performers in instrument order on manage page~~
 
 ### Deferred
 

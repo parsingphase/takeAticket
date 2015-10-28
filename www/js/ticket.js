@@ -697,15 +697,33 @@ var ticketer = (function() {
         '<span class="fa fa-group"></span> ' +
 
           // Display performers with metadata if valid, else just the band title.
-        '{{#if ticket.performers}}' +
-        '{{#each ticket.performers}}' +
+          /*
+           '{{#if ticket.performers}}' +
+           '{{#each ticket.performers}}' +
+           '<span class="performer performerDoneCount{{songsDone}}" ' +
+           'data-performer-id="{{performerId}}"> {{performerName}} ' +
+           ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
+           '</span>' +
+           '{{/each}}' +
+           '{{else}}' +
+           '{{ ticket.title }}' +
+           '{{/if}}' +
+           */
+
+          // Display performers with metadata if valid, else just the band title.
+        '{{#if ticket.band}}' +
+        '{{#each ticket.band}} <span class="instrumentTextIcon">{{ @key }}</span>' +
+        '{{#each this}}' +
         '<span class="performer performerDoneCount{{songsDone}}" ' +
         'data-performer-id="{{performerId}}"> {{performerName}} ' +
         ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
         '</span>' +
         '{{/each}}' +
-        '{{else}}' +
-        '{{ ticket.title }}' +
+        '{{/each}}' +
+        '{{/if}}' +
+          //'{{else}}' +
+        '{{#if ticket.title}}' +
+        '<span class="ticketTitle"><span class="instrumentTextIcon">Title</span> {{ ticket.title }}</span>' +
         '{{/if}}' +
 
         '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: ' +

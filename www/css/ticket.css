@@ -102,6 +102,22 @@ div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
   padding-top: 0.4em;
   padding-right: 0.4em;
 }
+div.manage div.ticket .instrumentTextIcon {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  vertical-align: 0.1em;
+  font-weight: bold;
+}
+div.manage div.ticket .performer {
+  padding-right: 4px;
+}
+div.manage div.ticket .ticketTitle {
+  font-weight: bold;
+}
 div.manage div.ticket .proximityIssue {
   color: red;
 }
