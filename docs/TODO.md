@@ -3,11 +3,7 @@ Feature Requests
 
 ### To Do
     
-* "Processing" and "Error" indicators on management interface
-* Non-song tickets
-    * Private and "blocks queue" options
 * Floating Performing button in manage interface when edit panel is off screen?
-* Clearer display of when manage edit panel is editing existing rather than new ticket?
 * Edit existing performers (change names)
 * Fix Z-index issue in manage page ([screenshot](images/zindex.png))
     * Workaround for narrow screen - clear song search box after selecting song
@@ -36,6 +32,10 @@ Feature Requests
 * ~~Enable use of MySQL as a backend~~
     * ~~Update startup docs to include MySQL setup / DB imports~~
 * ~~Integrate simpleuser better (ensure all css etc is local)~~
+* ~~"Processing" and "Error" indicators on management interface~~
+* ~~Non-song tickets~~
+    * ~~Private and "blocks queue" options~~
+* ~~Clearer display of when manage edit panel is editing existing rather than new ticket?~~
 
 ### Deferred
 
