@@ -721,9 +721,9 @@ var ticketer = (function() {
         '{{/each}}' +
         '{{/each}}' +
         '{{/if}}' +
-          //'{{else}}' +
+
         '{{#if ticket.title}}' +
-        '<span class="ticketTitle"><span class="instrumentTextIcon">Title</span> {{ ticket.title }}</span>' +
+        '<span class="ticketTitleIcon"><span class="instrumentTextIcon">Title</span> {{ ticket.title }}</span>' +
         '{{/if}}' +
 
         '{{#if ticket.song}}<br /><span class="fa fa-music"></span> {{ticket.song.artist}}: ' +
@@ -788,8 +788,8 @@ var ticketer = (function() {
         '<button class="cancelTicketButton btn">Cancel</button>' +
         '</div>' +
 
-        '{{# if ticket}}<h3 class="editTicketTitle">Edit ticket <span class="fa fa-ticket"></span> {{ticket.id}}</h3>' +
-        '{{else}}<h3 class="newTicketTitle">Add new ticket</h3>{{/if}}' +
+        '{{# if ticket}}<h3 class="editTicketHeader">Edit ticket <span class="fa fa-ticket"></span> {{ticket.id}}</h3>' +
+        '{{else}}<h3 class="newTicketHeader">Add new ticket</h3>{{/if}}' +
 
         '<div class="editTicketInner">' +
         '<div class="editTicketSong">' +

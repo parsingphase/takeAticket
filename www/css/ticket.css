@@ -115,7 +115,7 @@ div.manage div.ticket .instrumentTextIcon {
 div.manage div.ticket .performer {
   padding-right: 4px;
 }
-div.manage div.ticket .ticketTitle {
+div.manage div.ticket .ticketTitleIcon {
   font-weight: bold;
 }
 div.manage div.ticket .proximityIssue {
@@ -197,7 +197,7 @@ div.manage div.editTicket h3 {
   width: 10em;
   padding: 6px;
 }
-div.manage div.editTicket h3.editTicketTitle {
+div.manage div.editTicket h3.editTicketHeader {
   background-color: #aaaaaa;
   color: #ffffff;
 }
