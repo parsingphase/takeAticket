@@ -3,10 +3,18 @@ Feature Requests
 
 ### To Do
     
+* Remove song from ticket (can currently only replace)
+* Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)
+* Force title icon + title on manage tickets onto same line (span nowrap)
+* Allow multi-line messages
+    * And/or change min block height for message-only tickets
 * Floating Performing button in manage interface when edit panel is off screen?
 * Edit existing performers (change names)
 * Fix Z-index issue in manage page ([screenshot](images/zindex.png))
     * Workaround for narrow screen - clear song search box after selecting song
+* Enable key controls 
+    * Arrows in search
+    * Button tab order?
 * Use foreign keys in MySQL
 * Add "platform" concept to replace temporary inRb3, inRb4 hack 
 * Allow customisation of instrument selection, order, default usage
