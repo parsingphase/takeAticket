@@ -117,6 +117,8 @@ div.manage div.ticket .performer {
 }
 div.manage div.ticket .ticketTitleIcon {
   font-weight: bold;
+  text-wrap: none;
+  white-space: nowrap;
 }
 div.manage div.ticket .proximityIssue {
   color: red;
@@ -138,7 +140,7 @@ div.manage div.ticket .ticketId {
 }
 div.manage div.ticket .ticketMeta {
   float: left;
-  height: 3.2em;
+  height: 4em;
   padding-right: 14px;
 }
 div.manage div.ticket .ticketMeta .blocking,
