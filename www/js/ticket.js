@@ -557,6 +557,9 @@ var ticketer = (function() {
         var selectedId = song.id;
         var selectedSong = song.artist + ': ' + song.title;
 
+        var removeSongButton = $('.removeSong');
+        removeSongButton.removeClass('hidden');
+
         // Perform actions with selected song
         var editTicketBlock = $('.editTicket');
         editTicketBlock.find('input.selectedSongId').val(selectedId);
@@ -798,6 +801,11 @@ var ticketer = (function() {
         '<input type="hidden" class="selectedSongId"/> ' +
         '<span class="selectedSong">{{#if ticket}}{{#if ticket.song}}{{ticket.song.artist}}: ' +
         '{{ticket.song.title}}{{/if}}{{/if}}</span>' +
+
+        '<button class="btn removeSong{{#unless ticket}}{{#unless ticket.song}} hidden{{/unless}}{{/unless}}">' +
+        ' <span class="fa fa-close" />' +
+        '</button>' +
+
         '</div>' +
         '<div class="input-group input-group">' +
         '<span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>' +

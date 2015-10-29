@@ -219,6 +219,9 @@ div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary {
 div.manage div.editTicket .editTicketSong {
   width: 400px;
 }
+div.manage div.editTicket .editTicketSong button.removeSong {
+  margin-left: 10px;
+}
 div.manage div.editTicket .editTicketBandColumn {
   width: 600px;
 }
