@@ -1004,7 +1004,6 @@ var ticketer = (function() {
       var lastByPerformer = {};
       var ticketOrdinal = 1;
       var ticketTime = null;
-      var lastDuration = null;
 
       var pad = function(number) {
         if (number < 10) {
@@ -1012,11 +1011,11 @@ var ticketer = (function() {
         }
         return number;
       };
-      var defaultSongOffsetMs = (that.defaultSongIntervalSeconds + that.defaultSongLengthSeconds) * 1000;
 
       // First check number of songs performed before this one
       var sortContainer = $('.sortContainer');
       var lastSongDuration = null;
+      var lastTicketNoSong = true;
 
       sortContainer.find('.ticket').each(function() {
         var realTime;
@@ -1034,9 +1033,14 @@ var ticketer = (function() {
         } else if (ticketTime) {
           // If last song had an implicit time, add defaultSongOffsetMs to it and assume next song starts then
           // If this is in the past, assume it starts now!
-          var songOffsetMs = defaultSongOffsetMs;
-          if (lastSongDuration) {
+          var songOffsetMs;
+          if (lastTicketNoSong) {
+            songOffsetMs = that.defaultSongIntervalSeconds * 1000;
+            // Could just be a message, could be a reset / announcement, so treat as an interval only
+          } else if (lastSongDuration) {
             songOffsetMs = (that.defaultSongIntervalSeconds + lastSongDuration) * 1000;
+          } else {
+            songOffsetMs = (that.defaultSongIntervalSeconds + that.defaultSongLengthSeconds) * 1000;
           }
           ticketTime = new Date(Math.max(ticketTime.getTime() + songOffsetMs, Date.now()));
         } else {
@@ -1082,7 +1086,14 @@ var ticketer = (function() {
           lastByPerformer[performerId] = {idx: ticketOrdinal, ticketId: ticketId};
         });
         ticketOrdinal++;
-        lastSongDuration = ticketData.song ? ticketData.song.duration : 0;
+
+        if (ticketData.song) {
+          lastSongDuration = ticketData.song.duration;
+          lastTicketNoSong = false;
+        } else {
+          lastSongDuration = 0;
+          lastTicketNoSong = true;
+        } // Set non-song ticket to minimum duration
       });
 
       // Then update all totals
