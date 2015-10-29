@@ -788,7 +788,8 @@ var ticketer = (function() {
         '<button class="cancelTicketButton btn">Cancel</button>' +
         '</div>' +
 
-        '{{# if ticket}}<h3 class="editTicketHeader">Edit ticket <span class="fa fa-ticket"></span> {{ticket.id}}</h3>' +
+        '{{# if ticket}}' +
+        '<h3 class="editTicketHeader">Edit ticket <span class="fa fa-ticket"></span> {{ticket.id}}</h3>' +
         '{{else}}<h3 class="newTicketHeader">Add new ticket</h3>{{/if}}' +
 
         '<div class="editTicketInner">' +
