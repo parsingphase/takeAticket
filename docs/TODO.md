@@ -3,13 +3,13 @@ Feature Requests
 
 ### To Do
     
-* Remove song from ticket (can currently only replace)
+* Put instrument parts on manage page in standard order
 * Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)
-* Force title icon + title on manage tickets onto same line (span nowrap)
 * Allow multi-line messages
     * And/or change min block height for message-only tickets
 * Floating Performing button in manage interface when edit panel is off screen?
 * Edit existing performers (change names)
+* Allow user to perform two parts (currently cannot save)
 * Fix Z-index issue in manage page ([screenshot](images/zindex.png))
     * Workaround for narrow screen - clear song search box after selecting song
 * Enable key controls 
@@ -44,6 +44,8 @@ Feature Requests
     * ~~Private and "blocks queue" options~~
 * ~~Clearer display of when manage edit panel is editing existing rather than new ticket?~~
 * ~~Display performers in instrument order on manage page~~
+* ~~Remove song from ticket (can currently only replace)~~
+* ~~Force title icon + title on manage tickets onto same line (span nowrap)~~
 
 ### Deferred
 

@@ -227,7 +227,7 @@ var ticketer = (function() {
       }
 
       drawEditTicketForm(currentTicket);
-      var editTicketBlock = $('.editTicket');
+      // X var editTicketBlock = $('.editTicket'); // only used in inner scope (applyNewSong)
 
       // Enable 'Add' button
       $('.editTicketButton').click(editTicketCallback);
@@ -562,6 +562,8 @@ var ticketer = (function() {
         removeSongButton.removeClass('hidden');
 
         // Perform actions with selected song
+        var editTicketBlock = $('.editTicket'); // Temp hack, should already be in scope?
+
         editTicketBlock.find('input.selectedSongId').val(selectedId);
         editTicketBlock.find('.selectedSong').text(selectedSong);
         var keysTab = controlPanelOuter.find('.instrumentKeys');
@@ -750,7 +752,7 @@ var ticketer = (function() {
         '<div class="ticket well ' +
         (this.displayOptions.songInPreview ? 'withSong' : 'noSong') +
         ' ' +
-        (this.displayOptions.title ? 'withTitle' : 'noTitle') +
+        (this.displayOptions.title ? 'withTitle' : 'noTitle') + // TODO is this used (correctly)?
         '" data-ticket-id="{{ ticket.id }}">' +
 
         '<div class="ticketMeta">' +
