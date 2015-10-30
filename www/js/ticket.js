@@ -203,12 +203,11 @@ var ticketer = (function() {
      */
     resetEditTicketBlock: function(currentTicket) {
       var that = this;
+      var controlPanelOuter = $('.editTicketOuter');
 
       // Current panel state in function scope
       var selectedInstrument = 'V';
       var currentBand = {};
-
-      var controlPanelOuter = $('.editTicketOuter');
 
       // Reset band to empty (or to ticket band state)
       for (var instrumentIdx = 0; instrumentIdx < that.instrumentOrder.length; instrumentIdx++) {
@@ -228,10 +227,12 @@ var ticketer = (function() {
       }
 
       drawEditTicketForm(currentTicket);
+      var editTicketBlock = $('.editTicket');
 
       // Enable 'Add' button
       $('.editTicketButton').click(editTicketCallback);
       $('.cancelTicketButton').click(cancelTicketCallback);
+      $('.removeSongButton').click(removeSong);
 
       $('.toggleButton').click(
         function() {
@@ -557,11 +558,10 @@ var ticketer = (function() {
         var selectedId = song.id;
         var selectedSong = song.artist + ': ' + song.title;
 
-        var removeSongButton = $('.removeSong');
+        var removeSongButton = $('.removeSongButton');
         removeSongButton.removeClass('hidden');
 
         // Perform actions with selected song
-        var editTicketBlock = $('.editTicket');
         editTicketBlock.find('input.selectedSongId').val(selectedId);
         editTicketBlock.find('.selectedSong').text(selectedSong);
         var keysTab = controlPanelOuter.find('.instrumentKeys');
@@ -574,6 +574,15 @@ var ticketer = (function() {
           keysTab.find('.instrumentPerformer').html('<i>Needed</i>');
           rebuildPerformerList();
         }
+      }
+
+      function removeSong() {
+        editTicketBlock.find('input.selectedSongId').val(0);
+        editTicketBlock.find('.selectedSong').text('');
+        $(songSearchInput).val('');
+        var removeSongButton = $('.removeSongButton');
+        removeSongButton.hide();
+
       }
     },
 
@@ -802,7 +811,7 @@ var ticketer = (function() {
         '<span class="selectedSong">{{#if ticket}}{{#if ticket.song}}{{ticket.song.artist}}: ' +
         '{{ticket.song.title}}{{/if}}{{/if}}</span>' +
 
-        '<button class="btn removeSong{{#unless ticket}}{{#unless ticket.song}} hidden{{/unless}}{{/unless}}">' +
+        '<button class="btn removeSongButton{{#unless ticket}}{{#unless ticket.song}} hidden{{/unless}}{{/unless}}">' +
         ' <span class="fa fa-close" />' +
         '</button>' +
 
