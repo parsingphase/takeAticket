@@ -267,6 +267,8 @@ class Controller
 
     public function helpAction($section)
     {
+        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
         $rootDir = realpath(__DIR__ . '/../../../');
         $map = [
             'readme' => $rootDir . '/README.md',

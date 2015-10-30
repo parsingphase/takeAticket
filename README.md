@@ -53,7 +53,7 @@ refer to [Silex setup documentation](http://silex.sensiolabs.org/doc/web_servers
 ## Usage
 
 Using the startServer script, the app runs on localhost & all attached IPs at port 8080 
-(copy & edit startServer.sh to change this).
+(copy & edit `startServer.sh` to change this).
 Visit http://localhost:8080 when the server is running. The URLs in the documentation below all assume that this is the 
 server being used.
 
