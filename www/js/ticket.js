@@ -790,14 +790,18 @@ var ticketer = (function() {
       this.editTicketTemplate = Handlebars.compile(
         '<div class="editTicket well">' +
         '<div class="pull-right editTicketButtons">' +
-        '<button class="blockingButton btn btn-warning toggleButton">Blocking ' +
+        '<button class="blockingButton btn btn-warning toggleButton">' +
+        '<span class="fa fa-hand-stop-o" /> Blocking ' +
         ' <input type="checkbox" class="blockingCheckbox" ' +
         '  {{#if ticket}}{{# if ticket.blocking }}checked="checked"{{/if}}{{/if}} /></button>' +
-        '<button class="privacyButton btn btn-warning toggleButton">Private ' +
+        '<button class="privacyButton btn btn-warning toggleButton">' +
+        '<span class="fa fa-eye-slash" /> Private ' +
         ' <input type="checkbox" class="privateCheckbox" ' +
         '  {{#if ticket}}{{# if ticket.private }}checked="checked"{{/if}}{{/if}} /></button>' +
-        '<button class="editTicketButton btn btn-success">Save</button>' +
-        '<button class="cancelTicketButton btn">Cancel</button>' +
+        '<button class="editTicketButton btn btn-success">' +
+        '<span class="fa fa-save" /> Save</button>' +
+        '<button class="cancelTicketButton btn">' +
+        '<span class="fa fa-close" /> Cancel</button>' +
         '</div>' +
 
         '{{# if ticket}}' +
@@ -806,13 +810,14 @@ var ticketer = (function() {
 
         '<div class="editTicketInner">' +
         '<div class="editTicketSong">' +
-        '<div class="ticketAspectSummary"><span class="fa fa-music fa-2x" title="Song"></span>' +
+        '<div class="ticketAspectSummary"><span class="fa fa-music fa-2x" title="Song"></span> ' +
         '<input type="hidden" class="selectedSongId"/> ' +
         '<span class="selectedSong">{{#if ticket}}{{#if ticket.song}}{{ticket.song.artist}}: ' +
         '{{ticket.song.title}}{{/if}}{{/if}}</span>' +
 
-        '<button class="btn removeSongButton{{#unless ticket}}{{#unless ticket.song}} hidden{{/unless}}{{/unless}}">' +
-        ' <span class="fa fa-close" />' +
+        '<button title="Remove song from ticket" ' +
+        'class="btn removeSongButton{{#unless ticket}}{{#unless ticket.song}} hidden{{/unless}}{{/unless}}">' +
+        ' <span class="fa fa-ban" />' +
         '</button>' +
 
         '</div>' +

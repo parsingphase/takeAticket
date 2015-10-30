@@ -216,11 +216,17 @@ div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary {
   padding-left: 6px;
   min-height: 50px;
 }
+div.manage div.editTicket .editTicketSong .ticketAspectSummary .selectedSong,
+div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary .selectedSong {
+  margin-left: 8px;
+}
 div.manage div.editTicket .editTicketSong {
   width: 400px;
 }
 div.manage div.editTicket .editTicketSong button.removeSongButton {
   margin-left: 10px;
+  font-size: 1.4em;
+  padding: 4px 10px;
 }
 div.manage div.editTicket .editTicketBandColumn {
   width: 600px;
