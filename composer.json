@@ -26,7 +26,9 @@
         "phpoffice/phpexcel": "^1.8",
         "components/font-awesome": "^4.4",
         "jasongrimes/silex-simpleuser": "^2.0",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8",
+        "aptoma/twig-markdown": "^2.0",
+        "michelf/php-markdown": "^1.5"
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0",

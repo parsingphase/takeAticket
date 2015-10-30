@@ -26,9 +26,10 @@ or create a mysql database and a user with  DROP,SELECT,INSERT,UPDATE,DELETE per
 *  `sql/db-mysql.sql`
 *  `vendor/jasongrimes/silex-simpleuser/sql/mysql.sql`
  
-A symlink is currently required to make certain frontend resources available:
+A couple of symlinks are required to make certain frontend resources available:
 
     ln -s ../components www/components
+    ln -s ../../docs/images www/docs/images
  
 To configure the database and optional settings
  

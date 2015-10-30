@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Manual{% endblock %}
+{% block headerText %}Manual{% endblock %}
+{% block containerClass %}helpPage{% endblock %}
+
+    {% block appTarget %}
+        <div id="target">
+            <div class="well">{{ helpText|markdown }}</div>
+        </div>
+    {% endblock %}

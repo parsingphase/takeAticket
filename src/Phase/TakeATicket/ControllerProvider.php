@@ -8,6 +8,8 @@
 
 namespace Phase\TakeATicket;
 
+use Aptoma\Twig\Extension\MarkdownEngine\MichelfMarkdownEngine;
+use Aptoma\Twig\Extension\MarkdownExtension;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
@@ -32,6 +34,19 @@ class ControllerProvider implements ControllerProviderInterface
         // It's possible we should really do this as a ServiceProvider ... ?
         $this->app = $app;
         $controllers = $this->getControllerFactory();
+
+
+        $app['twig'] = $app->share(
+            $app->extend(
+                'twig',
+                function (\Twig_Environment $twig, $app) {
+                    // add custom globals, filters, tags, ...
+                    $engine = new MichelfMarkdownEngine();
+                    $twig->addExtension(new MarkdownExtension($engine));
+                    return $twig;
+                }
+            )
+        );
 
         $app['ticket.controller'] = $app->share(
             function (Application $app) {
@@ -102,6 +117,11 @@ class ControllerProvider implements ControllerProviderInterface
             '/api/getPerformers',
             'ticket.controller:getPerformersAction'
         );
+
+        $controllers->match(
+            '/help/{section}',
+            'ticket.controller:helpAction'
+        )->value('section', 'readme');
 
         return $controllers;
     }

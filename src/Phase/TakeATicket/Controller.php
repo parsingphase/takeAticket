@@ -14,6 +14,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller
@@ -262,6 +263,33 @@ class Controller
         $headers = empty($_GET['nt']) ? ['Content-type' => 'application/rss+xml'] : ['Content-type' => 'text/plain'];
         $response = new Response($data, 200, $headers);
         return $response;
+    }
+
+    public function helpAction($section)
+    {
+        $rootDir = realpath(__DIR__ . '/../../../');
+        $map = [
+            'readme' => $rootDir . '/README.md',
+            'CONTRIBUTING' => $rootDir . '/docs/CONTRIBUTING.md',
+            'TODO' => $rootDir . '/docs/TODO.md',
+        ];
+
+        if (!isset($map[$section])) {
+            throw new NotFoundHttpException;
+        }
+
+        $markdown = file_get_contents($map[$section]);
+
+        $markdown = preg_replace(
+            '#\[docs/\w+.md\]\((./)?docs/(\w+).md\)#',
+            '[docs/$2.md](/help/$2)',
+            $markdown
+        );
+
+        return $this->app['twig']->render(
+            'help.html.twig',
+            ['helpText' => $markdown]
+        );
     }
 
     /**
