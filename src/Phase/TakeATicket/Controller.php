@@ -294,6 +294,34 @@ class Controller
         );
     }
 
+    public function announceAction($section)
+    {
+        //$this->assertRole(self::MANAGER_REQUIRED_ROLE);
+
+        $rootDir = realpath(__DIR__ . '/../../../');
+        $announceDir = $rootDir . '/docs/announcements';
+
+        if (!preg_match('/^\w+$/', $section)) {
+            throw new NotFoundHttpException; // don't give access to anything but plain names
+        }
+
+        $candidateFile = $announceDir . '/' . $section . '.md';
+
+        if (!file_exists($candidateFile)) {
+            throw new NotFoundHttpException;
+        }
+
+        $markdown = file_get_contents($candidateFile);
+
+        return $this->app['twig']->render(
+            'announce.html.twig',
+            [
+                'announcement' => $markdown,
+                'messageClass' => $section
+            ]
+        );
+    }
+
     /**
      * @param $requiredRole
      */

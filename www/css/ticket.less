@@ -43,6 +43,17 @@ div#target {
   margin-top: 20px;
 }
 
+div.announcement {
+  h1 {
+    font-weight: bold;
+    font-size: 1.4em;
+  }
+  font-size: 2.3em;
+  &.INTERVAL, &.MORE {
+    font-size: 4em;
+  }
+}
+
 div.upcoming {
   margin-bottom: 100px;
 
@@ -50,7 +61,8 @@ div.upcoming {
     //padding: 0;
 
     &.ticket {
-      min-height: 180px;
+      //min-height: 180px;
+      min-height: 120px;
       background-color: rgba(245, 245, 245, 0.95) !important;
 
       &.withSong {

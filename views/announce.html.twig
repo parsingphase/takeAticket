@@ -1,0 +1,10 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Manual{% endblock %}
+{% block headerText %}Welcome to Rock Club London{% endblock %}
+{% block containerClass %}helpPage{% endblock %}
+
+    {% block appTarget %}
+        <div id="target">
+            <div class="well announcement {{ messageClass }}">{{ announcement|markdown }}</div>
+        </div>
+    {% endblock %}

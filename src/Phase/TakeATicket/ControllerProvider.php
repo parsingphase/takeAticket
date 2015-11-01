@@ -123,6 +123,11 @@ class ControllerProvider implements ControllerProviderInterface
             'ticket.controller:helpAction'
         )->value('section', 'readme');
 
+        $controllers->match(
+            '/announce/{section}',
+            'ticket.controller:announceAction'
+        )->value('section', 'readme');
+
         return $controllers;
     }
 
