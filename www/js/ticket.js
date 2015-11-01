@@ -579,6 +579,7 @@ var ticketer = (function() {
       }
 
       function removeSong() {
+        var editTicketBlock = $('.editTicket'); // Temp hack, should already be in scope?
         editTicketBlock.find('input.selectedSongId').val(0);
         editTicketBlock.find('.selectedSong').text('');
         $(songSearchInput).val('');

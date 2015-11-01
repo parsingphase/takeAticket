@@ -146,7 +146,7 @@ class Controller
 
         $this->app['logger']->debug("Updating ticket", $updated);
         $this->dataSource->updateTicketById(
-            $existingTicketId,
+            $ticketId,
             $updated
         );
 
