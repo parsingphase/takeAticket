@@ -4,6 +4,7 @@ Feature Requests
 ### To Do
     
 * Put instrument parts on manage page in standard order
+* Grey-out (?) RB4 indicator on Manage page when Keytar in use
 * Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)
 * Allow multi-line messages
     * And/or change min block height for message-only tickets

@@ -6,7 +6,7 @@
         <script src="/components/jquery/jquery.min.js"></script>
         <script src="/components/jquery-ui/jquery-ui.min.js"></script>
         <script src="/components/handlebars/handlebars.js"></script>
-        <script src="js/ticket.js"></script>
+        <script src="/js/ticket.js"></script>
     {% endblock %}
 
     {% block styleLinks %}
@@ -34,7 +34,8 @@
             <a href="/upcomingRss"><span class="fa fa-rss" title="Feed"></span></a>
             <a href="/manage"><span class="fa fa-wrench" title="Manage Queue"></span></a>
             <a href="/help"><span class="fa fa-life-ring" title="Help"></span></a>
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {% if is_granted('ROLE_ADMIN') %}
+                {#FIXME should be IS_AUTHENTICATED_FULLY but that's not working? #}
                 <a href="/user/logout"><span class="fa fa-power-off" title="Log Out"></span></a>
             {% else %}
                 <a href="/user/login"><span class="fa fa-key" title="Log In"></span></a>
