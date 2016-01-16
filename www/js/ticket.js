@@ -1058,7 +1058,7 @@ var ticketer = (function() {
 
         $(this).removeClass('shown');
 
-        if (!ticketData.used) {
+        if (!(ticketData.used || ticketData.private)) {
           if (nthUnused <= that.displayOptions.upcomingCount) {
             $(this).addClass('shown');
           }
