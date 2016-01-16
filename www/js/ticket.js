@@ -73,6 +73,7 @@ var ticketer = (function() {
       }
       ticket.band = sortedBand;
       var ticketParams = {ticket: ticket, icons: this.displayOptions.iconMapHtml};
+      console.log(ticketParams);
       return this.upcomingTicketTemplate(ticketParams);
     },
 
@@ -683,11 +684,12 @@ var ticketer = (function() {
 
       this.manageTemplate = Handlebars.compile(
         '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}' +
-        ' {{#if ticket.song.inRb3}}rb3ticket{{/if}} {{#if ticket.song.inRb4}}rb4ticket{{/if}}"' +
+        ' {{#if ticket.song.inRb3}}rb3ticket{{/if}} {{#if ticket.song.inRb4}}rb4ticket{{/if}}' +
+        ' {{#if ticket.band.K}}withKeys{{/if}}"' +
         ' data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
-        '        <div class="gameMarker">{{#if ticket.song.inRb3}}RB3{{/if}}</div>' +
-        '        <div class="gameMarker">{{#if ticket.song.inRb4}}RB4{{/if}}</div>' +
+        '        <div class="gameMarker gameMarkerRb3">{{#if ticket.song.inRb3}}RB3{{/if}}</div>' +
+        '        <div class="gameMarker gameMarkerRb4">{{#if ticket.song.inRb4}}RB4{{/if}}</div>' +
         '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
         '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
         '        <button class="btn editButton" data-ticket-id="{{ ticket.id }}">' +

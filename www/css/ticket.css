@@ -189,6 +189,9 @@ div.manage div.ticket .gameMarker {
   font-weight: bold;
   width: 70px;
 }
+div.manage div.ticket.withKeys .gameMarkerRb4 {
+  color: #888;
+}
 div.manage div.ticket button {
   min-height: 2.5em;
 }
