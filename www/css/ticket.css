@@ -182,6 +182,9 @@ div.manage div.ticket.used {
   font-style: italic;
   background-color: #fefefe !important;
 }
+div.manage div.ticket.shown {
+  border-color: red;
+}
 div.manage div.ticket .gameMarker {
   display: inline-block;
   vertical-align: top;

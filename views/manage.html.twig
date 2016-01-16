@@ -7,8 +7,10 @@
         <script>
             var tickets = {{ tickets|json_encode|raw }};
             var performers = {{ performers|json_encode|raw }};
-            $(function () {
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            $(function() {
                 ticketer.performers = performers;
+                ticketer.displayOptions = displayOptions;
                 ticketer.manage(tickets);
             });
         </script>
@@ -23,9 +25,9 @@
     <div class="end">
         <div id="appMessages"></div>
         {#{% if app.session.flashbag.has('alert') %}#}
-            {#{% for flashMessage in app.session.flashbag.get('alert') %}#}
-                {#<div class="alert alert-info">{{ flashMessage }}</div>#}
-            {#{% endfor %}#}
+        {#{% for flashMessage in app.session.flashbag.get('alert') %}#}
+        {#<div class="alert alert-info">{{ flashMessage }}</div>#}
+        {#{% endfor %}#}
         {#{% endif %}#}
     </div>
 {% endblock %}

@@ -499,8 +499,8 @@ var ticketer = (function() {
           var instrument = that.instrumentOrder[iIdx];
 
           performersSpan = controlPanelOuter.
-            find('.instrument[data-instrument-shortcode=' + instrument + ']').
-            find('.instrumentPerformer');
+          find('.instrument[data-instrument-shortcode=' + instrument + ']').
+          find('.instrumentPerformer');
 
           performerString = currentBand[instrument].join(', ');
           if (!performerString) {
@@ -957,6 +957,7 @@ var ticketer = (function() {
             // Fixme receive updated ticket info from API
             var ticket = ticketBlock.data('ticket');
             ticket.startTime = Date.now() / 1000;
+            ticket.used = true;
             ticketBlock.data('ticket', ticket);
 
             that.updatePerformanceStats();
@@ -1044,6 +1045,8 @@ var ticketer = (function() {
       var lastSongDuration = null;
       var lastTicketNoSong = true;
 
+      var nthUnused = 1;
+
       sortContainer.find('.ticket').each(function() {
         var realTime;
         var ticketId = $(this).data('ticket-id');
@@ -1051,6 +1054,15 @@ var ticketer = (function() {
 
         if (ticketData.startTime) {
           realTime = new Date(ticketData.startTime * 1000);
+        }
+
+        $(this).removeClass('shown');
+
+        if (!ticketData.used) {
+          if (nthUnused <= that.displayOptions.upcomingCount) {
+            $(this).addClass('shown');
+          }
+          nthUnused++;
         }
 
         $(this).find('.ticketOrdinal').text('# ' + ticketOrdinal);

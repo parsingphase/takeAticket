@@ -103,7 +103,11 @@ class Controller
 
         return $this->app['twig']->render(
             'manage.html.twig',
-            ['tickets' => $tickets, 'performers' => $performers]
+            [
+                'tickets' => $tickets,
+                'performers' => $performers,
+                'displayOptions' => $this->getDisplayOptions()
+            ]
         );
     }
 
