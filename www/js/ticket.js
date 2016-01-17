@@ -732,7 +732,7 @@ var ticketer = (function() {
         '{{#each ticket.band}} <span class="instrumentTextIcon">{{ @key }}</span>' +
         '{{#each this}}' +
         '<span class="performer performerDoneCount{{songsDone}}" ' +
-        'data-performer-id="{{performerId}}"> {{performerName}} ' +
+        'data-performer-id="{{performerId}}" data-performer-name="{{performerName}}"> {{performerName}} ' +
         ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
         '</span>' +
         '{{/each}}' +
@@ -1090,6 +1090,7 @@ var ticketer = (function() {
         // Update performer stats (done/total)
         $(this).find('.performer').each(function() {
           var performerId = $(this).data('performer-id');
+          var performerName = $(this).data('performer-name');
           if (!performed.hasOwnProperty(performerId)) {
             performed[performerId] = 0;
           }
@@ -1113,10 +1114,13 @@ var ticketer = (function() {
           // Now check proximity of last song by this performer
           if (lastByPerformer.hasOwnProperty(performerId)) {
             var distance = ticketOrdinal - lastByPerformer[performerId].idx;
-            if (distance < 3) {
+            $(this).removeClass('proximityIssue');
+            $(this).removeClass('proximityIssue1');
+            if ((distance < 3) && (performerName.charAt(0) !== '?')) {
               $(this).addClass('proximityIssue');
-            } else {
-              $(this).removeClass('proximityIssue');
+              if (distance === 1) {
+                $(this).addClass('proximityIssue1');
+              }
             }
           } else {
             // Make sure they've not got a proximity marker on a ticket that's been dragged to top
