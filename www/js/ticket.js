@@ -73,7 +73,6 @@ var ticketer = (function() {
       }
       ticket.band = sortedBand;
       var ticketParams = {ticket: ticket, icons: this.displayOptions.iconMapHtml};
-      console.log(ticketParams);
       return this.upcomingTicketTemplate(ticketParams);
     },
 
