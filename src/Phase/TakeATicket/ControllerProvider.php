@@ -99,6 +99,11 @@ class ControllerProvider implements ControllerProviderInterface
         );
 
         $controllers->match(
+            '/api/remotesRedirect',
+            'ticket.controller:remotesRedirectAction'
+        );
+
+        $controllers->match(
             '/songSearch',
             'ticket.controller:songSearchAction'
         );
@@ -127,6 +132,11 @@ class ControllerProvider implements ControllerProviderInterface
             '/announce/{section}',
             'ticket.controller:announceAction'
         )->value('section', 'readme');
+
+        //$controllers->match(
+        //    '{any}',
+        //    'ticket.controller:indexAction'
+        //)->assert('any', '.*');
 
         return $controllers;
     }

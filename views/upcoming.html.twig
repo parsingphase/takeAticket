@@ -6,9 +6,12 @@
     {% block pageJs %}
         <script>
             var displayOptions = {{ displayOptions|json_encode|raw }};
-            $(function () {
+            $(function() {
                 ticketer.displayOptions = displayOptions;
                 ticketer.go();
+                {% if not is_granted('ROLE_ADMIN') %}
+                ticketer.checkRemoteRedirect();
+                {% endif %}
             });
         </script>
     {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% block title %}RCL | Manual{% endblock %}
+{% block title %}RCL | Announcements{% endblock %}
 {% block headerText %}Welcome to Rock Club London{% endblock %}
 {% block containerClass %}helpPage{% endblock %}
 
@@ -7,4 +7,17 @@
         <div id="target">
             <div class="well announcement {{ messageClass }}">{{ announcement|markdown }}</div>
         </div>
+    {% endblock %}
+
+    {% block pageJs %}
+        <script>
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            $(function () {
+                ticketer.displayOptions = displayOptions;
+
+                {% if not is_granted('ROLE_ADMIN') %}
+                ticketer.checkRemoteRedirect();
+                {% endif %}
+            });
+        </script>
     {% endblock %}

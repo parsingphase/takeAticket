@@ -520,6 +520,14 @@ abstract class AbstractSql
         return $song;
     }
 
+
+    public function getSetting($key)
+    {
+        $conn = $this->getDbConn();
+        $value = $conn->fetchColumn('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
+        return $value;
+    }
+
     /**
      * Return SQL in appropriate dialect to concatenate the listed values
      *

@@ -132,6 +132,9 @@ div.manage div.ticket .ticketTitleIcon {
   white-space: nowrap;
 }
 div.manage div.ticket .proximityIssue {
+  color: orange;
+}
+div.manage div.ticket .proximityIssue.proximityIssue1 {
   color: red;
 }
 div.manage div.ticket .ticketOrder {
@@ -184,6 +187,7 @@ div.manage div.ticket.used {
 }
 div.manage div.ticket.shown {
   border-color: red;
+  border-width: 3px;
 }
 div.manage div.ticket .gameMarker {
   display: inline-block;
@@ -369,6 +373,11 @@ div.songSearch .searchTargetOuter table tr {
 }
 div.helpPage {
   margin-bottom: 100px;
+}
+div.alertHolder {
+  text-align: center;
+  font-size: 3em;
+  padding: 1em 8em;
 }
 div.end {
   position: fixed;

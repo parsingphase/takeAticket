@@ -59,6 +59,7 @@ class Controller
     {
         $viewParams = [];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
+        $viewParams['freeze'] = (bool)$this->dataSource->getSetting('freeze');
         return $this->app['twig']->render('upcoming.html.twig', $viewParams);
     }
 
@@ -324,6 +325,11 @@ class Controller
                 'messageClass' => $section
             ]
         );
+    }
+
+    public function remotesRedirectAction()
+    {
+        return $this->dataSource->getSetting('remotesUrl');
     }
 
     /**

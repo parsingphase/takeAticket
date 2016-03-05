@@ -17,7 +17,7 @@
     {% block pageJs %}
         <script>
             var displayOptions = {{ displayOptions|json_encode|raw }};
-            $(function () {
+            $(function() {
                 ticketer.displayOptions = displayOptions;
                 ticketer.go();
             });
@@ -49,12 +49,26 @@
     {% endblock %}
 </div>
 {% block footer %}
+
+
+    {% if freeze %}
+        <div class="alertHolder">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    Queue Frozen
+                </div>
+                <div class="panel-body"> Accepting requests from new performers only.</div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="end">
         <div class="pull-right docslink">
             <a href="https://github.com/parsingphase/takeAticket"><span class="fa fa-github"
                                                                         title="Source & Docs"></span></a>
         </div>
-        <div class="gflink page-footer"><p class="text-center"><a href="http://gofundme.com/rcl2015">gofundme.com/rcl2015</a>
+        <div class="gflink page-footer"><p class="text-center"><a
+                        href="http://rockclublondon.com">rockclublondon.com</a>
             </p></div>
     </div>
 {% endblock %}
