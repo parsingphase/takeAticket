@@ -497,7 +497,9 @@ var ticketer = (function() {
         for (var iIdx = 0; iIdx < that.instrumentOrder.length; iIdx++) {
           var instrument = that.instrumentOrder[iIdx];
 
-          performersSpan = controlPanelOuter.find('.instrument[data-instrument-shortcode=' + instrument + ']').find('.instrumentPerformer');
+          performersSpan = controlPanelOuter
+            .find('.instrument[data-instrument-shortcode=' + instrument + ']')
+            .find('.instrumentPerformer');
 
           performerString = currentBand[instrument].join(', ');
           if (!performerString) {
@@ -1183,10 +1185,8 @@ var ticketer = (function() {
 
     checkRemoteRedirect: function() {
       window.setInterval(function() {
-          // console.log(window.location.pathname);
           $.get('/api/remotesRedirect', function(newPath) {
             if (newPath && (newPath !== window.location.pathname)) {
-              // console.log(' => "' + newPath+'"');
               window.location.pathname = newPath;
             }
           });
