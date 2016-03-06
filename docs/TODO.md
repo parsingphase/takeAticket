@@ -3,8 +3,9 @@ Feature Requests
 
 ### To Do
     
+* Add admin interface for settings DB
+    * Ensure that remoteUrl setting is valid? (Or redirect to / on error)
 * Put instrument parts on manage page in standard order
-* Grey-out (?) RB4 indicator on Manage page when Keytar in use
 * Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)
 * Allow multi-line messages
     * And/or change min block height for message-only tickets
@@ -21,9 +22,11 @@ Feature Requests
 * Allow customisation of instrument selection, order, default usage
     * Eg for non-instrumental karaoke, possibly multiple vocal parts
 * Add "session" concept to allow multiple sessions to be stored in DB without reset
+* Rewrite the whole overcomplex mess in Angular (/+Symfony?)
     
 ### Done
 
+* ~~Grey-out (?) RB4 indicator on Manage page when Keytar in use~~
 * ~~Include instrument (rotate through icons)~~
 * ~~Add CONTRIBUTING doc~~
 * ~~Display band members rather than stored ticket title if available~~
