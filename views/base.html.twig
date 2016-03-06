@@ -57,7 +57,7 @@
                 <div class="panel-heading">
                     Queue Frozen
                 </div>
-                <div class="panel-body"> Accepting requests from new performers only.</div>
+                <div class="panel-body">{{ freezeMessage |default('No more requests please') }}</div>
             </div>
         </div>
     {% endif %}

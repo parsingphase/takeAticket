@@ -7,7 +7,7 @@
             "email": "richard@phase.org"
         }
     ],
-    "licence": "Apache-2.0",
+    "license": "Apache-2.0",
     "autoload": {
         "psr-0": {
             "Phase\\TakeATicket\\": "src/"
@@ -15,25 +15,30 @@
     },
     "require": {
         "php": "~5.5 || ^7.0-dev",
-        "silex/silex": "~1.2",
+        "ext-PDO": "*",
+        "aptoma/twig-markdown": "^2.0",
         "components/bootstrap": "~3.2",
-        "components/jqueryui": "~1.11",
+        "components/font-awesome": "^4.4",
         "components/handlebars.js": "^3.0",
-        "twig/twig": "~1.16",
+        "components/jqueryui": "~1.11",
         "doctrine/dbal": "~2.4",
-        "symfony/twig-bridge": "~2.5",
+        "jasongrimes/silex-simpleuser": "^2.0",
+        "michelf/php-markdown": "^1.5",
         "monolog/monolog": "^1.15",
         "phpoffice/phpexcel": "^1.8",
-        "components/font-awesome": "^4.4",
-        "jasongrimes/silex-simpleuser": "^2.0",
         "phpunit/phpunit": "^4.8",
-        "aptoma/twig-markdown": "^2.0",
-        "michelf/php-markdown": "^1.5"
+        "silex/silex": "~1.2",
+        "symfony/twig-bridge": "~2.5",
+        "twig/twig": "~1.16"
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0",
-        "squizlabs/php_codesniffer": "^2.3",
-        "phing/phing": "^2.12"
+        "phing/phing": "^2.12",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "suggest" : {
+        "ext-pdo_mysql": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend",
+        "ext-pdo_sqlite": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend"
     },
     "extra": {
         "branch-alias": {

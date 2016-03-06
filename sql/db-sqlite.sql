@@ -44,3 +44,11 @@ CREATE TABLE tickets_x_performers (
   performerId INT  NOT NULL,
   instrument  TEXT NOT NULL
 );
+
+DROP TABLE IF EXISTS settings;
+
+CREATE TABLE settings (
+  id      INT PRIMARY KEY,
+  settingKey TEXT,
+  settingValue TEXT
+);

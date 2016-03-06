@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "37ed7524c3ac181995e4f0d2869d6c58",
+    "hash": "8cdf1d051628866b7e6e7fd998cb6c04",
+    "content-hash": "dce311a66b9e1d1cff10ec433181fd9b",
     "packages": [
         {
             "name": "aptoma/twig-markdown",
@@ -2645,12 +2646,12 @@
             "version": "v2.7.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Routing.git",
+                "url": "https://github.com/symfony/routing.git",
                 "reference": "ea9134f277162b02e5f80ac058b75a77637b0d26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Routing/zipball/ea9134f277162b02e5f80ac058b75a77637b0d26",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/ea9134f277162b02e5f80ac058b75a77637b0d26",
                 "reference": "ea9134f277162b02e5f80ac058b75a77637b0d26",
                 "shasum": ""
             },
@@ -3187,7 +3188,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~5.5 || ^7.0-dev"
+        "php": "~5.5 || ^7.0-dev",
+        "ext-pdo": "*"
     },
     "platform-dev": []
 }

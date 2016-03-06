@@ -60,6 +60,7 @@ class Controller
         $viewParams = [];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
         $viewParams['freeze'] = (bool)$this->dataSource->getSetting('freeze');
+        $viewParams['freezeMessage'] = $this->dataSource->getSetting('freezeMessage');
         return $this->app['twig']->render('upcoming.html.twig', $viewParams);
     }
 
