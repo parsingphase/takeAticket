@@ -57,8 +57,7 @@ class Controller
 
     public function upcomingAction()
     {
-        $viewParams = [];
-        $viewParams['displayOptions'] = $this->getDisplayOptions();
+        $viewParams = $this->defaultViewParams();
         $viewParams['freeze'] = (bool)$this->dataSource->getSetting('freeze');
         $viewParams['freezeMessage'] = $this->dataSource->getSetting('freezeMessage');
         return $this->app['twig']->render('upcoming.html.twig', $viewParams);
@@ -66,8 +65,7 @@ class Controller
 
     public function songSearchAction()
     {
-        $viewParams = [];
-        $viewParams['displayOptions'] = $this->getDisplayOptions();
+        $viewParams = $this->defaultViewParams();
         return $this->app['twig']->render('songSearch.html.twig', $viewParams);
     }
 
@@ -261,8 +259,7 @@ class Controller
 
     public function upcomingRssAction()
     {
-        $viewParams = [];
-        $viewParams['displayOptions'] = $this->getDisplayOptions();
+        $viewParams = $this->defaultViewParams();
         $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
         $viewParams['tickets'] = $this->dataSource->fetchUpcomingTickets($includePrivate);
         $data = $this->app['twig']->render('upcoming.rss.twig', $viewParams);
@@ -352,6 +349,7 @@ class Controller
         $displayOptions = isset($this->app['displayOptions']) ? $this->app['displayOptions'] : [];
         if ($this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE)) {
             $displayOptions['songInPreview'] = true; // force for logged-in users
+            $displayOptions['isAdmin'] = true; // force for logged-in users
         }
         return $displayOptions;
     }
@@ -373,5 +371,18 @@ class Controller
             $message = 'Threw ' . get_class($e) . ': ' . $e->getMessage();
             return new JsonResponse(['error' => $message]);
         });
+    }
+
+    /**
+     * @return array
+     */
+    protected function defaultViewParams()
+    {
+        $protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
+        $viewParams = [
+            'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/'
+        ];
+        $viewParams['displayOptions'] = $this->getDisplayOptions();
+        return $viewParams;
     }
 }

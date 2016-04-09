@@ -117,11 +117,30 @@ var ticketer = (function() {
             var rawScale = Math.max(spaceUsedByText / spaceAvailableForText, 1);
             var scale = 1.05 * rawScale;
 
+            if (that.displayOptions.adminQueueHasControls && that.displayOptions.isAdmin) {
+              scale *= 1.25;
+            }
+
             // 1.05 extra scale to fit neatly, fixedWidth is non-scaling elements
             var font = Number($(this).css('font-size').replace(/[^0-9]+$/, ''));
             $(this).css('font-size', Number(font / scale).toFixed() + 'px');
           }
         );
+
+        target.find('.performingButton').click(function() {
+          var ticketId = $(this).data('ticket-id');
+          if (window.confirm('Mark song as performing?')) {
+            that.performButtonCallback(this);
+            console.log('Performing ' + ticketId)
+          }
+        });
+        target.find('.removeButton').click(function() {
+          var ticketId = $(this).data('ticket-id');
+          if (window.confirm('Remove song?')) {
+            that.removeButtonCallback(this);
+            console.log('Remove ' + ticketId)
+          }
+        });
 
       });
     },
@@ -712,21 +731,21 @@ var ticketer = (function() {
         '<div class="pendingSong">' +
         '<span class="fa fa-group"></span> ' +
 
-          // Display performers with metadata if valid, else just the band title.
-          /*
-           '{{#if ticket.performers}}' +
-           '{{#each ticket.performers}}' +
-           '<span class="performer performerDoneCount{{songsDone}}" ' +
-           'data-performer-id="{{performerId}}"> {{performerName}} ' +
-           ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
-           '</span>' +
-           '{{/each}}' +
-           '{{else}}' +
-           '{{ ticket.title }}' +
-           '{{/if}}' +
-           */
+        // Display performers with metadata if valid, else just the band title.
+        /*
+         '{{#if ticket.performers}}' +
+         '{{#each ticket.performers}}' +
+         '<span class="performer performerDoneCount{{songsDone}}" ' +
+         'data-performer-id="{{performerId}}"> {{performerName}} ' +
+         ' (<span class="songsDone">{{songsDone}}</span>/<span class="songsTotal">{{songsTotal}}</span>)' +
+         '</span>' +
+         '{{/each}}' +
+         '{{else}}' +
+         '{{ ticket.title }}' +
+         '{{/if}}' +
+         */
 
-          // Display performers with metadata if valid, else just the band title.
+        // Display performers with metadata if valid, else just the band title.
         '{{#if ticket.band}}' +
         '{{#each ticket.band}} <span class="instrumentTextIcon">{{ @key }}</span>' +
         '{{#each this}}' +
@@ -756,6 +775,14 @@ var ticketer = (function() {
         ' ' +
         (this.displayOptions.title ? 'withTitle' : 'noTitle') + // TODO is this used (correctly)?
         '" data-ticket-id="{{ ticket.id }}">' +
+
+        (this.displayOptions.adminQueueHasControls && this.displayOptions.isAdmin ?
+        '<div class="ticketAdminControls">' +
+        '<button class="btn btn-sm btn-primary performingButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
+        '<button class="btn btn-sm btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
+        '</div>'
+          : '') +
+
 
         '<div class="ticketMeta">' +
         '<div class="blocking">' +
