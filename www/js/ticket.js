@@ -131,14 +131,12 @@ var ticketer = (function() {
           var ticketId = $(this).data('ticket-id');
           if (window.confirm('Mark song as performing?')) {
             that.performButtonCallback(this);
-            console.log('Performing ' + ticketId)
           }
         });
         target.find('.removeButton').click(function() {
           var ticketId = $(this).data('ticket-id');
           if (window.confirm('Remove song?')) {
             that.removeButtonCallback(this);
-            console.log('Remove ' + ticketId)
           }
         });
 
