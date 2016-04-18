@@ -1,6 +1,7 @@
 {
     "name": "parsingphase/takeaticket",
     "description": "Ticket Queue Display App",
+    "type": "project",
     "authors": [
         {
             "name": "Richard George",
@@ -9,40 +10,77 @@
     ],
     "license": "Apache-2.0",
     "autoload": {
-        "psr-0": {
-            "Phase\\TakeATicket\\": "src/"
+        "psr-4": {
+            "": "src/"
+        },
+        "classmap": [
+            "app/AppKernel.php",
+            "app/AppCache.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "require": {
-        "php": "~5.5 || ^7",
+        "php": ">=5.5.9",
         "ext-PDO": "*",
         "aptoma/twig-markdown": "^2.0",
         "components/bootstrap": "~3.2",
         "components/font-awesome": "^4.4",
         "components/handlebars.js": "^3.0",
         "components/jqueryui": "~1.11",
-        "doctrine/dbal": "~2.4",
-        "jasongrimes/silex-simpleuser": "^2.0",
         "michelf/php-markdown": "^1.5",
-        "monolog/monolog": "^1.15",
-        "phpoffice/phpexcel": "^1.8",
-        "phpunit/phpunit": "^4.8",
-        "silex/silex": "~1.2",
-        "symfony/twig-bridge": "~2.5",
-        "twig/twig": "~1.16"
+        "symfony/symfony": "3.0.*",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/doctrine-cache-bundle": "^1.2",
+        "symfony/swiftmailer-bundle": "^2.3",
+        "symfony/monolog-bundle": "^2.8",
+        "sensio/distribution-bundle": "^5.0",
+        "sensio/framework-extra-bundle": "^3.0.2",
+        "incenteev/composer-parameter-handler": "^2.0"
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0",
         "phing/phing": "^2.12",
-        "squizlabs/php_codesniffer": "^2.3"
+        "squizlabs/php_codesniffer": "^2.3",
+        "sensio/generator-bundle": "^3.0",
+        "symfony/phpunit-bridge": "^3.0"
     },
-    "suggest" : {
-        "ext-pdo_mysql": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend",
-        "ext-pdo_sqlite": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend"
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "5.5.9"
+        }
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "0.1.x-dev"
+        "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
+        "symfony-web-dir": "web",
+        "symfony-tests-dir": "tests",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
         }
     }
 }

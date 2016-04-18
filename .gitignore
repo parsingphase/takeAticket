@@ -1,3 +1,4 @@
+/app/config/parameters.yml
 /vendor/
 .idea
 composer.phar
@@ -11,3 +12,17 @@ www/local
 testConfig.php
 www/docs/images
 docs/announcements
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+/web/bundles/
