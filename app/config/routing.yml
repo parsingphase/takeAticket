@@ -1,3 +1,4 @@
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
+homepage:
+    path:     /
+    defaults: { _controller: TakeATicketBundle:Default:index }
+    methods:  [GET]

@@ -26,3 +26,4 @@ docs/announcements
 !var/sessions/.gitkeep
 !var/SymfonyRequirements.php
 /web/bundles/
+web/local
