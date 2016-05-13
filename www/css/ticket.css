@@ -1,6 +1,7 @@
 body {
   background-image: url('/local/background.jpg');
   background-size: cover;
+  background-position-y: -450px;
 }
 .container {
   padding: 0;
@@ -52,7 +53,7 @@ div.upcoming {
 }
 div.upcoming div.well.ticket {
   min-height: 120px;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245, 245, 245, 0.85) !important;
 }
 div.upcoming div.well.ticket.withSong {
   padding-top: 6px;

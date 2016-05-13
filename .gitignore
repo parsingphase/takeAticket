@@ -11,3 +11,6 @@ www/local
 testConfig.php
 www/docs/images
 docs/announcements
+var
+parameters.yml
+web/local
