@@ -12,7 +12,7 @@
     {% block styleLinks %}
     <link rel="stylesheet" href="/components/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/components/font-awesome/css/font-awesome.min.css"/>
-    <link rel="stylesheet" href="/css/ticket.css"/>
+    <link rel="stylesheet" href="/css/ticket.css?1"/>
     {% endblock %}
     {% block pageJs %}
         <script>
@@ -51,18 +51,20 @@
 {% block footer %}
 
 
-    {% if freeze %}
-        <div class="alertHolder">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    Queue Frozen
-                </div>
-                <div class="panel-body">{{ freezeMessage |default('No more requests please') }}</div>
-            </div>
-        </div>
-    {% endif %}
+
 
     <div class="end">
+        {% if freeze %}
+            <div class="alertHolder">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        Queue Frozen
+                    </div>
+                    <div class="panel-body">{{ freezeMessage |default('No more requests please') }}</div>
+                </div>
+            </div>
+        {% endif %}
+
         <div class="pull-right docslink">
             <a href="https://github.com/parsingphase/takeAticket"><span class="fa fa-github"
                                                                         title="Source & Docs"></span></a>
