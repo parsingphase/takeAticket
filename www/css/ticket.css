@@ -1,7 +1,7 @@
 body {
   background-image: url('/local/background.jpg');
   background-size: cover;
-  background-position-y: -450px;
+  background-position: top;
 }
 .container {
   padding: 0;
@@ -17,7 +17,7 @@ div.page-header {
   margin-top: 0;
   margin-bottom: 0;
   position: relative;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245,245,245,0.95) !important;
 }
 div.page-header .headerControls {
   position: absolute;
@@ -53,7 +53,7 @@ div.upcoming {
 }
 div.upcoming div.well.ticket {
   min-height: 120px;
-  background-color: rgba(245, 245, 245, 0.85) !important;
+  background-color: rgba(245,245,245,0.85) !important;
 }
 div.upcoming div.well.ticket.withSong {
   padding-top: 6px;
@@ -390,14 +390,14 @@ div.end {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245,245,245,0.95) !important;
 }
 div.end div.gflink {
   font-size: 40px;
   width: 100%;
 }
 div.end div.gflink a {
-  color: #333333;
+  color: #333;
 }
 div.end div.gflink a:hover {
   color: #777;
