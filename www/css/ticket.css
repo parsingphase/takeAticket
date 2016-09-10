@@ -5,7 +5,10 @@ body {
 }
 body.monsterBg {
   background-image: url('/local/WanderingMonster.jpg');
-  background-position-y: -40px;
+  background-position: center -40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #292222;
 }
 body.monsterBg .page-header {
   font-size: 30px;
