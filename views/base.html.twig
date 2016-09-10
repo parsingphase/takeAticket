@@ -25,7 +25,7 @@
     {% endblock %}
     {% endblock %}
 </head>
-<body class="{% if is_granted('ROLE_ADMIN') %}asAdmin{% endif %}">
+<body class="{% if is_granted('ROLE_ADMIN') %}asAdmin{% endif %} {% block bodyClass %}{% endblock %}">
 <div class="container {% block containerClass %}{% endblock %}">
     <div class="page-header well well-sm">
         <div class="headerControls pull-right">

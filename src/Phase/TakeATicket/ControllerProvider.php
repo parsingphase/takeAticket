@@ -133,6 +133,11 @@ class ControllerProvider implements ControllerProviderInterface
             'ticket.controller:announceAction'
         )->value('section', 'readme');
 
+        $controllers->match(
+            '/custom/{template}',
+            'ticket.controller:customTemplateAction'
+        );
+
         //$controllers->match(
         //    '{any}',
         //    'ticket.controller:indexAction'

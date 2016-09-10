@@ -385,4 +385,16 @@ class Controller
         $viewParams['displayOptions'] = $this->getDisplayOptions();
         return $viewParams;
     }
+
+    public function customTemplateAction($template)
+    {
+        $rootDir = realpath(__DIR__ . '/../../../');
+        $templateDir = "$rootDir/views/custom";
+        if (file_exists("$templateDir/$template.html.twig")) {
+            $viewParams = $this->defaultViewParams();
+            return $this->app['twig']->render('custom/'.$template . '.html.twig', $viewParams);
+        } else {
+            throw new \Exception('No template');
+        }
+    }
 }

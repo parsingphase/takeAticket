@@ -3,6 +3,13 @@ body {
   background-size: cover;
   background-position-y: -450px;
 }
+body.monsterBg {
+  background-image: url('/local/WanderingMonster.jpg');
+  background-position-y: -40px;
+}
+body.monsterBg .page-header {
+  font-size: 30px;
+}
 .container {
   padding: 0;
 }
