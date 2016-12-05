@@ -23,7 +23,6 @@
             >
         <phpcodesniffer
                 standard="PSR2"
-                format="full"
                 allowedFileExtensions="php"
                 haltonerror="true"
                 haltonwarning="true"
@@ -32,6 +31,7 @@
                 <include name="**/*.php"/>
                 <exclude name="vendor/"/>
             </fileset>
+            <formatter type="full" usefile="false"/>
         </phpcodesniffer>
     </target>
 

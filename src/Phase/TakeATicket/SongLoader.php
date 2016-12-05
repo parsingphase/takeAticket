@@ -111,8 +111,6 @@ class SongLoader
                     $i++;
                     $codeStored[$storable['codeNumber']] = true;
                 }
-
-
             }
         }
         $total = $i - 1;

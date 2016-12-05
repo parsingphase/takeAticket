@@ -33,12 +33,15 @@
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0",
-        "phing/phing": "^2.12",
-        "squizlabs/php_codesniffer": "^2.3"
+        "phing/phing": "^2.15.2",
+        "squizlabs/php_codesniffer": "^2.7.1"
     },
     "suggest" : {
         "ext-pdo_mysql": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend",
         "ext-pdo_sqlite": "Either PDO-MYSQL or PDO-SQLITE is required for the database backend"
+    },
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
