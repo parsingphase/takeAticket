@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    admin_notification_from_email: noreply@localhost
+    admin_notification_from_name: TakeATicket
+    admin_notification_to_email:  noreply@localhost

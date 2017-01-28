@@ -26,4 +26,10 @@ songSearchAjax:
 remotesRedirectAjax:
     path: /api/remotesRedirect
     defaults: { _controller: TakeATicketBundle:Ajax:remotesRedirect }
-    methods:  [GET,POST]
+    methods:  [GET]
+
+manage:
+    path:     /manage
+    defaults: { _controller: TakeATicketBundle:Management:index }
+    methods:  [GET]
+

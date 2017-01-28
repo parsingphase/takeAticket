@@ -1,11 +1,9 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
-
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
-    providers:
-        in_memory:
-            memory: ~
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -14,11 +12,25 @@ security:
             security: false
 
         main:
-            anonymous: ~
-            # activate different ways to authenticate
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                # if you are using Symfony < 2.8, use the following config instead:
+                # csrf_provider: form.csrf_provider
 
-            # http_basic: ~
-            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+            logout:       true
+            anonymous:    true
+            remember_me:
+                secret:   "%secret%"
+                lifetime: 31536000
+                path:     /
 
-            # form_login: ~
-            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username_email
+
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/help, roles: ROLE_ADMIN }
+        - { path: ^/manage, roles: ROLE_ADMIN }
