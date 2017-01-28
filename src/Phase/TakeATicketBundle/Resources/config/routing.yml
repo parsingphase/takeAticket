@@ -28,6 +28,21 @@ remotesRedirectAjax:
     defaults: { _controller: TakeATicketBundle:Ajax:remotesRedirect }
     methods:  [GET]
 
+saveTicketAjax:
+    path: /api/saveTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:saveTicket }
+    methods:  [POST]
+
+useTicketAjax:
+    path: /api/useTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:useTicket }
+    methods:  [POST]
+
+deleteTicketAjax:
+    path: /api/deleteTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:deleteTicket }
+    methods:  [POST]
+
 manage:
     path:     /manage
     defaults: { _controller: TakeATicketBundle:Management:index }
