@@ -2,3 +2,18 @@ homepage:
     path:     /
     defaults: { _controller: TakeATicketBundle:Default:index }
     methods:  [GET]
+
+songSearch:
+    path:     /songSearch
+    defaults: { _controller: TakeATicketBundle:Default:songSearch }
+    methods:  [GET]
+
+nextSongAjax:
+    path: /api/next
+    defaults: { _controller: TakeATicketBundle:Ajax:nextSongs }
+    methods:  [GET]
+
+songSearchAjax:
+    path: /api/songSearch
+    defaults: { _controller: TakeATicketBundle:Ajax:songSearch }
+    methods:  [GET,POST]

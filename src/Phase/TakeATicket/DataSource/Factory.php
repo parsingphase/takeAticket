@@ -12,6 +12,10 @@ use Doctrine\DBAL\Connection;
 
 class Factory
 {
+    /**
+     * @param Connection $connection
+     * @return MySql|Sqlite
+     */
     public static function datasourceFromDbConnection(Connection $connection)
     {
         $driverType = $connection->getDriver()->getName();

@@ -16,6 +16,13 @@ class DefaultController extends Controller
         return $this->render('default/upcoming.html.twig', $viewParams);
     }
 
+    public function songSearchAction()
+    {
+        $viewParams = $this->defaultViewParams();
+        $viewParams['freeze'] = false;//(bool)$this->dataSource->getSetting('freeze');
+        return $this->render('default/songSearch.html.twig', $viewParams);
+    }
+
     /**
      * @return array
      */
@@ -23,6 +30,7 @@ class DefaultController extends Controller
     {
         //$protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
         $protocol = 'http';// $_SERVER['HTTPS'] ? 'https' : 'http';
+        /** @noinspection RealpathInSteamContextInspection */
         $viewParams = [
             //'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/',
             'serverInfo' => $protocol . '://127.0.0.1:8000/',
@@ -48,9 +56,8 @@ class DefaultController extends Controller
         //}
         // FIXME hardcoding
 
-        $displayOptions['upcomingCount']=3;
+        $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
     }
-
 }
