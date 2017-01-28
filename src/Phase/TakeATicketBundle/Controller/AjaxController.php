@@ -56,8 +56,9 @@ class AjaxController extends Controller
 
     }
 
-    protected function getDataSource()
+    public function remotesRedirectAction()
     {
-        $this->get('database_connection');
+        return new JsonResponse($this->getDataStore()->getSetting('remotesUrl'));
     }
+
 }

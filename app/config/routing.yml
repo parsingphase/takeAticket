@@ -22,3 +22,8 @@ songSearchAjax:
     path: /api/songSearch
     defaults: { _controller: TakeATicketBundle:Ajax:songSearch }
     methods:  [GET,POST]
+
+remotesRedirectAjax:
+    path: /api/remotesRedirect
+    defaults: { _controller: TakeATicketBundle:Ajax:remotesRedirect }
+    methods:  [GET,POST]
