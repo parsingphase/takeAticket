@@ -7,3 +7,10 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    markdown.engine:
+        class: Aptoma\Twig\Extension\MarkdownEngine\MichelfMarkdownEngine
+    twig.markdown:
+        class: Aptoma\Twig\Extension\MarkdownExtension
+        arguments: ['@markdown.engine']
+        tags:
+            - { name: twig.extension }

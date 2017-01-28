@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/ticket.css"/>
     {% endblock %}
     {% block pageJs %}
+        {% if displayOptions is defined %}
         <script>
             var displayOptions = {{ displayOptions|json_encode|raw }};
             $(function() {
@@ -22,6 +23,7 @@
                 ticketer.go();
             });
         </script>
+    {% endif %}
     {% endblock %}
     {% endblock %}
 </head>
@@ -36,9 +38,9 @@
             <a href="/help"><span class="fa fa-life-ring" title="Help"></span></a>
             {% if is_granted('ROLE_ADMIN') %}
                 {#FIXME should be IS_AUTHENTICATED_FULLY but that's not working? #}
-                <a href="/user/logout"><span class="fa fa-power-off" title="Log Out"></span></a>
+                <a href="/logout"><span class="fa fa-power-off" title="Log Out"></span></a>
             {% else %}
-                <a href="/user/login"><span class="fa fa-key" title="Log In"></span></a>
+                <a href="/login"><span class="fa fa-key" title="Log In"></span></a>
             {% endif %}
 
         </div>

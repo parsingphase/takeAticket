@@ -10,6 +10,7 @@ namespace Phase\TakeATicketBundle\Controller;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManagementController extends Controller
 {
@@ -55,5 +56,36 @@ class ManagementController extends Controller
         $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
+    }
+
+    public function helpAction($section='readme')
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $rootDir = realpath(__DIR__ . '/../../../../');
+        $map = [
+            'readme' => $rootDir . '/README.md',
+            'CONTRIBUTING' => $rootDir . '/docs/CONTRIBUTING.md',
+            'TODO' => $rootDir . '/docs/TODO.md',
+        ];
+
+        if (!isset($map[$section])) {
+            throw new NotFoundHttpException();
+        }
+
+        $markdown = file_get_contents($map[$section]);
+
+        $markdown = preg_replace(
+            '#\[docs/\w+.md\]\((./)?docs/(\w+).md\)#',
+            '[docs/$2.md](/help/$2)',
+            $markdown
+        );
+
+        return $this->render(
+            ':default:help.html.twig',
+            ['helpText' => $markdown]
+        );
+
+
     }
 }
