@@ -1,4 +1,7 @@
 #VERSION 0.0.1
+
+#For running the app in demo mode with PHP internal server and small sample songlist
+
 FROM ubuntu:16.10
 MAINTAINER Richard George "richard@phase.org"
 
@@ -36,5 +39,12 @@ RUN cp config/config.sample.php config/config.php && \
 
 RUN vendor/bin/phing test-all
 
+# Sample data:
+RUN sqlite3 db/app.db < sql/sampleSongs.sql
+
+EXPOSE 8080
+
 # WORKDIR /app if not current
-ENTRYPOINT /bin/bash
+ENTRYPOINT php -S 0:8080 -t www
+
+#CMD startServer.sh
