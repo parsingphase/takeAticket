@@ -47,6 +47,7 @@ class AjaxController extends Controller
                 }
             }
         }
+
         return new JsonResponse($show);
     }
 
@@ -60,6 +61,7 @@ class AjaxController extends Controller
         $songs = $this->getDataStore()->findSongsBySearchString($searchString, $searchCount);
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
+
         return $jsonResponse;
     }
 
@@ -77,6 +79,7 @@ class AjaxController extends Controller
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
+
         return $jsonResponse;
     }
 
@@ -139,7 +142,7 @@ class AjaxController extends Controller
 
         $responseData = [
             'ticket' => $ticket,
-            'performers' => $this->getDataStore()->generatePerformerStats()
+            'performers' => $this->getDataStore()->generatePerformerStats(),
         ];
 
         if ($ticketId) {
@@ -147,9 +150,9 @@ class AjaxController extends Controller
         } else {
             $jsonResponse = new JsonResponse($responseData, 500);
         }
+
         return $jsonResponse;
     }
-
 
     public function deleteTicketAction(Request $request)
     {
@@ -164,6 +167,7 @@ class AjaxController extends Controller
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
+
         return $jsonResponse;
     }
 }

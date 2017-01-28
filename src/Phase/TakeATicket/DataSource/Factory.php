@@ -14,6 +14,7 @@ class Factory
 {
     /**
      * @param Connection $connection
+     *
      * @return MySql|Sqlite
      */
     public static function datasourceFromDbConnection(Connection $connection)

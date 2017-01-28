@@ -35,6 +35,7 @@ abstract class AbstractSql
 
     /**
      * DataSource constructor.
+     *
      * @param $dbConn
      */
     public function __construct(Connection $dbConn)
@@ -74,6 +75,7 @@ abstract class AbstractSql
         if (!$this->logger) {
             $this->logger = new NullLogger();
         }
+
         return $this->logger;
     }
 
@@ -85,9 +87,9 @@ abstract class AbstractSql
         $this->logger = $logger;
     }
 
-
     /**
      * @param $songId
+     *
      * @return mixed
      */
     public function fetchSongById($songId)
@@ -96,11 +98,13 @@ abstract class AbstractSql
         if ($song) {
             $song = $this->normaliseSongRecord($song);
         }
+
         return $song;
     }
 
     /**
      * @param $ticket
+     *
      * @return mixed
      */
     public function expandTicketData($ticket)
@@ -113,6 +117,7 @@ abstract class AbstractSql
         //FIXME inefficient, but different pages expect different structure while we refactor
         $ticket['band'] = $this->fetchPerformersWithInstrumentByTicketId($ticket['id']);
         $ticket['performers'] = $this->fetchPerformersByTicketId($ticket['id']);
+
         return $ticket;
     }
 
@@ -120,6 +125,7 @@ abstract class AbstractSql
      * expandTicketData for multiple tickets
      *
      * @param $tickets
+     *
      * @return mixed
      */
     public function expandTicketsData($tickets)
@@ -127,13 +133,15 @@ abstract class AbstractSql
         foreach ($tickets as &$ticket) {
             $ticket = $this->expandTicketData($ticket);
         }
+
         return $tickets;
     }
 
     public function potentialCodeNumber($searchString)
     {
-        $codeLength = (int)SongLoader::CODE_LENGTH;
-        $regexp = '/^[a-f0-9]{' . $codeLength . '}$/i';
+        $codeLength = (int) SongLoader::CODE_LENGTH;
+        $regexp = '/^[a-f0-9]{'.$codeLength.'}$/i';
+
         return preg_match($regexp, $searchString);
     }
 
@@ -153,6 +161,7 @@ abstract class AbstractSql
                 GROUP BY p.id ORDER BY p.name';
 
         $performers = $conn->fetchAll($sql);
+
         return $performers;
     }
 
@@ -221,7 +230,9 @@ abstract class AbstractSql
      * Fetch all performers on a song with their stats
      *
      * @deprecated Use fetchPerformersWithInstrumentByTicketId()
+     *
      * @param $ticketId
+     *
      * @return array[]
      */
     public function fetchPerformersByTicketId($ticketId)
@@ -240,9 +251,9 @@ abstract class AbstractSql
                 $trackPerformers[] = $performer;
             }
         }
+
         return $trackPerformers;
     }
-
 
     public function fetchPerformersWithInstrumentByTicketId($ticketId)
     {
@@ -271,13 +282,14 @@ abstract class AbstractSql
                 $trackPerformersByInstrument[$instrument][] = $performer;
             }
         }
+
         return $trackPerformersByInstrument;
     }
-
 
     /**
      * @param $searchString
      * @param $howMany
+     *
      * @return array
      */
     public function findSongsBySearchString($searchString, $howMany = 10)
@@ -285,12 +297,12 @@ abstract class AbstractSql
         $howMany += 0; // force int
 
         $conn = $this->getDbConn();
-        $leadingPattern = implode('%', preg_split('/\s+/', $searchString)) . '%';
-        $internalPattern = '%' . $leadingPattern;
+        $leadingPattern = implode('%', preg_split('/\s+/', $searchString)).'%';
+        $internalPattern = '%'.$leadingPattern;
         $params = [
             'internalPattern' => $internalPattern,
             'leadingPattern' => $leadingPattern,
-            'searchString' => $searchString
+            'searchString' => $searchString,
         ];
 
         // this may be unnecessary - chances of a code number hitting anything else is minimal
@@ -330,45 +342,49 @@ abstract class AbstractSql
         return $songs;
     }
 
-
     /**
      * @param $id
+     *
      * @return int
      */
     public function markTicketUsedById($id)
     {
         $conn = $this->getDbConn();
         $res = $conn->update(self::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
+
         return $res;
     }
 
     /**
      * @param $id
+     *
      * @return int
      */
     public function deleteTicketById($id)
     {
         $conn = $this->getDbConn();
         $res = $conn->update(self::TICKETS_TABLE, ['deleted' => 1], ['id' => $id]);
+
         return $res;
     }
 
     /**
      * @param $id
      * @param $offset
+     *
      * @return mixed
      */
     public function updateTicketOffsetById($id, $offset)
     {
-        $id = (int)$id;
-        $offset = (int)$offset;
+        $id = (int) $id;
+        $offset = (int) $offset;
         $fields = ['offset' => $offset];
         $currentTrack = $this->fetchTicketById($id);
-        $oldOffset = (int)$currentTrack['offset'];
+        $oldOffset = (int) $currentTrack['offset'];
         $ok = ($oldOffset === $offset);
 
         $this->getLogger()->debug(
-            "Update track $id offset: $oldOffset => $offset: " .
+            "Update track $id offset: $oldOffset => $offset: ".
             ($ok ? ' already set' : ' will update')
         );
 
@@ -381,6 +397,7 @@ abstract class AbstractSql
 
     /**
      * @param $songKey
+     *
      * @return array
      */
     public function fetchSongByKey($songKey)
@@ -391,25 +408,29 @@ abstract class AbstractSql
         if ($song) {
             $song = $this->normaliseSongRecord($song);
         }
+
         return $song;
     }
 
     /**
      * @param bool $includePrivate
+     *
      * @return array|mixed
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     public function fetchUpcomingTickets($includePrivate = false)
     {
         $conn = $this->getDbConn();
         $statement = $conn->prepare(
-            'SELECT * FROM tickets WHERE deleted=0 AND used=0 ' .
-            ($includePrivate ? '' : ' AND private = 0 ') .
-            'ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
+            'SELECT * FROM tickets WHERE deleted=0 AND used=0 '.
+            ($includePrivate ? '' : ' AND private = 0 ').
+            'ORDER BY offset ASC LIMIT '.(int) $this->upcomingCount
         );
         $statement->execute();
         $next = $statement->fetchAll();
         $next = $this->expandTicketsData($next);
+
         return $next;
     }
 
@@ -417,6 +438,7 @@ abstract class AbstractSql
      * Fetch all non-deleted tickets in offset order
      *
      * @return array|mixed
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     public function fetchUndeletedTickets()
@@ -426,6 +448,7 @@ abstract class AbstractSql
         $statement->execute();
         $tickets = $statement->fetchAll();
         $tickets = $this->expandTicketsData($tickets);
+
         return $tickets;
     }
 
@@ -433,6 +456,7 @@ abstract class AbstractSql
      * Fetch all performed tickets in offset order
      *
      * @return array
+     *
      * @throws \Doctrine\DBAL\DBALException
      */
     public function fetchPerformedTickets()
@@ -442,12 +466,14 @@ abstract class AbstractSql
         $statement->execute();
         $tickets = $statement->fetchAll();
         $tickets = $this->expandTicketsData($tickets);
+
         return $tickets;
     }
 
     /**
      * @param $title
      * @param $songId
+     *
      * @return int|false Row ID
      */
     public function storeNewTicket($title, $songId)
@@ -461,9 +487,10 @@ abstract class AbstractSql
             'title' => $title,
             'id' => $maxId + 1,
             'offset' => $maxOffset + 1,
-            'songId' => $songId
+            'songId' => $songId,
         ];
         $res = $conn->insert(self::TICKETS_TABLE, $ticket);
+
         return $res ? $ticket['id'] : false;
     }
 
@@ -471,6 +498,7 @@ abstract class AbstractSql
      * Normalise datatypes returned in song query
      *
      * @param $song
+     *
      * @return mixed
      */
     public function normaliseSongRecord($song)
@@ -479,23 +507,24 @@ abstract class AbstractSql
         $intFields = ['id', 'duration'];
 
         foreach ($intFields as $k) {
-            $song[$k] = is_null($song[$k]) ? null : (int)$song[$k];
+            $song[$k] = is_null($song[$k]) ? null : (int) $song[$k];
         }
 
         foreach ($boolFields as $k) {
-            $song[$k] = (bool)$song[$k];
+            $song[$k] = (bool) $song[$k];
         }
 
         if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
-            $song['queued'] = (bool)$song['queued'];
+            $song['queued'] = (bool) $song['queued'];
         }
+
         return $song;
     }
-
 
     /**
      * @param $id
      * @param $fields
+     *
      * @return int Number of updated rows
      */
     public function updateTicketById($id, $fields)
@@ -503,6 +532,7 @@ abstract class AbstractSql
         if (isset($fields['id'])) {
             throw new \InvalidArgumentException('Fields must not include id');
         }
+
         return $this->getDbConn()->update(self::TICKETS_TABLE, $fields, ['id' => $id]);
     }
 
@@ -510,20 +540,22 @@ abstract class AbstractSql
      * Fetch core ticket data (not band, etc) by ticket id
      *
      * @param $id
+     *
      * @return array
      */
     public function fetchTicketById($id)
     {
         $conn = $this->getDbConn();
-        $song = $conn->fetchAssoc('SELECT * FROM ' . self::TICKETS_TABLE . ' WHERE id = :id', ['id' => $id]);
+        $song = $conn->fetchAssoc('SELECT * FROM '.self::TICKETS_TABLE.' WHERE id = :id', ['id' => $id]);
+
         return $song;
     }
-
 
     public function getSetting($key)
     {
         $conn = $this->getDbConn();
         $value = $conn->fetchColumn('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
+
         return $value;
     }
 
@@ -531,12 +563,14 @@ abstract class AbstractSql
      * Return SQL in appropriate dialect to concatenate the listed values
      *
      * @param array $fields
+     *
      * @return string
      */
     abstract protected function concatenateEscapedFields($fields);
 
     /**
      * @param $ticket
+     *
      * @return mixed
      */
     protected function normaliseTicketRecord($ticket)
@@ -545,12 +579,13 @@ abstract class AbstractSql
         $intFields = ['id', 'songId'];
 
         foreach ($intFields as $k) {
-            $ticket[$k] = is_null($ticket[$k]) ? null : (int)$ticket[$k];
+            $ticket[$k] = is_null($ticket[$k]) ? null : (int) $ticket[$k];
         }
 
         foreach ($boolFields as $k) {
-            $ticket[$k] = (bool)$ticket[$k];
+            $ticket[$k] = (bool) $ticket[$k];
         }
+
         return $ticket;
     }
 }

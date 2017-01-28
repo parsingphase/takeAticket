@@ -35,7 +35,6 @@ class ControllerProvider implements ControllerProviderInterface
         $this->app = $app;
         $controllers = $this->getControllerFactory();
 
-
         $app['twig'] = $app->share(
             $app->extend(
                 'twig',
@@ -43,6 +42,7 @@ class ControllerProvider implements ControllerProviderInterface
                     // add custom globals, filters, tags, ...
                     $engine = new MichelfMarkdownEngine();
                     $twig->addExtension(new MarkdownExtension($engine));
+
                     return $twig;
                 }
             )

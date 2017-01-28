@@ -6,6 +6,7 @@
  * Date: 21/08/15
  * Time: 06:53
  */
+
 namespace Phase\TakeATicket;
 
 use Doctrine\DBAL\Connection;
@@ -41,7 +42,7 @@ class SongLoader
         'I' => self::INPUT_FIELD_SOURCE,
         'F' => self::INPUT_FIELD_IN_RB3,
         'G' => self::INPUT_FIELD_IN_RB4,
-        'H' => self::INPUT_FIELD_DURATION_MMSS
+        'H' => self::INPUT_FIELD_DURATION_MMSS,
     ];
 
     private $startRow = 2;
@@ -83,19 +84,19 @@ class SongLoader
 
             //            print_r($storable);
 
-            if (strlen(join($storable, ''))) {
+            if (strlen(implode($storable, ''))) {
                 if ($sqlite && (!isset($storable['id']))) {
                     $storable['id'] = $i;
                 }
 
                 if (!isset($storable['codeNumber'])) {
-                    $storable['codeNumber'] = (string)$this->makeCodeNumberFromArray($storable);
+                    $storable['codeNumber'] = (string) $this->makeCodeNumberFromArray($storable);
                 }
 
                 if (isset($codeStored[$storable['codeNumber']])) {
-                    print(
-                        "\nDuplicate: " . $storable[self::INPUT_FIELD_ARTIST] . ': ' .
-                        $storable[self::INPUT_FIELD_TITLE] . "\n");
+                    echo 
+                        "\nDuplicate: ".$storable[self::INPUT_FIELD_ARTIST].': '.
+                        $storable[self::INPUT_FIELD_TITLE]."\n";
                 } else {
                     $dbConn->insert('songs', $storable);
                     if (!($i % 100)) {
@@ -108,7 +109,7 @@ class SongLoader
                     if (!($i % 1000)) {
                         echo "\n";
                     }
-                    $i++;
+                    ++$i;
                     $codeStored[$storable['codeNumber']] = true;
                 }
             }
@@ -119,29 +120,30 @@ class SongLoader
 
     public function usage($scriptname = null)
     {
-        print("Usage: php $scriptname path/to/sourcefile.xlsx\n");
+        echo "Usage: php $scriptname path/to/sourcefile.xlsx\n";
     }
 
     /**
      * @param $storable
+     *
      * @return string
      */
     public function makeCodeNumberFromArray($storable)
     {
         $normalisedSong = strtoupper(
-            preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_ARTIST]) .
-            '::' .
+            preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_ARTIST]).
+            '::'.
             preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_TITLE])
         );
-        $hash = (string)md5($normalisedSong);
+        $hash = (string) md5($normalisedSong);
         $code = strtoupper(substr($hash, 0, self::CODE_LENGTH));
         //        print("\n$hash     $code      $normalisedSong  ");
         return $code;
     }
 
-
     /**
      * @param $row
+     *
      * @return array
      */
     protected function rowToStorable($row)
@@ -152,7 +154,7 @@ class SongLoader
             self::INPUT_FIELD_HAS_HARMONY,
             self::INPUT_FIELD_HAS_KEYS,
             self::INPUT_FIELD_SOURCE,
-            self::INPUT_FIELD_DURATION
+            self::INPUT_FIELD_DURATION,
         ];
 
         $trueIfPresentFields = [
@@ -177,6 +179,7 @@ class SongLoader
                 $storable[self::INPUT_FIELD_DURATION] = ($matches[1] * 60) + $matches[2];
             }
         }
+
         return $storable;
     }
 }

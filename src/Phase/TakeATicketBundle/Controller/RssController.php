@@ -17,11 +17,12 @@ class RssController extends Controller
 
     public function upcomingRssAction()
     {
-        $viewParams = [];//$this->defaultViewParams();
-        $includePrivate = false;//$this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
+        $viewParams = []; //$this->defaultViewParams();
+        $includePrivate = false; //$this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
         $viewParams['tickets'] = $this->getDataStore()->fetchUpcomingTickets($includePrivate);
         $data = $this->render('default/upcoming.rss.twig', $viewParams);
         $headers = empty($_GET['nt']) ? ['Content-type' => 'application/rss+xml'] : ['Content-type' => 'text/plain'];
+
         return new Response($data, 200, $headers);
     }
 }

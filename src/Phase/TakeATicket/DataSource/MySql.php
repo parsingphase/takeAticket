@@ -11,11 +11,11 @@ namespace Phase\TakeATicket\DataSource;
 class MySql extends AbstractSql
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function concatenateEscapedFields($fields)
     {
-        return ('CONCAT(' . join(', ', $fields) . ')');
+        return 'CONCAT('.implode(', ', $fields).')';
     }
 
     /**
@@ -23,6 +23,7 @@ class MySql extends AbstractSql
      *
      * @param $title
      * @param $songId
+     *
      * @return int|false
      */
     public function storeNewTicket($title, $songId)
@@ -34,9 +35,10 @@ class MySql extends AbstractSql
         $ticket = [
             'title' => $title,
             'offset' => $maxOffset + 1,
-            'songId' => $songId
+            'songId' => $songId,
         ];
         $res = $conn->insert(self::TICKETS_TABLE, $ticket);
+
         return $res ? $conn->lastInsertId() : false;
     }
 
@@ -45,6 +47,7 @@ class MySql extends AbstractSql
      *
      * @param $performerName
      * @param bool|false $createMissing
+     *
      * @return mixed
      */
     public function getPerformerIdByName($performerName, $createMissing = false)

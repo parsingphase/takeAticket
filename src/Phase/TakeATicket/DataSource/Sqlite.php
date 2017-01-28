@@ -12,10 +12,11 @@ class Sqlite extends AbstractSql
 {
     /**
      * @param array $fields
+     *
      * @return string
      */
     protected function concatenateEscapedFields($fields)
     {
-        return join('||', $fields);
+        return implode('||', $fields);
     }
 }

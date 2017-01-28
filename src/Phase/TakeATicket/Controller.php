@@ -57,14 +57,16 @@ class Controller
     public function upcomingAction()
     {
         $viewParams = $this->defaultViewParams();
-        $viewParams['freeze'] = (bool)$this->dataSource->getSetting('freeze');
+        $viewParams['freeze'] = (bool) $this->dataSource->getSetting('freeze');
         $viewParams['freezeMessage'] = $this->dataSource->getSetting('freezeMessage');
+
         return $this->app['twig']->render('upcoming.html.twig', $viewParams);
     }
 
     public function songSearchAction()
     {
         $viewParams = $this->defaultViewParams();
+
         return $this->app['twig']->render('songSearch.html.twig', $viewParams);
     }
 
@@ -89,6 +91,7 @@ class Controller
                 }
             }
         }
+
         return new JsonResponse($show);
     }
 
@@ -105,7 +108,7 @@ class Controller
             [
                 'tickets' => $tickets,
                 'performers' => $performers,
-                'displayOptions' => $this->getDisplayOptions()
+                'displayOptions' => $this->getDisplayOptions(),
             ]
         );
     }
@@ -147,7 +150,7 @@ class Controller
         // update even new tickets so that we can add any new columns easily
         $updated = ['title' => $title, 'songId' => $songId, 'blocking' => $blocking, 'private' => $private];
 
-        $this->app['logger']->debug("Updating ticket", $updated);
+        $this->app['logger']->debug('Updating ticket', $updated);
         $this->dataSource->updateTicketById(
             $ticketId,
             $updated
@@ -168,6 +171,7 @@ class Controller
         } else {
             $jsonResponse = new JsonResponse($responseData, 500);
         }
+
         return $jsonResponse;
     }
 
@@ -183,7 +187,7 @@ class Controller
             throw new \InvalidArgumentException('Order must be array!');
         }
 
-        $this->app['logger']->debug("New order: " . print_r($idOrder, true));
+        $this->app['logger']->debug('New order: '.print_r($idOrder, true));
 
         $res = true;
         foreach ($idOrder as $offset => $id) {
@@ -192,9 +196,10 @@ class Controller
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
-            $this->app['logger']->warn("Failed to store track order: " . print_r($idOrder, true));
+            $this->app['logger']->warn('Failed to store track order: '.print_r($idOrder, true));
             $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
+
         return $jsonResponse;
     }
 
@@ -212,6 +217,7 @@ class Controller
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
+
         return $jsonResponse;
     }
 
@@ -228,6 +234,7 @@ class Controller
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
         }
+
         return $jsonResponse;
     }
 
@@ -243,6 +250,7 @@ class Controller
         $songs = $this->dataSource->findSongsBySearchString($searchString, $searchCount);
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
+
         return $jsonResponse;
     }
 
@@ -253,6 +261,7 @@ class Controller
         $performers = $this->dataSource->generatePerformerStats();
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'performers' => $performers]);
+
         return $jsonResponse;
     }
 
@@ -264,6 +273,7 @@ class Controller
         $data = $this->app['twig']->render('upcoming.rss.twig', $viewParams);
         $headers = empty($_GET['nt']) ? ['Content-type' => 'application/rss+xml'] : ['Content-type' => 'text/plain'];
         $response = new Response($data, 200, $headers);
+
         return $response;
     }
 
@@ -271,15 +281,15 @@ class Controller
     {
         $this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
-        $rootDir = realpath(__DIR__ . '/../../../');
+        $rootDir = realpath(__DIR__.'/../../../');
         $map = [
-            'readme' => $rootDir . '/README.md',
-            'CONTRIBUTING' => $rootDir . '/docs/CONTRIBUTING.md',
-            'TODO' => $rootDir . '/docs/TODO.md',
+            'readme' => $rootDir.'/README.md',
+            'CONTRIBUTING' => $rootDir.'/docs/CONTRIBUTING.md',
+            'TODO' => $rootDir.'/docs/TODO.md',
         ];
 
         if (!isset($map[$section])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $markdown = file_get_contents($map[$section]);
@@ -300,17 +310,17 @@ class Controller
     {
         //$this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
-        $rootDir = realpath(__DIR__ . '/../../../');
-        $announceDir = $rootDir . '/docs/announcements';
+        $rootDir = realpath(__DIR__.'/../../../');
+        $announceDir = $rootDir.'/docs/announcements';
 
         if (!preg_match('/^\w+$/', $section)) {
-            throw new NotFoundHttpException; // don't give access to anything but plain names
+            throw new NotFoundHttpException(); // don't give access to anything but plain names
         }
 
-        $candidateFile = $announceDir . '/' . $section . '.md';
+        $candidateFile = $announceDir.'/'.$section.'.md';
 
         if (!file_exists($candidateFile)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $markdown = file_get_contents($candidateFile);
@@ -319,7 +329,7 @@ class Controller
             'announce.html.twig',
             [
                 'announcement' => $markdown,
-                'messageClass' => $section
+                'messageClass' => $section,
             ]
         );
     }
@@ -341,6 +351,7 @@ class Controller
 
     /**
      * Get display options from config, with overrides if possible
+     *
      * @return array
      */
     protected function getDisplayOptions()
@@ -350,24 +361,28 @@ class Controller
             $displayOptions['songInPreview'] = true; // force for logged-in users
             $displayOptions['isAdmin'] = true; // force for logged-in users
         }
+
         return $displayOptions;
     }
 
     /**
      * Get UpcomingCount
+     *
      * @return int
      */
     protected function getUpcomingCount()
     {
         $displayOptions = $this->getDisplayOptions();
+
         return isset($displayOptions['upcomingCount']) ? $displayOptions['upcomingCount'] : null;
     }
 
     protected function setJsonErrorHandler()
     {
-        /** @noinspection PhpUnusedParameterInspection */
+        /* @noinspection PhpUnusedParameterInspection */
         $this->app->error(function (\Exception $e, $code) {
-            $message = 'Threw ' . get_class($e) . ': ' . $e->getMessage();
+            $message = 'Threw '.get_class($e).': '.$e->getMessage();
+
             return new JsonResponse(['error' => $message]);
         });
     }
@@ -379,9 +394,10 @@ class Controller
     {
         $protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
         $viewParams = [
-            'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/'
+            'serverInfo' => $protocol.'://'.$_SERVER['SERVER_ADDR'].':'.$_SERVER['SERVER_PORT'].'/',
         ];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
+
         return $viewParams;
     }
 }

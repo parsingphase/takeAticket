@@ -17,8 +17,7 @@ class ManagementController extends Controller
 
     public function indexAction()
     {
-
-//        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
+        //        $this->assertRole(self::MANAGER_REQUIRED_ROLE);
 
         $tickets = $this->getDataStore()->fetchUndeletedTickets();
 
@@ -29,7 +28,7 @@ class ManagementController extends Controller
             [
                 'tickets' => $tickets,
                 'performers' => $performers,
-                'displayOptions' => $this->getDisplayOptions()
+                'displayOptions' => $this->getDisplayOptions(),
             ]
         );
     }
@@ -38,6 +37,7 @@ class ManagementController extends Controller
      * //FIXME Copied from DefaultController which is itself a hack
      *
      * Get display options from config, with overrides if possible
+     *
      * @return array
      */
     protected function getDisplayOptions()
@@ -56,15 +56,15 @@ class ManagementController extends Controller
         return $displayOptions;
     }
 
-    public function helpAction($section='readme')
+    public function helpAction($section = 'readme')
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $rootDir = realpath(__DIR__ . '/../../../../');
+        $rootDir = realpath(__DIR__.'/../../../../');
         $map = [
-            'readme' => $rootDir . '/README.md',
-            'CONTRIBUTING' => $rootDir . '/docs/CONTRIBUTING.md',
-            'TODO' => $rootDir . '/docs/TODO.md',
+            'readme' => $rootDir.'/README.md',
+            'CONTRIBUTING' => $rootDir.'/docs/CONTRIBUTING.md',
+            'TODO' => $rootDir.'/docs/TODO.md',
         ];
 
         if (!isset($map[$section])) {
