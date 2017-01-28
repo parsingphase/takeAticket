@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
-
 use Phase\TakeATicket\DataSource\Factory;
 
 trait DataStoreAccessTrait

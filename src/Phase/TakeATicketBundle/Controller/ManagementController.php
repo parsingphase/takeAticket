@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -33,7 +32,6 @@ class ManagementController extends Controller
                 'displayOptions' => $this->getDisplayOptions()
             ]
         );
-
     }
 
     /**
@@ -85,7 +83,5 @@ class ManagementController extends Controller
             ':default:help.html.twig',
             ['helpText' => $markdown]
         );
-
-
     }
 }

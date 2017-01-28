@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicketBundle;
 
-
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class TakeATicketBundle extends Bundle

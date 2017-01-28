@@ -32,7 +32,7 @@ class AjaxController extends Controller
      */
     public function nextSongsAction()
     {
-//        $this->setJsonErrorHandler();
+        //        $this->setJsonErrorHandler();
 //        $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
         $includePrivate = false;
         $next = $this->getDataStore()->fetchUpcomingTickets($includePrivate);
@@ -52,7 +52,6 @@ class AjaxController extends Controller
 
     public function songSearchAction(Request $request)
     {
-
         $searchString = $request->get('searchString');
         $searchCount = 10;
         if ($request->get('searchCount')) {
@@ -62,12 +61,11 @@ class AjaxController extends Controller
 
         $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
         return $jsonResponse;
-
     }
 
     public function useTicketAction(Request $request)
     {
-//        $this->setJsonErrorHandler();
+        //        $this->setJsonErrorHandler();
 
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 
@@ -89,7 +87,7 @@ class AjaxController extends Controller
 
     public function saveTicketAction(Request $request)
     {
-//        $this->setJsonErrorHandler();
+        //        $this->setJsonErrorHandler();
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 
         $title = $request->get('title');
@@ -150,14 +148,12 @@ class AjaxController extends Controller
             $jsonResponse = new JsonResponse($responseData, 500);
         }
         return $jsonResponse;
-
-
     }
 
 
     public function deleteTicketAction(Request $request)
     {
-//        $this->setJsonErrorHandler();
+        //        $this->setJsonErrorHandler();
 
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 

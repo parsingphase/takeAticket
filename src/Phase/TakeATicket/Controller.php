@@ -19,7 +19,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller
 {
-
     const MANAGER_REQUIRED_ROLE = 'ROLE_ADMIN';
     const BAND_IDENTIFIER_BAND_NAME = 1;
     const BAND_IDENTIFIER_PERFORMERS = 2;

@@ -15,7 +15,6 @@ use Psr\Log\NullLogger;
 
 abstract class AbstractSql
 {
-
     const TICKETS_TABLE = 'tickets';
     const PERFORMERS_TABLE = 'performers';
     const TICKETS_X_PERFORMERS_TABLE = 'tickets_x_performers';

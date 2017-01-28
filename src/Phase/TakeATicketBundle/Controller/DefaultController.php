@@ -64,7 +64,6 @@ class DefaultController extends Controller
 
     public function announceAction($section)
     {
-
         $rootDir = realpath(__DIR__ . '/../../../../');
         $announceDir = $rootDir . '/docs/announcements';
 
@@ -88,8 +87,5 @@ class DefaultController extends Controller
                 'displayOptions' => $this->getDisplayOptions()
             ]
         );
-
-
-
     }
 }

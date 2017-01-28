@@ -27,3 +27,4 @@ docs/announcements
 !var/SymfonyRequirements.php
 /web/bundles/
 web/local
+.php_cs.cache
