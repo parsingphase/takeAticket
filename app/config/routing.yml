@@ -1,4 +1,4 @@
-homepage:
+index:
     path:     /
     defaults: { _controller: TakeATicketBundle:Default:index }
     methods:  [GET]
@@ -6,6 +6,11 @@ homepage:
 songSearch:
     path:     /songSearch
     defaults: { _controller: TakeATicketBundle:Default:songSearch }
+    methods:  [GET]
+
+upcomingRss:
+    path:     /upcomingRss
+    defaults: { _controller: TakeATicketBundle:Rss:upcomingRss }
     methods:  [GET]
 
 nextSongAjax:
