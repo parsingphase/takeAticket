@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/parsingphase/takeAticket",
   "devDependencies": {
-    "jscs": "^2.1.1",
+    "jscs": "^3.0.7",
     "jshint": "^2.8.0"
   }
 }
