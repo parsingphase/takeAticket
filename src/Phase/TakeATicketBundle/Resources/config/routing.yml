@@ -8,6 +8,11 @@ songSearch:
     defaults: { _controller: TakeATicketBundle:Default:songSearch }
     methods:  [GET]
 
+announce:
+    path:     /announce/{section}
+    defaults: { _controller: TakeATicketBundle:Default:announce, section: 'readme' }
+    methods:  [GET]
+
 upcomingRss:
     path:     /upcomingRss
     defaults: { _controller: TakeATicketBundle:Rss:upcomingRss }

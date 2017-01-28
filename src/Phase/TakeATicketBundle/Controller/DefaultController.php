@@ -3,6 +3,7 @@
 namespace Phase\TakeATicketBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends Controller
 {
@@ -59,5 +60,36 @@ class DefaultController extends Controller
         $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
+    }
+
+    public function announceAction($section)
+    {
+
+        $rootDir = realpath(__DIR__ . '/../../../../');
+        $announceDir = $rootDir . '/docs/announcements';
+
+        if (!preg_match('/^\w+$/', $section)) {
+            throw new NotFoundHttpException; // don't give access to anything but plain names
+        }
+
+        $candidateFile = $announceDir . '/' . $section . '.md';
+
+        if (!file_exists($candidateFile)) {
+            throw new NotFoundHttpException();
+        }
+
+        $markdown = file_get_contents($candidateFile);
+
+        return $this->render(
+            ':default:announce.html.twig',
+            [
+                'announcement' => $markdown,
+                'messageClass' => $section,
+                'displayOptions' => $this->getDisplayOptions()
+            ]
+        );
+
+
+
     }
 }
