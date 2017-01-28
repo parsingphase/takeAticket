@@ -27,6 +27,7 @@
         "monolog/monolog": "^1.15",
         "phpoffice/phpexcel": "^1.8",
         "phpunit/phpunit": "^4.8",
+        "roave/security-advisories": "dev-master",
         "silex/silex": "~1.2",
         "symfony/twig-bridge": "^2.7.8",
         "twig/twig": "^1.28"
