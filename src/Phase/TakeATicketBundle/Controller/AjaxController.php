@@ -12,10 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AjaxController extends Controller
+class AjaxController extends BaseController
 {
-    use DataStoreAccessTrait;
-
     const MANAGER_REQUIRED_ROLE = 'ROLE_ADMIN';
     const BAND_IDENTIFIER_BAND_NAME = 1;
     const BAND_IDENTIFIER_PERFORMERS = 2;
@@ -166,6 +164,34 @@ class AjaxController extends Controller
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
             $jsonResponse = new JsonResponse(['ok' => 'fail'], 500);
+        }
+
+        return $jsonResponse;
+    }
+
+    public function newTicketOrderAction(Request $request)
+    {
+//        $this->setJsonErrorHandler();
+
+        $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
+
+        $idOrder = $request->get('idOrder');
+
+        if (!is_array($idOrder)) {
+            throw new \InvalidArgumentException('Order must be array!');
+        }
+
+//        $this->app['logger']->debug('New order: '.print_r($idOrder, true));
+
+        $res = true;
+        foreach ($idOrder as $offset => $id) {
+            $res = $res && $this->getDataStore()->updateTicketOffsetById($id, $offset);
+        }
+        if ($res) {
+            $jsonResponse = new JsonResponse(['ok' => 'ok']);
+        } else {
+//            $this->app['logger']->warn('Failed to store track order: '.print_r($idOrder, true));
+            $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
 
         return $jsonResponse;

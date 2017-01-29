@@ -11,10 +11,8 @@ namespace Phase\TakeATicketBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ManagementController extends Controller
+class ManagementController extends BaseController
 {
-    use DataStoreAccessTrait;
-
     public function indexAction()
     {
         //        $this->assertRole(self::MANAGER_REQUIRED_ROLE);

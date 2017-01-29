@@ -11,10 +11,8 @@ namespace Phase\TakeATicketBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
-class RssController extends Controller
+class RssController extends BaseController
 {
-    use DataStoreAccessTrait;
-
     public function upcomingRssAction()
     {
         $viewParams = []; //$this->defaultViewParams();

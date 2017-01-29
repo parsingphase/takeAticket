@@ -5,7 +5,7 @@ namespace Phase\TakeATicketBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     public function indexAction()
     {
@@ -40,27 +40,6 @@ class DefaultController extends Controller
         $viewParams['displayOptions'] = $this->getDisplayOptions();
 
         return $viewParams;
-    }
-
-    /**
-     * Get display options from config, with overrides if possible
-     *
-     * @return array
-     */
-    protected function getDisplayOptions()
-    {
-        $displayOptions = [];
-        //FIXME reinstate security
-        //$displayOptions = isset($this->app['displayOptions']) ? $this->app['displayOptions'] : [];
-        //if ($this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE)) {
-        $displayOptions['songInPreview'] = true; // force for logged-in users
-        $displayOptions['isAdmin'] = true; // force for logged-in users
-        //}
-        // FIXME hardcoding
-
-        $displayOptions['upcomingCount'] = 3;
-
-        return $displayOptions;
     }
 
     public function announceAction($section)

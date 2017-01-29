@@ -3,7 +3,7 @@ index:
     defaults: { _controller: TakeATicketBundle:Default:index }
     methods:  [GET]
 
-songSearch:
+songs:
     path:     /songSearch
     defaults: { _controller: TakeATicketBundle:Default:songSearch }
     methods:  [GET]
@@ -41,6 +41,11 @@ saveTicketAjax:
 useTicketAjax:
     path: /api/useTicket
     defaults: { _controller: TakeATicketBundle:Ajax:useTicket }
+    methods:  [POST]
+
+newTicketOrderAjax:
+    path: /api/newOrder
+    defaults: { _controller: TakeATicketBundle:Ajax:newTicketOrder }
     methods:  [POST]
 
 deleteTicketAjax:
