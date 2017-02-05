@@ -12,6 +12,9 @@ namespace Phase\TakeATicketBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phase\TakeATicket\DataSource\Factory;
 
+/**
+ * @property  \Symfony\Component\DependencyInjection\Container container
+ */
 abstract class BaseController extends Controller
 {
     protected $dataSource;
@@ -34,16 +37,20 @@ abstract class BaseController extends Controller
      */
     protected function getDisplayOptions()
     {
-        $displayOptions = [];
-        //FIXME reinstate security
-        //$displayOptions = isset($this->app['displayOptions']) ? $this->app['displayOptions'] : [];
-        //if ($this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE)) {
-        $displayOptions['songInPreview'] = true; // force for logged-in users
-        $displayOptions['isAdmin'] = true; // force for logged-in users
-        //}
-        // FIXME hardcoding
+        $displayOptions = $this->container->hasParameter('displayOptions') ?
+            $this->getParameter('displayOptions') : [];
 
-        $displayOptions['upcomingCount'] = 3;
+        // Fixme configure parameter types cleanly
+        if (strtolower($displayOptions['songInPreview']) === 'false') {
+            $displayOptions['songInPreview'] = false;
+        }
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $displayOptions['songInPreview'] = true; // force for logged-in users
+            $displayOptions['isAdmin'] = true; // force for logged-in users
+        }
+
+//        $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
     }
