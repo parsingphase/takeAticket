@@ -1,2 +1,2 @@
 #!/bin/sh
-./vendor/leafo/lessphp/plessc www/css/ticket.less > www/css/ticket.css
+./vendor/leafo/lessphp/plessc web/css/ticket.less > web/css/ticket.css

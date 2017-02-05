@@ -10,6 +10,7 @@ namespace Phase\TakeATicketBundle\Controller;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Forms;
@@ -70,6 +71,8 @@ class ManagementController extends BaseController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        $requiredResetText = 'THIS DELETES ALL TICKETS';
+
         $settingKeys = [
             'freeze' => false,
             'freezeMessage' => '/',
@@ -85,37 +88,73 @@ class ManagementController extends BaseController
             }
         }
 
-//        $formFactory = Forms::createFormFactory(); //doesn't setup HttpFoundationExtension
-
         $formFactory = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->getFormFactory();
 
-        $form = $formFactory->createBuilder(FormType::class, $formDefaults)
+        $settingsSubmit = 'Save Settings';
+        $settingsForm = $formFactory->createNamedBuilder('settingsForm', FormType::class, $formDefaults)
             ->add('freeze', CheckboxType::class)
             ->add('freezeMessage', TextType::class)
             ->add('remotesUrl', TextType::class)
+            ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 
-        $form->handleRequest($request);
+        $settingsFormSaved = false;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-//            var_dump($data); die();
+        if ($request->request->has('settingsForm')) {
+            $settingsForm->handleRequest($request);
 
-            foreach ($data as $k => $v) {
-                $this->getDataStore()->updateSetting($k, $v);
+            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
+            if (
+                $settingsForm->isSubmitted() &&
+                $settingsForm->isValid() &&
+                $settingsForm->get($settingsSubmit)->isClicked()
+            ) {
+                $data = $settingsForm->getData();
+                foreach ($data as $k => $v) {
+                    $this->getDataStore()->updateSetting($k, $v);
+                }
+                $settingsFormSaved = true;
             }
-            $saved = true;
-        } else {
-            $saved = false;
+        }
+
+        $resetSubmit = 'Reset all';
+        $resetForm = $formFactory->createNamedBuilder('resetForm', FormType::class, $formDefaults)
+            ->add('resetMessage', TextType::class)
+            ->add($resetSubmit, SubmitType::class)
+            ->getForm();
+
+
+        $resetFormSaved = false;
+
+        if ($request->request->has('resetForm')) {
+            $resetForm->handleRequest($request);
+
+            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
+            if (
+            $resetForm->isSubmitted() &&
+            $resetForm->isValid() &&
+            $resetForm->get($resetSubmit)->isClicked()
+            ) {
+                $data = $resetForm->getData();
+//                var_dump($data);
+//                die();
+                if (trim($data['resetMessage']) === $requiredResetText) {
+                    $this->getDataStore()->resetAllSessionData();
+                    $resetFormSaved = true;
+                }
+            }
         }
 
         return $this->render(
             ':admin:settings.html.twig',
             [
-                'saved' => $saved,
-                'form' => $form->createView()
+                'settingsFormSaved' => $settingsFormSaved,
+                'settingsForm' => $settingsForm->createView(),
+                'resetForm' => $resetForm->createView(),
+                'resetFormSaved' => $resetFormSaved,
+                'resetRequiredText' => $requiredResetText,
             ]
         );
     }

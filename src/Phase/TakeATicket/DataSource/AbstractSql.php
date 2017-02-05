@@ -609,4 +609,21 @@ abstract class AbstractSql
         return $ticket;
     }
 
+    public function resetAllSessionData()
+    {
+        $truncateTables = [
+            'tickets_x_performers',
+            'performers',
+            'tickets'
+        ];
+
+        $connection = $this->getDbConn();
+
+        foreach ($truncateTables as $table) {
+            $connection->query(
+                'TRUNCATE TABLE ' . $connection->quoteIdentifier($table)
+            );
+        }
+    }
+
 }

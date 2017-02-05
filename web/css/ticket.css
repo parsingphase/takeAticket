@@ -16,7 +16,7 @@ div.page-header {
   margin-top: 0;
   margin-bottom: 0;
   position: relative;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245,245,245,0.95) !important;
 }
 div.page-header .headerControls {
   position: absolute;
@@ -52,7 +52,7 @@ div.upcoming {
 }
 div.upcoming div.well.ticket {
   min-height: 120px;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245,245,245,0.95) !important;
 }
 div.upcoming div.well.ticket.withSong {
   padding-top: 6px;
@@ -385,18 +385,27 @@ div.alertHolder {
   font-size: 3em;
   padding: 1em 8em;
 }
+div.container.settings form table th {
+  padding-right: 0.6em;
+}
+div.container.settings form table td {
+  padding: 3px;
+}
+div.container.settings form table td input[type="text"] {
+  width: 20em;
+}
 div.end {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: rgba(245, 245, 245, 0.95) !important;
+  background-color: rgba(245,245,245,0.95) !important;
 }
 div.end div.gflink {
   font-size: 40px;
   width: 100%;
 }
 div.end div.gflink a {
-  color: #333333;
+  color: #333;
 }
 div.end div.gflink a:hover {
   color: #777;
