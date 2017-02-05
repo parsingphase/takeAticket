@@ -34,7 +34,8 @@
             <a href="/"><span class="fa fa-ticket" title="Upcoming"></span></a>
             <a href="/songSearch"><span class="fa fa-search" title="Search"></span></a>
             <a href="/upcomingRss"><span class="fa fa-rss" title="Feed"></span></a>
-            <a href="/manage"><span class="fa fa-wrench" title="Manage Queue"></span></a>
+            <a href="/manage"><span class="fa fa-list" title="Manage Queue"></span></a>
+            <a href="/manage/settings"><span class="fa fa-wrench" title="Settings"></span></a>
             <a href="/help"><span class="fa fa-life-ring" title="Help"></span></a>
             {% if is_granted('ROLE_ADMIN') %}
                 {#FIXME should be IS_AUTHENTICATED_FULLY but that's not working? #}

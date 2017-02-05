@@ -58,6 +58,11 @@ manage:
     defaults: { _controller: TakeATicketBundle:Management:index }
     methods:  [GET]
 
+settings:
+    path:     /manage/settings
+    defaults: { _controller: TakeATicketBundle:Management:settings }
+    methods:  [GET, POST]
+
 help:
     path:     /help/{section}
     defaults: { _controller: TakeATicketBundle:Management:help, section: 'readme' }

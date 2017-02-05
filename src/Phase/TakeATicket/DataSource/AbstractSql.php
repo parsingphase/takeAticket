@@ -139,8 +139,8 @@ abstract class AbstractSql
 
     public function potentialCodeNumber($searchString)
     {
-        $codeLength = (int) SongLoader::CODE_LENGTH;
-        $regexp = '/^[a-f0-9]{'.$codeLength.'}$/i';
+        $codeLength = (int)SongLoader::CODE_LENGTH;
+        $regexp = '/^[a-f0-9]{' . $codeLength . '}$/i';
 
         return preg_match($regexp, $searchString);
     }
@@ -297,8 +297,8 @@ abstract class AbstractSql
         $howMany += 0; // force int
 
         $conn = $this->getDbConn();
-        $leadingPattern = implode('%', preg_split('/\s+/', $searchString)).'%';
-        $internalPattern = '%'.$leadingPattern;
+        $leadingPattern = implode('%', preg_split('/\s+/', $searchString)) . '%';
+        $internalPattern = '%' . $leadingPattern;
         $params = [
             'internalPattern' => $internalPattern,
             'leadingPattern' => $leadingPattern,
@@ -376,15 +376,15 @@ abstract class AbstractSql
      */
     public function updateTicketOffsetById($id, $offset)
     {
-        $id = (int) $id;
-        $offset = (int) $offset;
+        $id = (int)$id;
+        $offset = (int)$offset;
         $fields = ['offset' => $offset];
         $currentTrack = $this->fetchTicketById($id);
-        $oldOffset = (int) $currentTrack['offset'];
+        $oldOffset = (int)$currentTrack['offset'];
         $ok = ($oldOffset === $offset);
 
         $this->getLogger()->debug(
-            "Update track $id offset: $oldOffset => $offset: ".
+            "Update track $id offset: $oldOffset => $offset: " .
             ($ok ? ' already set' : ' will update')
         );
 
@@ -423,9 +423,9 @@ abstract class AbstractSql
     {
         $conn = $this->getDbConn();
         $statement = $conn->prepare(
-            'SELECT * FROM tickets WHERE deleted=0 AND used=0 '.
-            ($includePrivate ? '' : ' AND private = 0 ').
-            'ORDER BY offset ASC LIMIT '.(int) $this->upcomingCount
+            'SELECT * FROM tickets WHERE deleted=0 AND used=0 ' .
+            ($includePrivate ? '' : ' AND private = 0 ') .
+            'ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
         );
         $statement->execute();
         $next = $statement->fetchAll();
@@ -507,15 +507,15 @@ abstract class AbstractSql
         $intFields = ['id', 'duration'];
 
         foreach ($intFields as $k) {
-            $song[$k] = is_null($song[$k]) ? null : (int) $song[$k];
+            $song[$k] = is_null($song[$k]) ? null : (int)$song[$k];
         }
 
         foreach ($boolFields as $k) {
-            $song[$k] = (bool) $song[$k];
+            $song[$k] = (bool)$song[$k];
         }
 
         if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
-            $song['queued'] = (bool) $song['queued'];
+            $song['queued'] = (bool)$song['queued'];
         }
 
         return $song;
@@ -546,7 +546,7 @@ abstract class AbstractSql
     public function fetchTicketById($id)
     {
         $conn = $this->getDbConn();
-        $song = $conn->fetchAssoc('SELECT * FROM '.self::TICKETS_TABLE.' WHERE id = :id', ['id' => $id]);
+        $song = $conn->fetchAssoc('SELECT * FROM ' . self::TICKETS_TABLE . ' WHERE id = :id', ['id' => $id]);
 
         return $song;
     }
@@ -557,6 +557,26 @@ abstract class AbstractSql
         $value = $conn->fetchColumn('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
 
         return $value;
+    }
+
+
+    public function settingExists($key)
+    {
+        $conn = $this->getDbConn();
+        $value = $conn->fetchColumn('SELECT 1 FROM settings WHERE settingKey=:key', ['key' => $key]);
+
+        return (bool)$value;
+    }
+
+    public function updateSetting($k, $v)
+    {
+        $conn = $this->getDbConn();
+        if ($this->settingExists($k)) {
+            $conn->update('settings', ['settingValue' => $v], ['settingKey' => $k]);
+        } else {
+            $conn->insert('settings', ['settingValue' => $v, 'settingKey' => $k]);
+        }
+        return $this->getSetting($k);
     }
 
     /**
@@ -579,13 +599,14 @@ abstract class AbstractSql
         $intFields = ['id', 'songId'];
 
         foreach ($intFields as $k) {
-            $ticket[$k] = is_null($ticket[$k]) ? null : (int) $ticket[$k];
+            $ticket[$k] = is_null($ticket[$k]) ? null : (int)$ticket[$k];
         }
 
         foreach ($boolFields as $k) {
-            $ticket[$k] = (bool) $ticket[$k];
+            $ticket[$k] = (bool)$ticket[$k];
         }
 
         return $ticket;
     }
+
 }

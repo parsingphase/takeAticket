@@ -34,7 +34,7 @@ class DefaultController extends BaseController
         /** @noinspection RealpathInSteamContextInspection */
         $viewParams = [
             //'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/',
-            'serverInfo' => $protocol.'://127.0.0.1:8000/',
+            'serverInfo' => $protocol.'://127.0.0.1:8000/', //FIXME get server name (from config if not in request?)
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
         ];
         $viewParams['displayOptions'] = $this->getDisplayOptions();

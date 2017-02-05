@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Settings Management{% endblock %}
+{% block headerText %}Manage Settings{% endblock %}
+
+{% form_theme form 'form_table_layout.html.twig' %}
+
+
+{% block appTarget %}
+    <div class="well">
+        <table class="table striped">
+            <tr>
+                <th>Freeze</th>
+                <td> Show 'Queue Frozen' message</td>
+            </tr>
+            <tr>
+                <th>Freeze message</th>
+                <td> Overrides default 'Queue Frozen' message</td>
+            </tr>
+            <tr>
+                <th>Remotes Url</th>
+                <td> URL to redirect remote screens to</td>
+            </tr>
+        </table>
+    </div>
+    <div class="well">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <input type="submit"/>
+        {{ form_end(form) }}
+    </div>
+    {% if saved %}
+        <div class="alert alert-success">
+            Saved
+        </div>
+    {% endif %}
+{% endblock %}
