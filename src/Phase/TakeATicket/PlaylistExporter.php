@@ -83,7 +83,7 @@ class PlaylistExporter
         }
         fputcsv($handle, ['ENDS']);
 
-        echo "\n Wrote to '$outFile'\n";
+//        echo "\n Wrote to '$outFile'\n";
     }
 
     public function performersByInstrument($band, $instrument)
