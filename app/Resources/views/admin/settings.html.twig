@@ -5,6 +5,7 @@
 
 {% form_theme settingsForm 'form_table_layout.html.twig' %}
 {% form_theme resetForm 'form_table_layout.html.twig' %}
+{% form_theme songListForm 'form_table_layout.html.twig' %}
 
 
 {% block appTarget %}
@@ -57,5 +58,19 @@
             </div>
         </div>
     </div>
+
+    <div class="well">
+        <h4>Reload song list</h4>
+
+        {% if songFormSaved %}
+            <div class="alert alert-success">
+                Stored {{ songsLoaded }} songs
+            </div>
+        {% endif %}
+
+        {{ form(songListForm) }}
+    </div>
+
+    <div style="height: 60px"></div>
 
 {% endblock %}

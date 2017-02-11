@@ -10,6 +10,7 @@
 namespace Phase\TakeATicket;
 
 use Doctrine\DBAL\Connection;
+use Iterator;
 
 class SongLoader
 {
@@ -24,17 +25,12 @@ class SongLoader
     const INPUT_FIELD_IN_RB4 = 'inRb4';
     const INPUT_FIELD_DURATION_MMSS = 'duration_mmss';
 
-    //pre-oct
-    //    private $fileFields = [
-    //        'B' => 'artist',
-    //        'C' => 'title',
-    //        'D' => 'source',
-    //        'E' => 'hasHarmony',
-    //        'F' => 'hasKeys'
-    //];
-
-    //RCL-Oct-2015-List.xlsx
-    private $fileFields = [
+    /**
+     * Column map for input file
+     *
+     * @var string[]
+     */
+    protected $fileFields = [
         'B' => self::INPUT_FIELD_ARTIST,
         'C' => self::INPUT_FIELD_TITLE,
         'D' => self::INPUT_FIELD_HAS_HARMONY,
@@ -45,17 +41,35 @@ class SongLoader
         'H' => self::INPUT_FIELD_DURATION_MMSS,
     ];
 
-    private $startRow = 2;
+    protected $startRow = 2;
+
+    protected $showProgress = false;
+
+    /**
+     * @var array[]
+     */
+    protected $duplicates = [];
 
     const INPUT_FIELD_DURATION = 'duration';
 
+    /**
+     * Store contents of specified XLS file to the given database handle
+     *
+     * @param string $sourceFile Path to file
+     * @param Connection $dbConn DB connection
+     * @return int Number of non-duplicate songs stored
+     * @throws \PHPExcel_Exception
+     * @throws \PHPExcel_Reader_Exception
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function run($sourceFile, Connection $dbConn)
     {
         $driverType = $dbConn->getDriver()->getName();
-        $sqlite = preg_match('/sqlite/i', $driverType);
+        $sqlite = (stripos($driverType, 'sqlite') !== false);
 
         $objPHPExcel = \PHPExcel_IOFactory::load($sourceFile);
 
+        //TODO move to Storage class
         $dbConn->exec($sqlite ? 'DELETE FROM songs' : 'TRUNCATE TABLE songs');
         // empty table - reset autoincrement if it has one
 
@@ -69,6 +83,7 @@ class SongLoader
             /** @var \PHPExcel_Worksheet_Row $row */
             //            $rowIdx = $row->getRowIndex();
             $cells = $row->getCellIterator();
+            /** @var Iterator $cells */
             foreach ($cells as $cell) {
                 /** @var \PHPExcel_Cell $cell */
                 $column = $cell->getColumn();
@@ -82,32 +97,35 @@ class SongLoader
             //map row
             $storable = $this->rowToStorable($raw);
 
-            //            print_r($storable);
-
-            if (strlen(implode($storable, ''))) {
+            if (implode($storable, '') !== '') {
                 if ($sqlite && (!isset($storable['id']))) {
                     $storable['id'] = $i;
                 }
 
                 if (!isset($storable['codeNumber'])) {
-                    $storable['codeNumber'] = (string) $this->makeCodeNumberFromArray($storable);
+                    $storable['codeNumber'] = (string)$this->makeCodeNumberFromArray($storable);
                 }
 
                 if (isset($codeStored[$storable['codeNumber']])) {
-                    echo 
-                        "\nDuplicate: ".$storable[self::INPUT_FIELD_ARTIST].': '.
-                        $storable[self::INPUT_FIELD_TITLE]."\n";
+                    if ($this->showProgress) {
+                        echo
+                            "\nDuplicate: " . $storable[self::INPUT_FIELD_ARTIST] . ': ' .
+                            $storable[self::INPUT_FIELD_TITLE] . "\n";
+                    }
+                    $this->duplicates[] = $storable;
                 } else {
                     $dbConn->insert('songs', $storable);
-                    if (!($i % 100)) {
-                        echo $i;
-                    } else {
-                        if (!($i % 10)) {
-                            echo '.';
+                    if ($this->showProgress) {
+                        if (!($i % 100)) {
+                            echo $i;
+                        } else {
+                            if (!($i % 10)) {
+                                echo '.';
+                            }
                         }
-                    }
-                    if (!($i % 1000)) {
-                        echo "\n";
+                        if (!($i % 1000)) {
+                            echo "\n";
+                        }
                     }
                     ++$i;
                     $codeStored[$storable['codeNumber']] = true;
@@ -115,7 +133,10 @@ class SongLoader
             }
         }
         $total = $i - 1;
-        echo "\nImported $total songs\n";
+        if ($this->showProgress) {
+            echo "\nImported $total songs\n";
+        }
+        return $total;
     }
 
     public function usage($scriptname = null)
@@ -131,14 +152,12 @@ class SongLoader
     public function makeCodeNumberFromArray($storable)
     {
         $normalisedSong = strtoupper(
-            preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_ARTIST]).
-            '::'.
+            preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_ARTIST]) .
+            '::' .
             preg_replace('/[^a-z0-9]/i', '', $storable[self::INPUT_FIELD_TITLE])
         );
-        $hash = (string) md5($normalisedSong);
-        $code = strtoupper(substr($hash, 0, self::CODE_LENGTH));
-        //        print("\n$hash     $code      $normalisedSong  ");
-        return $code;
+        $hash = (string)md5($normalisedSong);
+        return strtoupper(substr($hash, 0, self::CODE_LENGTH));
     }
 
     /**
@@ -174,12 +193,22 @@ class SongLoader
             $storable[$k] = empty($row[$k]) ? 0 : 1;
         }
 
-        if (isset($row[self::INPUT_FIELD_DURATION_MMSS])) {
-            if (preg_match('/^\s*(\d+):(\d+)\s*$/', $row[self::INPUT_FIELD_DURATION_MMSS], $matches)) {
-                $storable[self::INPUT_FIELD_DURATION] = ($matches[1] * 60) + $matches[2];
-            }
+        if (isset($row[self::INPUT_FIELD_DURATION_MMSS])
+            && preg_match('/^\s*(\d+):(\d+)\s*$/', $row[self::INPUT_FIELD_DURATION_MMSS], $matches)
+        ) {
+            $storable[self::INPUT_FIELD_DURATION] = ($matches[1] * 60) + $matches[2];
         }
 
         return $storable;
+    }
+
+    /**
+     * @param bool $showProgress
+     * @return SongLoader
+     */
+    public function setShowProgress($showProgress)
+    {
+        $this->showProgress = $showProgress;
+        return $this;
     }
 }

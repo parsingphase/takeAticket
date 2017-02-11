@@ -8,12 +8,15 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
+use Phase\TakeATicket\SongLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Forms;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -75,7 +78,7 @@ class ManagementController extends BaseController
 
         $settingKeys = [
             'freeze' => false,
-            'freezeMessage' => '/',
+            'freezeMessage' => '',
             'remotesUrl' => '/'
         ];
 
@@ -119,6 +122,8 @@ class ManagementController extends BaseController
             }
         }
 
+        // ----------------
+
         $resetSubmit = 'Reset all';
         $resetForm = $formFactory->createNamedBuilder('resetForm', FormType::class, $formDefaults)
             ->add('resetMessage', TextType::class)
@@ -133,9 +138,9 @@ class ManagementController extends BaseController
 
             /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
             if (
-            $resetForm->isSubmitted() &&
-            $resetForm->isValid() &&
-            $resetForm->get($resetSubmit)->isClicked()
+                $resetForm->isSubmitted() &&
+                $resetForm->isValid() &&
+                $resetForm->get($resetSubmit)->isClicked()
             ) {
                 $data = $resetForm->getData();
 //                var_dump($data);
@@ -147,6 +152,42 @@ class ManagementController extends BaseController
             }
         }
 
+        // -------------------
+
+        $songListSubmit = 'Upload song list';
+        $songListForm = $formFactory->createNamedBuilder('songListForm', FormType::class, $formDefaults)
+            ->add('songListFile', FileType::class)
+            ->add($songListSubmit, SubmitType::class)
+            ->getForm();
+
+        $songFormSaved = false;
+        $songsLoaded = false;
+
+        if ($request->request->has('songListForm')) {
+            $songListForm->handleRequest($request);
+
+            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
+            if (
+                $songListForm->isSubmitted() &&
+                $songListForm->isValid() &&
+                $songListForm->get($songListSubmit)->isClicked()
+            ) {
+                $data = $songListForm->getData();
+
+                $file = $data['songListFile'];
+                /** @var UploadedFile $file */
+
+                $loader = new SongLoader();
+
+                $songsLoaded = $loader->run($file->getPathname(), $this->get('database_connection'));
+
+                $songFormSaved = true;
+
+            }
+        }
+
+        // -------------------
+
         return $this->render(
             ':admin:settings.html.twig',
             [
@@ -155,6 +196,9 @@ class ManagementController extends BaseController
                 'resetForm' => $resetForm->createView(),
                 'resetFormSaved' => $resetFormSaved,
                 'resetRequiredText' => $requiredResetText,
+                'songListForm' => $songListForm->createView(),
+                'songFormSaved' => $songFormSaved,
+                'songsLoaded' => $songsLoaded,
             ]
         );
     }
