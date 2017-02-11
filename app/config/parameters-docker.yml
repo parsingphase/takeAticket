@@ -1,0 +1,20 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_sqlite
+    database_host: ~
+    database_port: ~
+    database_name: ~
+    database_user: ~
+    database_password: ~
+    database_path: db/app.db
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: sfh65uiSIHfjkwef
+    admin_notification_from_email: noreply@localhost
+    admin_notification_from_name: TakeATicket
+    admin_notification_to_email: noreply@localhost
+    displayOptions:
+        songInPreview: 'false,'
+        upcomingCount: !!float 4

@@ -17,7 +17,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     cp composer.phar /usr/local/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
-RUN apt-get install -y php-xml php-dom php-xmlwriter php-zip php-sqlite3 \
+RUN apt-get update && apt-get install -y php-xml php-dom php-xmlwriter php-zip php-sqlite3 php-mbstring \
     nodejs npm sqlite3
 
 # Ubuntu still installs node as nodejs
@@ -28,13 +28,14 @@ RUN mkdir /app
 ADD . /app
 
 WORKDIR /app
+RUN mkdir var #excluded in .dockerfile - see http://stackoverflow.com/questions/34198591/
+RUN cp app/config/parameters-docker.yml app/config/parameters.yml
 RUN /usr/local/bin/composer --ansi install
 RUN npm install
 
 RUN sqlite3 db/app.db < sql/db-sqlite.sql
 RUN sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
-RUN cp config/config.sample.php config/config.php && \
-    ln -s ../components www/components && \
+RUN ln -s ../components www/components && \
     ln -s ../../docs/images www/docs/image
 
 RUN vendor/bin/phing test-all
@@ -45,6 +46,6 @@ RUN sqlite3 db/app.db < sql/sampleSongs.sql
 EXPOSE 8080
 
 # WORKDIR /app if not current
-ENTRYPOINT php -S 0:8080 -t www
+ENTRYPOINT php bin/console server:run
 
 #CMD startServer.sh
