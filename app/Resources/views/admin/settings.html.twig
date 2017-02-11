@@ -9,23 +9,9 @@
 
 
 {% block appTarget %}
+
     <div class="well">
-        <table class="table striped">
-            <tr>
-                <th>Freeze</th>
-                <td> Show 'Queue Frozen' message</td>
-            </tr>
-            <tr>
-                <th>Freeze message</th>
-                <td> Overrides default 'Queue Frozen' message</td>
-            </tr>
-            <tr>
-                <th>Remotes Url</th>
-                <td> URL to redirect remote screens to</td>
-            </tr>
-        </table>
-    </div>
-    <div class="well">
+        <h3>Settings</h3>
         {% if settingsFormSaved %}
             <div class="alert alert-success">
                 Saved
@@ -38,6 +24,7 @@
     </div>
 
     <div class="well">
+        <h3>Wipe queue</h3>
         <div class="panel panel-danger">
             <div class="panel-heading">Remove all tickets and performers</div>
 
@@ -60,7 +47,7 @@
     </div>
 
     <div class="well">
-        <h4>Reload song list</h4>
+        <h3>Reload song list</h3>
 
         {% if songFormSaved %}
             <div class="alert alert-success">

@@ -97,9 +97,9 @@ class ManagementController extends BaseController
 
         $settingsSubmit = 'Save Settings';
         $settingsForm = $formFactory->createNamedBuilder('settingsForm', FormType::class, $formDefaults)
-            ->add('freeze', CheckboxType::class)
-            ->add('freezeMessage', TextType::class)
-            ->add('remotesUrl', TextType::class)
+            ->add('freeze', CheckboxType::class, ['label' => 'Display "Queue Frozen" message'])
+            ->add('freezeMessage', TextType::class, ['label' => 'Customise "Queue Frozen" message'])
+            ->add('remotesUrl', TextType::class,  ['label' => 'URL to display on remote screens'])
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 
