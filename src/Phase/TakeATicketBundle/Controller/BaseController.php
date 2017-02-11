@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phase\TakeATicket\DataSource\Factory;
 
@@ -50,7 +49,7 @@ abstract class BaseController extends Controller
             $displayOptions['isAdmin'] = true; // force for logged-in users
         }
 
-//        $displayOptions['upcomingCount'] = 3;
+        //        $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
     }

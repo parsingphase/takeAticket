@@ -99,7 +99,7 @@ class ManagementController extends BaseController
         $settingsForm = $formFactory->createNamedBuilder('settingsForm', FormType::class, $formDefaults)
             ->add('freeze', CheckboxType::class, ['label' => 'Display "Queue Frozen" message'])
             ->add('freezeMessage', TextType::class, ['label' => 'Customise "Queue Frozen" message'])
-            ->add('remotesUrl', TextType::class,  ['label' => 'URL to display on remote screens'])
+            ->add('remotesUrl', TextType::class, ['label' => 'URL to display on remote screens'])
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 
@@ -108,11 +108,12 @@ class ManagementController extends BaseController
         if ($request->request->has('settingsForm')) {
             $settingsForm->handleRequest($request);
 
-            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
-            if (
-                $settingsForm->isSubmitted() &&
-                $settingsForm->isValid() &&
-                $settingsForm->get($settingsSubmit)->isClicked()
+            /**
+ * @noinspection PhpUndefinedMethodInspection
+*/ // isClicked on Submit
+            if ($settingsForm->isSubmitted()
+                && $settingsForm->isValid()
+                && $settingsForm->get($settingsSubmit)->isClicked()
             ) {
                 $data = $settingsForm->getData();
                 foreach ($data as $k => $v) {
@@ -136,15 +137,16 @@ class ManagementController extends BaseController
         if ($request->request->has('resetForm')) {
             $resetForm->handleRequest($request);
 
-            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
-            if (
-                $resetForm->isSubmitted() &&
-                $resetForm->isValid() &&
-                $resetForm->get($resetSubmit)->isClicked()
+            /**
+ * @noinspection PhpUndefinedMethodInspection
+*/ // isClicked on Submit
+            if ($resetForm->isSubmitted()
+                && $resetForm->isValid()
+                && $resetForm->get($resetSubmit)->isClicked()
             ) {
                 $data = $resetForm->getData();
-//                var_dump($data);
-//                die();
+                //                var_dump($data);
+                //                die();
                 if (trim($data['resetMessage']) === $requiredResetText) {
                     $this->getDataStore()->resetAllSessionData();
                     $resetFormSaved = true;
@@ -166,23 +168,25 @@ class ManagementController extends BaseController
         if ($request->request->has('songListForm')) {
             $songListForm->handleRequest($request);
 
-            /** @noinspection PhpUndefinedMethodInspection */ // isClicked on Submit
-            if (
-                $songListForm->isSubmitted() &&
-                $songListForm->isValid() &&
-                $songListForm->get($songListSubmit)->isClicked()
+            /**
+ * @noinspection PhpUndefinedMethodInspection
+*/ // isClicked on Submit
+            if ($songListForm->isSubmitted()
+                && $songListForm->isValid()
+                && $songListForm->get($songListSubmit)->isClicked()
             ) {
                 $data = $songListForm->getData();
 
                 $file = $data['songListFile'];
-                /** @var UploadedFile $file */
+                /**
+ * @var UploadedFile $file
+*/
 
                 $loader = new SongLoader();
 
                 $songsLoaded = $loader->run($file->getPathname(), $this->get('database_connection'));
 
                 $songFormSaved = true;
-
             }
         }
 

@@ -31,7 +31,7 @@ class AjaxController extends BaseController
     public function nextSongsAction()
     {
         //        $this->setJsonErrorHandler();
-//        $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
+        //        $includePrivate = $this->app['security']->isGranted(self::MANAGER_REQUIRED_ROLE);
         $includePrivate = false;
         $next = $this->getDataStore()->fetchUpcomingTickets($includePrivate);
         if ($includePrivate) {
@@ -124,7 +124,7 @@ class AjaxController extends BaseController
         // update even new tickets so that we can add any new columns easily
         $updated = ['title' => $title, 'songId' => $songId, 'blocking' => $blocking, 'private' => $private];
 
-//        $this->app['logger']->debug("Updating ticket", $updated);
+        //        $this->app['logger']->debug("Updating ticket", $updated);
         $this->getDataStore()->updateTicketById(
             $ticketId,
             $updated
@@ -171,7 +171,7 @@ class AjaxController extends BaseController
 
     public function newTicketOrderAction(Request $request)
     {
-//        $this->setJsonErrorHandler();
+        //        $this->setJsonErrorHandler();
 
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 
@@ -181,7 +181,7 @@ class AjaxController extends BaseController
             throw new \InvalidArgumentException('Order must be array!');
         }
 
-//        $this->app['logger']->debug('New order: '.print_r($idOrder, true));
+        //        $this->app['logger']->debug('New order: '.print_r($idOrder, true));
 
         $res = true;
         foreach ($idOrder as $offset => $id) {
@@ -190,7 +190,7 @@ class AjaxController extends BaseController
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
-//            $this->app['logger']->warn('Failed to store track order: '.print_r($idOrder, true));
+            //            $this->app['logger']->warn('Failed to store track order: '.print_r($idOrder, true));
             $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
 

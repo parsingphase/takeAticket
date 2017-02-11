@@ -28,7 +28,7 @@
                 haltonwarning="true"
                 >
             <fileset dir="${project.basedir}">
-                <include name="**/*.php"/>
+                <include name="src/**/*.php"/>
                 <exclude name="vendor/"/>
             </fileset>
             <formatter type="full" usefile="false"/>

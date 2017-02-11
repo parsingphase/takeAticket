@@ -380,11 +380,13 @@ class Controller
     protected function setJsonErrorHandler()
     {
         /* @noinspection PhpUnusedParameterInspection */
-        $this->app->error(function (\Exception $e, $code) {
-            $message = 'Threw '.get_class($e).': '.$e->getMessage();
+        $this->app->error(
+            function (\Exception $e, $code) {
+                $message = 'Threw '.get_class($e).': '.$e->getMessage();
 
-            return new JsonResponse(['error' => $message]);
-        });
+                return new JsonResponse(['error' => $message]);
+            }
+        );
     }
 
     /**

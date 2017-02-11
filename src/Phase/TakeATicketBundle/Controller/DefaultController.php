@@ -31,7 +31,9 @@ class DefaultController extends BaseController
     {
         //$protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
         $protocol = 'http'; // $_SERVER['HTTPS'] ? 'https' : 'http';
-        /** @noinspection RealpathInSteamContextInspection */
+        /**
+ * @noinspection RealpathInSteamContextInspection
+*/
         $viewParams = [
             //'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/',
             'serverInfo' => $protocol.'://127.0.0.1:8000/', //FIXME get server name (from config if not in request?)

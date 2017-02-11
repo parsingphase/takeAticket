@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "./node_modules/.bin/jshint www/js && ./node_modules/.bin/jscs www/js"
+    "test": "./node_modules/.bin/jshint web/js && ./node_modules/.bin/jscs web/js"
   },
   "repository": {
     "type": "git",

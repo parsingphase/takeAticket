@@ -55,8 +55,8 @@ class SongLoader
     /**
      * Store contents of specified XLS file to the given database handle
      *
-     * @param string $sourceFile Path to file
-     * @param Connection $dbConn DB connection
+     * @param  string     $sourceFile Path to file
+     * @param  Connection $dbConn     DB connection
      * @return int Number of non-duplicate songs stored
      * @throws \PHPExcel_Exception
      * @throws \PHPExcel_Reader_Exception
@@ -80,12 +80,18 @@ class SongLoader
 
         foreach ($iterator as $row) {
             $raw = [];
-            /** @var \PHPExcel_Worksheet_Row $row */
+            /**
+ * @var \PHPExcel_Worksheet_Row $row
+*/
             //            $rowIdx = $row->getRowIndex();
             $cells = $row->getCellIterator();
-            /** @var Iterator $cells */
+            /**
+ * @var Iterator $cells
+*/
             foreach ($cells as $cell) {
-                /** @var \PHPExcel_Cell $cell */
+                /**
+ * @var \PHPExcel_Cell $cell
+*/
                 $column = $cell->getColumn();
                 $content = $cell->getFormattedValue();
 

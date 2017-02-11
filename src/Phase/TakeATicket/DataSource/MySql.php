@@ -46,7 +46,7 @@ class MySql extends AbstractSql
      * Overridden to take advantage of autoIds
      *
      * @param $performerName
-     * @param bool|false $createMissing
+     * @param bool|false    $createMissing
      *
      * @return mixed
      */

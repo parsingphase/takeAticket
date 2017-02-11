@@ -3,7 +3,7 @@ Feature Requests
 
 ### To Do
     
-* Add admin interface for settings DB
+* ~~Add admin interface for settings DB~~
     * Ensure that remoteUrl setting is valid? (Or redirect to / on error)
 * Put instrument parts on manage page in standard order
 * Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)

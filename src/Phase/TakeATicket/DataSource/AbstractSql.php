@@ -187,7 +187,7 @@ abstract class AbstractSql
      * Save band to ticket
      *
      * @param $ticketId
-     * @param array $band ['instrumentCode' => 'name']
+     * @param array    $band ['instrumentCode' => 'name']
      */
     public function storeBandToTicket($ticketId, $band)
     {
@@ -625,5 +625,4 @@ abstract class AbstractSql
             );
         }
     }
-
 }
