@@ -2,11 +2,11 @@
 
 which docker>/dev/null || echo 'Please install docker from https://www.docker.com'
 
-docker run -i -t -p 8080:8080 takeaticket
+docker run -i -t -p 8000:8000 symfony-ticket:latest
 
-echo "Listening on http://localhost:8080"
+echo "Listening on http://localhost:8000"
 
-#php -S 0:8080 -t www/
+#php -S 0:8000 -t www/
 
-# WORKS with ENTRYPOINT php -S 0:8080 -t www
+# WORKS with ENTRYPOINT php -S 0:8000 -t www
 # Any bash entrypoints seem to fail :/

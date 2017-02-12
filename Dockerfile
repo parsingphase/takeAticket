@@ -34,18 +34,22 @@ RUN /usr/local/bin/composer --ansi install
 RUN npm install
 
 RUN sqlite3 db/app.db < sql/db-sqlite.sql
-RUN sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
-RUN ln -s ../components www/components && \
-    ln -s ../../docs/images www/docs/image
+#RUN sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
+#TODO build user DB from FOS console command
+RUN ln -s ../components web/components
+#&& \
+#    ln -s ../../docs/images web/docs/image
 
+RUN php bin/console doctrine:schema:update --force && \
+    php bin/console fos:user:create admin admin@localhost admin --super-admin
 RUN vendor/bin/phing test-all
 
 # Sample data:
 RUN sqlite3 db/app.db < sql/sampleSongs.sql
 
-EXPOSE 8080
+EXPOSE 8000
 
 # WORKDIR /app if not current
-ENTRYPOINT php bin/console server:run
+ENTRYPOINT php bin/console server:run 0.0.0.0:8000
 
 #CMD startServer.sh
