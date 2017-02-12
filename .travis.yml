@@ -9,7 +9,7 @@ os:
   - linux
 # osx/php testing not supported by travis
 before_script:
-  - mysql -e 'create database travis_app_test;'
+  - cp app/config/parameters-docker.yml app/config/parameters.yml
 install:
  - composer install
  - npm install
