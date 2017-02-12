@@ -10,6 +10,11 @@ Software created by Richard George (richard@phase.org)
 
 Canonical source: https://github.com/parsingphase/takeAticket
 
+# CAVEAT
+
+This README is currently out of date until I revise it to cover the migration of the codebase to Symfony3. Most of the
+functionality is valid but the setup is outdated. See the [Dockerfile](Dockerfile) for setup steps in the meantime.
+
 ## Setup
 
 The tool can use either a sqlite3 or mySQL database, and run under a standard server or PHP's internal server mode.

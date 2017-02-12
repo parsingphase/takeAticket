@@ -1,6 +1,6 @@
 #VERSION 0.0.1
 
-#Runs the Symfony app via the internal server. Admin accout is user: admin, password: admin
+#Runs the Symfony app via the internal server. Admin account is user: admin, password: admin
 # Not recommended for production use!
 
 FROM ubuntu:16.10
