@@ -8,9 +8,8 @@ php:
 os:
   - linux
 # osx/php testing not supported by travis
-before_script:
-  - cp app/config/parameters-docker.yml app/config/parameters.yml
 install:
+ - cp app/config/parameters-docker.yml app/config/parameters.yml
  - composer install
  - npm install
 #JS tools installed by npm required for validation only, not for app execution or development
