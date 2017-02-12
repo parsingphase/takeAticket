@@ -2,7 +2,7 @@
 
 which docker>/dev/null || echo 'Please install docker from https://www.docker.com'
 
-docker run -i -t -p 8000:8000 symfony-ticket:latest
+docker run -i -t -p 8000:8000 takeaticket:latest
 
 echo "Listening on http://localhost:8000"
 

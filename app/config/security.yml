@@ -5,6 +5,9 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
 
+    role_hierarchy:
+        ROLE_SUPER_ADMIN:   ROLE_ADMIN
+
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:

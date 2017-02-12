@@ -3,3 +3,5 @@ components
 node_modules
 db/*.db
 var
+tmp
+web/local

@@ -1,6 +1,7 @@
 #VERSION 0.0.1
 
-#For running the app in demo mode with PHP internal server and small sample songlist
+#Runs the Symfony app via the internal server. Admin accout is user: admin, password: admin
+# Not recommended for production use!
 
 FROM ubuntu:16.10
 MAINTAINER Richard George "richard@phase.org"
@@ -34,8 +35,7 @@ RUN /usr/local/bin/composer --ansi install
 RUN npm install
 
 RUN sqlite3 db/app.db < sql/db-sqlite.sql
-#RUN sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
-#TODO build user DB from FOS console command
+
 RUN ln -s ../components web/components
 #&& \
 #    ln -s ../../docs/images web/docs/image
@@ -47,9 +47,13 @@ RUN vendor/bin/phing test-all
 # Sample data:
 RUN sqlite3 db/app.db < sql/sampleSongs.sql
 
+RUN rm -rf var/cache/*
+# Avoid Cannot rename "/app/var/cache/dev" to "/app/var/cache/de~".
+# https://twitter.com/lsmith/status/804246742103429121?lang=en-gb
+
 EXPOSE 8000
 
 # WORKDIR /app if not current
-ENTRYPOINT php bin/console server:run 0.0.0.0:8000
+ENTRYPOINT php bin/console server:run -e prod 0.0.0.0:8000
 
 #CMD startServer.sh
