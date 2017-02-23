@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project name="parsingphase/takeAticket" default="deploy-current" basedir=".">
 
     <property file="build.properties"/> <!-- local overrides -->
@@ -56,7 +55,7 @@
         <!-- delegate to npm-->
         <exec
                 command="npm test"
-                checkreturn="true"
+                failonerror="true"
                 logoutput="true"
         />
     </target>
@@ -73,22 +72,22 @@
 
     <target name="deploy-current"
             description="(Re)Deploy currently present project"
-            depends="set-symfony-env-prod,composer-install,npm-install,build-prod,set-var-dir-access,doctrine-migrate,acl-warning">
+            depends="set-symfony-env-prod,composer-install,npm-install,build-prod,set-var-dir-access,acl-warning">
         <antcall target="clear-cache"/><!-- explicit call at *end* of deploy -->
     </target>
 
     <target name="deploy-current-dev"
             description="(Re)Deploy currently present project for development"
-            depends="set-symfony-env-dev,composer-install-dev,npm-install,frontend-packages-copy,doctrine-migrate,clear-cache">
+            depends="set-symfony-env-dev,composer-install-dev,npm-install,clear-cache">
     </target>
 
     <target name="build-prod"
             description="(Re)Build project with currently installed dependencies"
-            depends="set-symfony-env-prod,frontend-packages-copy,assetic-dump,clear-cache">
+            depends="set-symfony-env-prod,clear-cache">
     </target>
 
     <target name="build-dev" description="(Re)Build project with currently installed dependencies for development"
-            depends="set-symfony-env-dev,frontend-packages-copy,clear-cache">
+            depends="set-symfony-env-dev,clear-cache">
     </target>
 
     <target name="set-symfony-env-dev"
@@ -99,53 +98,6 @@
     <target name="set-symfony-env-prod"
             description="Set subsequent symfony command to env=prod">
         <property name="symfony.env" value="prod"/>
-    </target>
-
-    <target name="frontend-packages-purge">
-        <delete dir="${basedir}/web/vendor"/>
-    </target>
-
-    <target name="frontend-packages-copy"
-            description="Copy frontend bundles to web folder">
-        <copy todir="${basedir}/web/vendor/bootstrap" overwrite="true">
-            <fileset dir="${basedir}/node_modules/bootstrap/dist"/>
-        </copy>
-
-        <copy todir="${basedir}/web/vendor/jquery" overwrite="true"
-            file="${basedir}/vendor/components/jquery/jquery.min.js"/>
-
-        <copy todir="${basedir}/web/vendor/jquery" overwrite="true"
-            file="${basedir}/vendor/components/jqueryui/jquery-ui.min.js"/>
-
-        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
-              file="${basedir}/node_modules/angular/angular.min.js"/>
-
-        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
-              file="${basedir}/node_modules/angular/angular-csp.css"/>
-
-        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
-              file="${basedir}/node_modules/angular-route/angular-route.min.js"/>
-
-
-        <copy todir="${basedir}/web/vendor/ng-dialog/js" overwrite="true">
-            <fileset dir="${basedir}/node_modules/ng-dialog/js"/>
-        </copy>
-
-        <copy todir="${basedir}/web/vendor/ng-dialog/css" overwrite="true">
-            <fileset dir="${basedir}/node_modules/ng-dialog/css"/>
-        </copy>
-
-        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
-              file="${basedir}/node_modules/angular-dragdrop/src/angular-dragdrop.min.js"/>
-
-        <!-- font-awesome installed from composer components as more reliable source -->
-        <copy todir="${basedir}/web/vendor/font-awesome/css" overwrite="true">
-            <fileset dir="${basedir}/vendor/components/font-awesome/css"/>
-        </copy>
-        <copy todir="${basedir}/web/vendor/font-awesome/fonts" overwrite="true">
-            <fileset dir="${basedir}/vendor/components/font-awesome/fonts"/>
-        </copy>
-
     </target>
 
     <target name="composer-install">
@@ -171,18 +123,8 @@
             description="Clear Symfony caches (default: prod)"
             depends="set-symfony-env-prod">
         <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
-            <arg value="app/console"/>
+            <arg value="bin/console"/>
             <arg value="cache:clear"/>
-            <arg value="--env=${symfony.env}"/>
-        </exec>
-    </target>
-
-    <target name="assetic-dump"
-            description="Dump assetic files (default: prod)"
-            depends="frontend-packages-copy,set-symfony-env-prod">
-        <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
-            <arg value="app/console"/>
-            <arg value="assetic:dump"/>
             <arg value="--env=${symfony.env}"/>
         </exec>
     </target>
@@ -205,7 +147,7 @@
     <target name="start-dev-server" description="Start PHP internal server for development"
             depends="set-symfony-env-dev">
         <exec executable="${php.exe}">
-            <arg value="app/console"/>
+            <arg value="bin/console"/>
             <arg value="server:run"/>
             <arg value="--env=${symfony.env}"/>
         </exec>
@@ -258,17 +200,6 @@
             <arg value="app/cache"/>
             <arg value="app/logs"/>
             <arg value="var/mail"/>
-        </exec>
-    </target>
-
-    <target name="doctrine-migrate"
-            description="Perform DB migrations"
-            depends="set-symfony-env-prod">
-        <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
-            <arg value="app/console"/>
-            <arg value="doctrine:migrations:migrate"/>
-            <arg value="--env=${symfony.env}"/>
-            <arg value="--no-interaction"/>
         </exec>
     </target>
 
