@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="takeAticket" default="test-mindeps">
+<project name="parsingphase/takeAticket" default="deploy-current" basedir=".">
+
+    <property file="build.properties"/> <!-- local overrides -->
+    <property file="build.dist.properties"/> <!-- defaults -->
+
     <target name="test-mindeps" depends="phplint,phpcs"
             description="Perform all tests that only require basic dependencies"/>
     <target name="test-all" depends="phplint,phpcs,jstests,phpunit"
@@ -7,10 +11,10 @@
 
     <target name="phplint"
             description="Perform syntax check of sourcecode files"
-            >
+    >
         <phplint
                 haltonfailure="true"
-                >
+        >
             <fileset dir="${project.basedir}">
                 <include name="**/*.php"/>
                 <exclude name="vendor/"/>
@@ -20,13 +24,13 @@
 
     <target name="phpcs"
             description="Perform codesniffer check of sourcecode files"
-            >
+    >
         <phpcodesniffer
                 standard="PSR2"
                 allowedFileExtensions="php"
                 haltonerror="true"
                 haltonwarning="true"
-                >
+        >
             <fileset dir="${project.basedir}">
                 <include name="src/**/*.php"/>
                 <exclude name="vendor/"/>
@@ -54,6 +58,222 @@
                 command="npm test"
                 checkreturn="true"
                 logoutput="true"
-                />
+        />
+    </target>
+
+    <target name="deploy-latest"
+            description="Pull latest code from master and redeploy"
+            depends="git-pull,deploy-current">
+    </target>
+
+    <target name="deploy-latest-dev"
+            description="Pull latest code from master and redeploy for development"
+            depends="git-pull,deploy-current-dev">
+    </target>
+
+    <target name="deploy-current"
+            description="(Re)Deploy currently present project"
+            depends="set-symfony-env-prod,composer-install,npm-install,build-prod,set-var-dir-access,doctrine-migrate,acl-warning">
+        <antcall target="clear-cache"/><!-- explicit call at *end* of deploy -->
+    </target>
+
+    <target name="deploy-current-dev"
+            description="(Re)Deploy currently present project for development"
+            depends="set-symfony-env-dev,composer-install-dev,npm-install,frontend-packages-copy,doctrine-migrate,clear-cache">
+    </target>
+
+    <target name="build-prod"
+            description="(Re)Build project with currently installed dependencies"
+            depends="set-symfony-env-prod,frontend-packages-copy,assetic-dump,clear-cache">
+    </target>
+
+    <target name="build-dev" description="(Re)Build project with currently installed dependencies for development"
+            depends="set-symfony-env-dev,frontend-packages-copy,clear-cache">
+    </target>
+
+    <target name="set-symfony-env-dev"
+            description="Set subsequent symfony command to env=dev">
+        <property name="symfony.env" value="dev"/>
+    </target>
+
+    <target name="set-symfony-env-prod"
+            description="Set subsequent symfony command to env=prod">
+        <property name="symfony.env" value="prod"/>
+    </target>
+
+    <target name="frontend-packages-purge">
+        <delete dir="${basedir}/web/vendor"/>
+    </target>
+
+    <target name="frontend-packages-copy"
+            description="Copy frontend bundles to web folder">
+        <copy todir="${basedir}/web/vendor/bootstrap" overwrite="true">
+            <fileset dir="${basedir}/node_modules/bootstrap/dist"/>
+        </copy>
+
+        <copy todir="${basedir}/web/vendor/jquery" overwrite="true"
+            file="${basedir}/vendor/components/jquery/jquery.min.js"/>
+
+        <copy todir="${basedir}/web/vendor/jquery" overwrite="true"
+            file="${basedir}/vendor/components/jqueryui/jquery-ui.min.js"/>
+
+        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
+              file="${basedir}/node_modules/angular/angular.min.js"/>
+
+        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
+              file="${basedir}/node_modules/angular/angular-csp.css"/>
+
+        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
+              file="${basedir}/node_modules/angular-route/angular-route.min.js"/>
+
+
+        <copy todir="${basedir}/web/vendor/ng-dialog/js" overwrite="true">
+            <fileset dir="${basedir}/node_modules/ng-dialog/js"/>
+        </copy>
+
+        <copy todir="${basedir}/web/vendor/ng-dialog/css" overwrite="true">
+            <fileset dir="${basedir}/node_modules/ng-dialog/css"/>
+        </copy>
+
+        <copy todir="${basedir}/web/vendor/angular" overwrite="true"
+              file="${basedir}/node_modules/angular-dragdrop/src/angular-dragdrop.min.js"/>
+
+        <!-- font-awesome installed from composer components as more reliable source -->
+        <copy todir="${basedir}/web/vendor/font-awesome/css" overwrite="true">
+            <fileset dir="${basedir}/vendor/components/font-awesome/css"/>
+        </copy>
+        <copy todir="${basedir}/web/vendor/font-awesome/fonts" overwrite="true">
+            <fileset dir="${basedir}/vendor/components/font-awesome/fonts"/>
+        </copy>
+
+    </target>
+
+    <target name="composer-install">
+        <exec executable="${composer.exe}">
+            <arg value="install"/>
+            <arg value="--no-dev"/>
+        </exec>
+    </target>
+
+    <target name="composer-install-dev">
+        <exec executable="${composer.exe}">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="npm-install">
+        <exec executable="${npm.exe}">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="clear-cache"
+            description="Clear Symfony caches (default: prod)"
+            depends="set-symfony-env-prod">
+        <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
+            <arg value="app/console"/>
+            <arg value="cache:clear"/>
+            <arg value="--env=${symfony.env}"/>
+        </exec>
+    </target>
+
+    <target name="assetic-dump"
+            description="Dump assetic files (default: prod)"
+            depends="frontend-packages-copy,set-symfony-env-prod">
+        <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
+            <arg value="app/console"/>
+            <arg value="assetic:dump"/>
+            <arg value="--env=${symfony.env}"/>
+        </exec>
+    </target>
+
+    <target name="git-pull" description="Pull master from mainline repo">
+        <exec executable="${git.exe}" dir="${basedir}" failonerror="true">
+            <arg value="pull"/>
+            <arg value="origin"/>
+            <arg value="master"/>
+        </exec>
+    </target>
+
+    <target name="acl-warning">
+        <echo message="Please check privileges on app/cache and app/logs directories"/>
+        <echo message="See: http://symfony.com/doc/2.8/book/installation.html#checking-symfony-application-configuration-and-setup"/>
+        <echo message=" (setfacl is in the 'acl' package on ubuntu)"/>
+        <echo message="This is not required if you are running the PHP internal server for development"/>
+    </target>
+
+    <target name="start-dev-server" description="Start PHP internal server for development"
+            depends="set-symfony-env-dev">
+        <exec executable="${php.exe}">
+            <arg value="app/console"/>
+            <arg value="server:run"/>
+            <arg value="--env=${symfony.env}"/>
+        </exec>
+    </target>
+
+    <target name="check-acl-method">
+        <condition property="set-var-dir-access-by-chmod-plus-a">
+            <equals arg1="${acl.method}" arg2="chmod+a"/>
+        </condition>
+        <condition property="accessCtrlCmdSetfacl">
+            <equals arg1="${acl.method}" arg2="setfacl"/>
+        </condition>
+    </target>
+
+    <target name="set-var-dir-access-by-chmod-plus-a" if="set-var-dir-access-by-chmod-plus-a"
+            depends="check-acl-method">
+        <exec executable="chmod">
+            <arg value="+a"/>
+            <arg value="${webserver.user} allow delete,write,append,file_inherit,directory_inherit"/>
+            <arg value="app/cache"/>
+            <arg value="app/logs"/>
+            <arg value="var/mail"/>
+        </exec>
+        <exec executable="chmod">
+            <arg value="+a"/>
+            <arg value="${user.name} allow delete,write,append,file_inherit,directory_inherit"/>
+            <arg value="app/cache"/>
+            <arg value="app/logs"/>
+            <arg value="var/mail"/>
+        </exec>
+    </target>
+
+    <target name="set-var-dir-access-by-acl" if="accessCtrlCmdSetfacl" depends="check-acl-method">
+        <exec executable="setfacl">
+            <arg value="-R"/>
+            <arg value="-m"/>
+            <arg value="u:${webserver.user}:rwX"/>
+            <arg value="-m"/>
+            <arg value="u:${user.name}:rwX"/>
+            <arg value="app/cache"/>
+            <arg value="app/logs"/>
+            <arg value="var/mail"/>
+        </exec>
+        <exec executable="setfacl">
+            <arg value="-dR"/>
+            <arg value="-m"/>
+            <arg value="u:${webserver.user}:rwX"/>
+            <arg value="-m"/>
+            <arg value="u:${user.name}:rwX"/>
+            <arg value="app/cache"/>
+            <arg value="app/logs"/>
+            <arg value="var/mail"/>
+        </exec>
+    </target>
+
+    <target name="doctrine-migrate"
+            description="Perform DB migrations"
+            depends="set-symfony-env-prod">
+        <exec executable="${php.exe}" dir="${basedir}" failonerror="true">
+            <arg value="app/console"/>
+            <arg value="doctrine:migrations:migrate"/>
+            <arg value="--env=${symfony.env}"/>
+            <arg value="--no-interaction"/>
+        </exec>
+    </target>
+
+    <target name="set-var-dir-access"
+            description="Ensure that appropriate var (cache,log) directories have correct ACLs"
+            depends="set-var-dir-access-by-acl,set-var-dir-access-by-chmod-plus-a">
     </target>
 </project>
