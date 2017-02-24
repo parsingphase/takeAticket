@@ -12,7 +12,7 @@ CREATE TABLE tickets (
   private INT DEFAULT 0,
   blocking INT DEFAULT 0,
   startTime INT DEFAULT NULL
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- startTime is unix epoch seconds
 
 DROP TABLE IF EXISTS songs;
@@ -28,14 +28,14 @@ CREATE TABLE songs (
   inRb3      INT  DEFAULT 0,
   inRb4      INT  DEFAULT 0,
   codeNumber TEXT
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS performers;
 
 CREATE TABLE performers (
   id   INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   name TEXT
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS tickets_x_performers;
 
@@ -43,7 +43,7 @@ CREATE TABLE tickets_x_performers (
   ticketId    INT  NOT NULL,
   performerId INT  NOT NULL,
   instrument  TEXT NOT NULL
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS settings;
 
@@ -51,4 +51,4 @@ CREATE TABLE settings (
   id      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   settingKey TEXT,
   settingValue TEXT
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
