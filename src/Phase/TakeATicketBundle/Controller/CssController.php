@@ -17,7 +17,11 @@ class CssController extends BaseController
         $backgroundFilename = $this->getDataStore()->getSetting('backgroundFilename');
         $customCss = $this->getDataStore()->getSetting('customCss');
         $backgroundFullPath = dirname($this->get('kernel')->getRootDir()) . '/web/uploads/' . $backgroundFilename;
-        $backgroundUrl = ($backgroundFilename && file_exists($backgroundFullPath)) ? '/uploads/' . $backgroundFilename : null;
+
+        $backgroundUrl = null;
+        if ($backgroundFilename && file_exists($backgroundFullPath)) {
+            $backgroundUrl = '/uploads/' . $backgroundFilename;
+        }
 
         $headers = ['Content-type' => 'text/css'];
 
@@ -30,6 +34,5 @@ class CssController extends BaseController
         $data .= $customCss;
 
         return new Response($data, 200, $headers);
-
     }
 }
