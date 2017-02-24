@@ -138,8 +138,8 @@
     </target>
 
     <target name="acl-warning">
-        <echo message="Please check privileges on app/cache and app/logs directories"/>
-        <echo message="See: http://symfony.com/doc/2.8/book/installation.html#checking-symfony-application-configuration-and-setup"/>
+        <echo message="Please check privileges on var directories"/>
+        <echo message="See: http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup"/>
         <echo message=" (setfacl is in the 'acl' package on ubuntu)"/>
         <echo message="This is not required if you are running the PHP internal server for development"/>
     </target>
@@ -167,16 +167,12 @@
         <exec executable="chmod">
             <arg value="+a"/>
             <arg value="${webserver.user} allow delete,write,append,file_inherit,directory_inherit"/>
-            <arg value="app/cache"/>
-            <arg value="app/logs"/>
-            <arg value="var/mail"/>
+            <arg value="var"/>
         </exec>
         <exec executable="chmod">
             <arg value="+a"/>
             <arg value="${user.name} allow delete,write,append,file_inherit,directory_inherit"/>
-            <arg value="app/cache"/>
-            <arg value="app/logs"/>
-            <arg value="var/mail"/>
+            <arg value="var"/>
         </exec>
     </target>
 
@@ -187,9 +183,7 @@
             <arg value="u:${webserver.user}:rwX"/>
             <arg value="-m"/>
             <arg value="u:${user.name}:rwX"/>
-            <arg value="app/cache"/>
-            <arg value="app/logs"/>
-            <arg value="var/mail"/>
+            <arg value="var"/>
         </exec>
         <exec executable="setfacl">
             <arg value="-dR"/>
@@ -197,9 +191,7 @@
             <arg value="u:${webserver.user}:rwX"/>
             <arg value="-m"/>
             <arg value="u:${user.name}:rwX"/>
-            <arg value="app/cache"/>
-            <arg value="app/logs"/>
-            <arg value="var/mail"/>
+            <arg value="var"/>
         </exec>
     </target>
 
