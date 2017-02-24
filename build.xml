@@ -55,7 +55,7 @@
         <!-- delegate to npm-->
         <exec
                 command="npm test"
-                failonerror="true"
+                checkreturn="true"
                 logoutput="true"
         />
     </target>
