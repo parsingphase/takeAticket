@@ -28,3 +28,4 @@ docs/announcements
 /web/bundles/
 web/local
 .php_cs.cache
+web/uploads

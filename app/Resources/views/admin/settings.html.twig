@@ -6,6 +6,7 @@
 {% form_theme settingsForm 'form_table_layout.html.twig' %}
 {% form_theme resetForm 'form_table_layout.html.twig' %}
 {% form_theme songListForm 'form_table_layout.html.twig' %}
+{% form_theme stylingForm 'form_table_layout.html.twig' %}
 
 
 {% block appTarget %}
@@ -56,6 +57,21 @@
         {% endif %}
 
         {{ form(songListForm) }}
+    </div>
+
+    <div class="well">
+        <h3>Styling</h3>
+
+        {% if styleFormSaved %}
+            <div class="alert alert-success">
+                Styling updated
+                {% if backgroundUpdated %}
+                    - image uploaded
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {{ form(stylingForm) }}
     </div>
 
     <div style="height: 60px"></div>

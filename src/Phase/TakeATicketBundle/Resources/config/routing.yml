@@ -68,3 +68,7 @@ help:
     defaults: { _controller: TakeATicketBundle:Management:help, section: 'readme' }
     methods:  [GET]
 
+css:
+    path:     /css/custom
+    defaults: { _controller: TakeATicketBundle:Css:customCss }
+    methods:  [GET]

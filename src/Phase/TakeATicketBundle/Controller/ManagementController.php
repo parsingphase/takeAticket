@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\Forms;
@@ -45,6 +46,7 @@ class ManagementController extends BaseController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        /** @noinspection RealpathInSteamContextInspection */
         $rootDir = realpath(__DIR__ . '/../../../../');
         $map = [
             'readme' => $rootDir . '/README.md',
@@ -84,8 +86,10 @@ class ManagementController extends BaseController
 
         $formDefaults = $settingKeys;
 
+        $dataStore = $this->getDataStore();
+
         foreach ($settingKeys as $k => $v) {
-            $value = $this->getDataStore()->getSetting($k);
+            $value = $dataStore->getSetting($k);
             if (!is_null($value)) {
                 $formDefaults[$k] = is_bool($v) ? (bool)$value : $value; // fixme handle type better
             }
@@ -109,15 +113,15 @@ class ManagementController extends BaseController
             $settingsForm->handleRequest($request);
 
             /**
- * @noinspection PhpUndefinedMethodInspection
-*/ // isClicked on Submit
+             * @noinspection PhpUndefinedMethodInspection
+             */ // isClicked on Submit
             if ($settingsForm->isSubmitted()
                 && $settingsForm->isValid()
                 && $settingsForm->get($settingsSubmit)->isClicked()
             ) {
                 $data = $settingsForm->getData();
                 foreach ($data as $k => $v) {
-                    $this->getDataStore()->updateSetting($k, $v);
+                    $dataStore->updateSetting($k, $v);
                 }
                 $settingsFormSaved = true;
             }
@@ -126,7 +130,7 @@ class ManagementController extends BaseController
         // ----------------
 
         $resetSubmit = 'Reset all';
-        $resetForm = $formFactory->createNamedBuilder('resetForm', FormType::class, $formDefaults)
+        $resetForm = $formFactory->createNamedBuilder('resetForm', FormType::class)
             ->add('resetMessage', TextType::class)
             ->add($resetSubmit, SubmitType::class)
             ->getForm();
@@ -138,8 +142,8 @@ class ManagementController extends BaseController
             $resetForm->handleRequest($request);
 
             /**
- * @noinspection PhpUndefinedMethodInspection
-*/ // isClicked on Submit
+             * @noinspection PhpUndefinedMethodInspection
+             */ // isClicked on Submit
             if ($resetForm->isSubmitted()
                 && $resetForm->isValid()
                 && $resetForm->get($resetSubmit)->isClicked()
@@ -148,7 +152,7 @@ class ManagementController extends BaseController
                 //                var_dump($data);
                 //                die();
                 if (trim($data['resetMessage']) === $requiredResetText) {
-                    $this->getDataStore()->resetAllSessionData();
+                    $dataStore->resetAllSessionData();
                     $resetFormSaved = true;
                 }
             }
@@ -157,7 +161,7 @@ class ManagementController extends BaseController
         // -------------------
 
         $songListSubmit = 'Upload song list';
-        $songListForm = $formFactory->createNamedBuilder('songListForm', FormType::class, $formDefaults)
+        $songListForm = $formFactory->createNamedBuilder('songListForm', FormType::class)
             ->add('songListFile', FileType::class)
             ->add($songListSubmit, SubmitType::class)
             ->getForm();
@@ -169,8 +173,8 @@ class ManagementController extends BaseController
             $songListForm->handleRequest($request);
 
             /**
- * @noinspection PhpUndefinedMethodInspection
-*/ // isClicked on Submit
+             * @noinspection PhpUndefinedMethodInspection
+             */ // isClicked on Submit
             if ($songListForm->isSubmitted()
                 && $songListForm->isValid()
                 && $songListForm->get($songListSubmit)->isClicked()
@@ -179,14 +183,71 @@ class ManagementController extends BaseController
 
                 $file = $data['songListFile'];
                 /**
- * @var UploadedFile $file
-*/
+                 * @var UploadedFile $file
+                 */
 
                 $loader = new SongLoader();
 
                 $songsLoaded = $loader->run($file->getPathname(), $this->get('database_connection'));
 
                 $songFormSaved = true;
+            }
+        }
+
+        // -------------------
+
+        $defaults = ['customCss' => $dataStore->getSetting('customCss')];
+
+        $stylingSubmit = 'Update styles';
+        $stylingForm = $formFactory->createNamedBuilder('stylingForm', FormType::class, $defaults)
+            ->add('backgroundImageFile', FileType::class, ['label' => 'New background image'])
+            ->add('customCss', TextareaType::class, ['attr' => ['rows' => 8, 'cols' => 60, 'label' => 'Custom CSS']])
+            ->add($stylingSubmit, SubmitType::class)
+            ->getForm();
+
+        $styleFormSaved = false;
+        $backgroundUpdated = false;
+
+        if ($request->request->has('stylingForm')) {
+            $stylingForm->handleRequest($request);
+
+            /**
+             * @noinspection PhpUndefinedMethodInspection
+             */ // isClicked on Submit
+            if ($stylingForm->isSubmitted()
+                && $stylingForm->isValid()
+                && $stylingForm->get($stylingSubmit)->isClicked()
+            ) {
+                $data = $stylingForm->getData();
+
+                $file = $data['backgroundImageFile'];
+                if ($file) {
+                    $mimeType = $file->getMimeType();
+                    $pathName = $file->getPathName();
+                    /**
+                     * @var UploadedFile $file
+                     */
+                    $suffixByMimeType = [
+                        'image/jpeg' => 'jpg',
+                        'image/gif' => 'gif',
+                        'image/png' => 'png',
+                    ];
+
+                    if (array_key_exists($mimeType, $suffixByMimeType)) {
+                        $suffix = $suffixByMimeType[$mimeType];
+                        $targetFile = 'background.' . $suffix;
+                        $destination = dirname($this->get('kernel')->getRootDir()) . '/web/uploads/' . $targetFile;
+                        move_uploaded_file($pathName, $destination);
+                        $dataStore->updateSetting('backgroundFilename', $targetFile);
+                    } else {
+                        throw new \UnexpectedValueException("Invalid mimetype '$mimeType'");
+                    }
+                    $backgroundUpdated = true;
+                }
+
+                $dataStore->updateSetting('customCss', $data['customCss']);
+
+                $styleFormSaved = true;
             }
         }
 
@@ -203,6 +264,9 @@ class ManagementController extends BaseController
                 'songListForm' => $songListForm->createView(),
                 'songFormSaved' => $songFormSaved,
                 'songsLoaded' => $songsLoaded,
+                'stylingForm' => $stylingForm->createView(),
+                'styleFormSaved' => $styleFormSaved,
+                'backgroundUpdated' => $backgroundUpdated,
             ]
         );
     }

@@ -8,6 +8,7 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
+use Phase\TakeATicket\DataSource\AbstractSql;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phase\TakeATicket\DataSource\Factory;
 
@@ -16,10 +17,15 @@ use Phase\TakeATicket\DataSource\Factory;
  */
 abstract class BaseController extends Controller
 {
+    /**
+     * Use getDataStore() rather than accessing directly as this may not be populated
+     *
+     * @var AbstractSql
+     */
     protected $dataSource;
 
     /**
-     * @return \Phase\TakeATicket\DataSource\AbstractSql
+     * @return AbstractSql
      */
     protected function getDataStore()
     {

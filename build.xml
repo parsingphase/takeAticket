@@ -168,11 +168,13 @@
             <arg value="+a"/>
             <arg value="${webserver.user} allow delete,write,append,file_inherit,directory_inherit"/>
             <arg value="var"/>
+            <arg value="web/uploads"/>
         </exec>
         <exec executable="chmod">
             <arg value="+a"/>
             <arg value="${user.name} allow delete,write,append,file_inherit,directory_inherit"/>
             <arg value="var"/>
+            <arg value="web/uploads"/>
         </exec>
     </target>
 
@@ -184,6 +186,7 @@
             <arg value="-m"/>
             <arg value="u:${user.name}:rwX"/>
             <arg value="var"/>
+            <arg value="web/uploads"/>
         </exec>
         <exec executable="setfacl">
             <arg value="-dR"/>
@@ -192,6 +195,7 @@
             <arg value="-m"/>
             <arg value="u:${user.name}:rwX"/>
             <arg value="var"/>
+            <arg value="web/uploads"/>
         </exec>
     </target>
 
