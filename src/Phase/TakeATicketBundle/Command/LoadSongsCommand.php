@@ -36,6 +36,7 @@ class LoadSongsCommand extends ContainerAwareCommand
 
         $file = $input->getArgument('file');
         $songsLoaded = $loader->run($file, $this->getContainer()->get('database_connection'));
+        $output->writeln("");
         $output->writeln("Loaded $songsLoaded songs from $file");
     }
 }

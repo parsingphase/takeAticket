@@ -21,12 +21,8 @@ CREATE TABLE songs (
   id         INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   artist     TEXT,
   title      TEXT,
-  source     TEXT DEFAULT NULL,
-  hasHarmony INT  DEFAULT 0,
-  hasKeys    INT  DEFAULT 0,
+  sourceId   INT DEFAULT NULL,
   duration   INT  DEFAULT NULL,
-  inRb3      INT  DEFAULT 0,
-  inRb4      INT  DEFAULT 0,
   codeNumber TEXT
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -42,7 +38,7 @@ DROP TABLE IF EXISTS tickets_x_performers;
 CREATE TABLE tickets_x_performers (
   ticketId    INT  NOT NULL,
   performerId INT  NOT NULL,
-  instrument  TEXT NOT NULL
+  instrumentId  INT NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS settings;
@@ -51,4 +47,41 @@ CREATE TABLE settings (
   id      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   settingKey TEXT,
   settingValue TEXT
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS instruments;
+
+CREATE TABLE instruments (
+  id      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name    TEXT,
+  abbreviation TEXT,
+  iconHtml TEXT
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS platforms;
+
+CREATE TABLE platforms (
+id      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+name    TEXT
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS sources;
+
+CREATE TABLE sources (
+  id      INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name    TEXT
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS songs_x_instruments;
+
+CREATE TABLE songs_x_instruments (
+  songId    INT  NOT NULL,
+  instrumentId  INT NOT NULL
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS songs_x_platforms;
+
+CREATE TABLE songs_x_platforms (
+  songId    INT  NOT NULL,
+  platformId  INT NOT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -10,7 +10,11 @@ namespace Phase\TakeATicket\DataSource;
 
 use Doctrine\DBAL\Connection;
 use Monolog\Logger;
-use Phase\TakeATicket\SongLoader;
+use PDO;
+use Phase\TakeATicket\Model\Instrument;
+use Phase\TakeATicket\Model\Platform;
+use Phase\TakeATicket\Model\Song;
+use Phase\TakeATicket\Model\Source;
 use Psr\Log\NullLogger;
 
 abstract class AbstractSql
@@ -18,6 +22,7 @@ abstract class AbstractSql
     const TICKETS_TABLE = 'tickets';
     const PERFORMERS_TABLE = 'performers';
     const TICKETS_X_PERFORMERS_TABLE = 'tickets_x_performers';
+    const CODE_LENGTH = 6;
 
     /**
      * @var Connection
@@ -139,13 +144,15 @@ abstract class AbstractSql
 
     public function potentialCodeNumber($searchString)
     {
-        $codeLength = (int)SongLoader::CODE_LENGTH;
+        $codeLength = (int)self::CODE_LENGTH;
         $regexp = '/^[a-f0-9]{' . $codeLength . '}$/i';
 
         return preg_match($regexp, $searchString);
     }
 
     /**
+     * Get performed, pending data for all performers
+     *
      * @return array
      */
     public function generatePerformerStats()
@@ -160,34 +167,14 @@ abstract class AbstractSql
                     LEFT OUTER JOIN tickets t ON txp.ticketId = t.id
                 GROUP BY p.id ORDER BY p.name';
 
-        $performers = $conn->fetchAll($sql);
-
-        return $performers;
-    }
-
-    /**
-     * @deprecated Does not store instrument
-     *
-     * @param $ticketId
-     * @param $performerNames
-     */
-    public function addPerformersToTicketByName($ticketId, $performerNames)
-    {
-        foreach ($performerNames as $performerName) {
-            $performerName = trim($performerName);
-            $performerId = $this->getPerformerIdByName($performerName, true);
-            if ($performerId) {
-                $link = ['ticketId' => $ticketId, 'performerId' => $performerId];
-                $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
-            }
-        }
+        return $conn->fetchAll($sql);
     }
 
     /**
      * Save band to ticket
      *
      * @param $ticketId
-     * @param array $band ['instrumentCode' => 'name']
+     * @param array    $band ['instrumentCode' => 'name'] FIXME update
      */
     public function storeBandToTicket($ticketId, $band)
     {
@@ -350,9 +337,7 @@ abstract class AbstractSql
     public function markTicketUsedById($id)
     {
         $conn = $this->getDbConn();
-        $res = $conn->update(self::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
-
-        return $res;
+        return $conn->update(self::TICKETS_TABLE, ['used' => 1, 'startTime' => time()], ['id' => $id]);
     }
 
     /**
@@ -363,9 +348,7 @@ abstract class AbstractSql
     public function deleteTicketById($id)
     {
         $conn = $this->getDbConn();
-        $res = $conn->update(self::TICKETS_TABLE, ['deleted' => 1], ['id' => $id]);
-
-        return $res;
+        return $conn->update(self::TICKETS_TABLE, ['deleted' => 1], ['id' => $id]);
     }
 
     /**
@@ -422,10 +405,11 @@ abstract class AbstractSql
     public function fetchUpcomingTickets($includePrivate = false)
     {
         $conn = $this->getDbConn();
+        $privateClause = $includePrivate ? '' : ' AND private = 0 ';
         $statement = $conn->prepare(
             'SELECT * FROM tickets WHERE deleted=0 AND used=0 ' .
-            ($includePrivate ? '' : ' AND private = 0 ') .
-            'ORDER BY offset ASC LIMIT ' . (int)$this->upcomingCount
+            $privateClause .
+            'ORDER BY OFFSET ASC LIMIT ' . (int)$this->upcomingCount
         );
         $statement->execute();
         $next = $statement->fetchAll();
@@ -462,7 +446,7 @@ abstract class AbstractSql
     public function fetchPerformedTickets()
     {
         $conn = $this->getDbConn();
-        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 and used=1 ORDER BY offset ASC');
+        $statement = $conn->prepare('SELECT * FROM tickets WHERE deleted=0 AND used=1 ORDER BY offset ASC');
         $statement->execute();
         $tickets = $statement->fetchAll();
         $tickets = $this->expandTicketsData($tickets);
@@ -554,7 +538,7 @@ abstract class AbstractSql
     /**
      * Get current value of a named setting, NULL if missing
      *
-     * @param $key
+     * @param  $key
      * @return mixed|null
      */
     public function getSetting($key)
@@ -595,6 +579,8 @@ abstract class AbstractSql
     abstract protected function concatenateEscapedFields($fields);
 
     /**
+     * Return ticket array with fields converted to correct datatype
+     *
      * @param $ticket
      *
      * @return mixed
@@ -615,6 +601,11 @@ abstract class AbstractSql
         return $ticket;
     }
 
+    /**
+     * Delete all song & performer data
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function resetAllSessionData()
     {
         $truncateTables = [
@@ -629,6 +620,212 @@ abstract class AbstractSql
             $connection->query(
                 'TRUNCATE TABLE ' . $connection->quoteIdentifier($table)
             );
+        }
+    }
+
+    /**
+     * Delete all catalogue data
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function resetCatalogue()
+    {
+        $dbConn = $this->getDbConn();
+        $driverType = $dbConn->getDriver()->getName();
+        $sqlite = (stripos($driverType, 'sqlite') !== false);
+        // FIXME refactor to subclasses
+
+        $truncateTables = [
+            'songs_x_instruments',
+            'songs_x_platforms',
+            'songs',
+            'instruments',
+            'platforms'
+        ];
+        foreach ($truncateTables as $table) {
+            $dbConn->exec(
+                ($sqlite ? 'DELETE FROM ' : 'TRUNCATE TABLE ') .
+                $this->dbConn->quoteIdentifier($table)
+            );
+        }
+    }
+
+    /**
+     * Store an instrument to DB
+     *
+     * @param Instrument $instrument
+     */
+    public function storeInstrument(Instrument $instrument)
+    {
+        $asArray = [];
+        if ($instrument->getId()) {
+            $asArray['id'] = $instrument->getId();
+        }
+
+        $asArray['name'] = $instrument->getName();
+        $asArray['abbreviation'] = $instrument->getAbbreviation();
+        $asArray['iconHtml'] = $instrument->getIconHtml();
+        if ($this->getDbConn()->insert('instruments', $asArray)) {
+            $instrument->setId($this->dbConn->lastInsertId());
+        }
+    }
+
+    /**
+     * Store a platform to DB
+     *
+     * @param Platform $platform
+     */
+    public function storePlatform(Platform $platform)
+    {
+        $asArray = [];
+        if ($platform->getId()) {
+            $asArray['id'] = $platform->getId();
+        }
+
+        $asArray['name'] = $platform->getName();
+        if ($this->getDbConn()->insert('platforms', $asArray)) {
+            $platform->setId($this->dbConn->lastInsertId());
+        }
+    }
+
+    /**
+     * Store a source to DB
+     *
+     * @param Source $source
+     */
+    public function storeSource(Source $source)
+    {
+        $asArray = [];
+        if ($source->getId()) {
+            $asArray['id'] = $source->getId();
+        }
+
+        $asArray['name'] = $source->getName();
+        if ($this->getDbConn()->insert('sources', $asArray)) {
+            $source->setId($this->dbConn->lastInsertId());
+        }
+    }
+
+    /**
+     * Store a song to DB
+     *
+     * @param Song $song
+     */
+    public function storeSong(Song $song)
+    {
+        $asArray = [];
+        if ($song->getId()) {
+            $asArray['id'] = $song->getId();
+        }
+
+        $asArray['artist'] = $song->getArtist();
+        $asArray['title'] = $song->getTitle();
+        $asArray['duration'] = $song->getDuration();
+        $asArray['sourceId'] = $song->getSourceId();
+        $asArray['codeNumber'] = $song->getCodeNumber();
+        if ($this->getDbConn()->insert('songs', $asArray)) {
+            $song->setId($this->dbConn->lastInsertId());
+        }
+    }
+
+    /**
+     * @param string $sourceName
+     *
+     * @return null|Source
+     */
+    public function getSourceByName($sourceName)
+    {
+        $source = null;
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('sources')
+            ->where('name = :name')
+            ->setParameter(':name', $sourceName);
+
+        $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $source = new Source();
+            $source
+                ->setId($row['id'])
+                ->setName($row['name']);
+        }
+
+        return $source;
+    }
+
+    public function getPlatformByName($platformName)
+    {
+        $platform = null;
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('platforms')
+            ->where('name = :name')
+            ->setParameter(':name', $platformName);
+
+        $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $platform = new Platform();
+            $platform
+                ->setId($row['id'])
+                ->setName($row['name']);
+        }
+
+        return $platform;
+    }
+
+    /**
+     * @param $songId
+     * @param array  $platformIds
+     */
+    public function storeSongPlatformLinks($songId, array $platformIds)
+    {
+        $this->dbConn->delete('songs_x_platforms', ['songId' => $songId]);
+
+        foreach ($platformIds as $platformId) {
+            $this->dbConn->insert('songs_x_platforms', ['songId' => $songId, 'platformId' => $platformId]);
+        }
+    }
+
+    /**
+     * @param $name
+     * @return null|Instrument
+     */
+    public function getInstrumentByName($name)
+    {
+        $instrument = null;
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('instruments')
+            ->where('name = :name')
+            ->setParameter(':name', $name);
+
+        $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $instrument = new Instrument();
+            $instrument
+                ->setId($row['id'])
+                ->setName($row['name'])
+                ->setAbbreviation($row['abbreviation'])
+                ->setIconHtml($row['iconHtml']);
+        }
+
+        return $instrument;
+    }
+
+    /**
+     * @param $songId
+     * @param array  $instrumentIds
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
+    public function storeSongInstrumentLinks($songId, array $instrumentIds)
+    {
+        $this->dbConn->delete('songs_x_instruments', ['songId' => $songId]);
+
+        foreach ($instrumentIds as $instrumentId) {
+            $this->dbConn->insert('songs_x_instruments', ['songId' => $songId, 'instrumentId' => $instrumentId]);
         }
     }
 }
