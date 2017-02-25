@@ -12,6 +12,7 @@ use Phase\TakeATicket\SongLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -81,18 +82,30 @@ class ManagementController extends BaseController
         $settingKeys = [
             'freeze' => false,
             'freezeMessage' => '',
-            'remotesUrl' => '/'
+            'remotesUrl' => '/',
+            'upcomingCount' => 3,
+            'songInPreview' => false
         ];
 
         $formDefaults = $settingKeys;
 
         $dataStore = $this->getDataStore();
 
-        foreach ($settingKeys as $k => $v) {
-            $value = $dataStore->getSetting($k);
-            if (!is_null($value)) {
-                $formDefaults[$k] = is_bool($v) ? (bool)$value : $value; // fixme handle type better
+        foreach ($settingKeys as $key => $default) {
+            $value = $dataStore->getSetting($key);
+            if (is_null($value)) {
+                $value = $default;
+            } else {
+                switch (gettype($default)) {
+                    case 'integer':
+                        $value = (int)$value;
+                        break;
+                    case 'boolean':
+                        $value = (bool)$value;
+                        break;
+                }
             }
+            $formDefaults[$key] = $value; // fixme handle type better
         }
 
         $formFactory = Forms::createFormFactoryBuilder()
@@ -104,6 +117,8 @@ class ManagementController extends BaseController
             ->add('freeze', CheckboxType::class, ['label' => 'Display "Queue Frozen" message'])
             ->add('freezeMessage', TextType::class, ['label' => 'Customise "Queue Frozen" message'])
             ->add('remotesUrl', TextType::class, ['label' => 'URL to display on remote screens'])
+            ->add('upcomingCount', NumberType::class, ['label' => 'Upcoming songs to display'])
+            ->add('songInPreview', CheckboxType::class, ['label' => 'Display song titles on public queue'])
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 
@@ -120,8 +135,8 @@ class ManagementController extends BaseController
                 && $settingsForm->get($settingsSubmit)->isClicked()
             ) {
                 $data = $settingsForm->getData();
-                foreach ($data as $k => $v) {
-                    $dataStore->updateSetting($k, $v);
+                foreach ($data as $key => $default) {
+                    $dataStore->updateSetting($key, $default);
                 }
                 $settingsFormSaved = true;
             }

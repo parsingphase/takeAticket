@@ -45,17 +45,13 @@ abstract class BaseController extends Controller
         $displayOptions = $this->container->hasParameter('displayOptions') ?
             $this->getParameter('displayOptions') : [];
 
-        // Fixme configure parameter types cleanly
-        if (strtolower($displayOptions['songInPreview']) === 'false') {
-            $displayOptions['songInPreview'] = false;
-        }
+        $displayOptions['upcomingCount'] = $this->getDataStore()->getSetting('upcomingCount') ?: 3;
+        $displayOptions['songInPreview'] = (bool)$this->getDataStore()->getSetting('songInPreview');
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $displayOptions['songInPreview'] = true; // force for logged-in users
             $displayOptions['isAdmin'] = true; // force for logged-in users
         }
-
-        //        $displayOptions['upcomingCount'] = 3;
 
         return $displayOptions;
     }

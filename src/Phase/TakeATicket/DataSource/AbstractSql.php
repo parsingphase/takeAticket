@@ -187,7 +187,7 @@ abstract class AbstractSql
      * Save band to ticket
      *
      * @param $ticketId
-     * @param array    $band ['instrumentCode' => 'name']
+     * @param array $band ['instrumentCode' => 'name']
      */
     public function storeBandToTicket($ticketId, $band)
     {
@@ -551,12 +551,18 @@ abstract class AbstractSql
         return $song;
     }
 
+    /**
+     * Get current value of a named setting, NULL if missing
+     *
+     * @param $key
+     * @return mixed|null
+     */
     public function getSetting($key)
     {
         $conn = $this->getDbConn();
-        $value = $conn->fetchColumn('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
+        $query = $conn->executeQuery('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
 
-        return $value;
+        return $query->rowCount() ? $query->fetchColumn() : null;
     }
 
 
