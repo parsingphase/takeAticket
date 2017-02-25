@@ -31,6 +31,7 @@ abstract class BaseController extends Controller
     {
         if (!$this->dataSource) {
             $this->dataSource = Factory::datasourceFromDbConnection($this->get('database_connection'));
+            $this->dataSource->setUpcomingCount($this->getUpcomingCount()); // FIXME reduce navel-gazing
         }
         return $this->dataSource;
     }
@@ -45,7 +46,7 @@ abstract class BaseController extends Controller
         $displayOptions = $this->container->hasParameter('displayOptions') ?
             $this->getParameter('displayOptions') : [];
 
-        $displayOptions['upcomingCount'] = $this->getDataStore()->getSetting('upcomingCount') ?: 3;
+        $displayOptions['upcomingCount'] = $this->getUpcomingCount();
         $displayOptions['songInPreview'] = (bool)$this->getDataStore()->getSetting('songInPreview');
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -54,5 +55,13 @@ abstract class BaseController extends Controller
         }
 
         return $displayOptions;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getUpcomingCount()
+    {
+        return $this->getDataStore()->getSetting('upcomingCount') ?: 3;
     }
 }
