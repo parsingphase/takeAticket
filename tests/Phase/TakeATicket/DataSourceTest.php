@@ -272,7 +272,7 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         if ($this->databases === false) {
             $databases = [];
 
-            $configDir = dirname(dirname(dirname(__DIR__))) . '/config/';
+            $configDir = dirname(dirname(__DIR__)) . '/config/';
 
             $configFile = $configDir . 'testConfig.dist.php'; // default
             if (file_exists($configDir . 'testConfig.php')) {
