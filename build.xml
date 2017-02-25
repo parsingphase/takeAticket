@@ -40,14 +40,7 @@
 
     <target name="phpunit"
             description="Run PHPUnit tests">
-        <phpunit codecoverage="false" haltonfailure="true" haltonerror="true">
-            <formatter type="plain" usefile="false"/>
-            <batchtest>
-                <fileset dir="tests">
-                    <include name="**/*Test*.php"/>
-                </fileset>
-            </batchtest>
-        </phpunit>
+        <exec command="vendor/bin/phpunit --fail-on-warning" checkreturn="true" passthru="true" />
     </target>
 
     <target name="jstests"
