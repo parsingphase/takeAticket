@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b70a646afc5c1804b03b76b123907dab",
-    "content-hash": "c00fca17dc50ea2c11e18e1e203fca48",
+    "hash": "31f70c3ab1e3c74341b56fd832838bc0",
+    "content-hash": "72fbcaa4385e52e3368db669f316fa11",
     "packages": [
         {
             "name": "aptoma/twig-markdown",
@@ -169,16 +169,16 @@
         },
         {
             "name": "components/handlebars.js",
-            "version": "v3.0.3",
+            "version": "v4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/handlebars.js.git",
-                "reference": "81c56c8256eebaeac0fa2507a010e9a75df1bee2"
+                "reference": "1e5029661491d012a69ccc2c370837cf362054db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/handlebars.js/zipball/81c56c8256eebaeac0fa2507a010e9a75df1bee2",
-                "reference": "81c56c8256eebaeac0fa2507a010e9a75df1bee2",
+                "url": "https://api.github.com/repos/components/handlebars.js/zipball/1e5029661491d012a69ccc2c370837cf362054db",
+                "reference": "1e5029661491d012a69ccc2c370837cf362054db",
                 "shasum": ""
             },
             "require": {
@@ -216,7 +216,7 @@
                 "html",
                 "mustache"
             ],
-            "time": "2015-04-28 20:01:27"
+            "time": "2015-11-20 05:07:35"
         },
         {
             "name": "components/jquery",
@@ -2095,25 +2095,25 @@
         },
         {
             "name": "symfony/monolog-bundle",
-            "version": "v2.12.1",
+            "version": "v3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/monolog-bundle.git",
-                "reference": "b0146bdca7ba2a65f3bbe7010423c7393b29ec3f"
+                "reference": "ebce76a39a65495a66c34eb1574cc4b9e35a4e64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/b0146bdca7ba2a65f3bbe7010423c7393b29ec3f",
-                "reference": "b0146bdca7ba2a65f3bbe7010423c7393b29ec3f",
+                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/ebce76a39a65495a66c34eb1574cc4b9e35a4e64",
+                "reference": "ebce76a39a65495a66c34eb1574cc4b9e35a4e64",
                 "shasum": ""
             },
             "require": {
-                "monolog/monolog": "~1.18",
+                "monolog/monolog": "~1.22",
                 "php": ">=5.3.2",
-                "symfony/config": "~2.3|~3.0",
-                "symfony/dependency-injection": "~2.3|~3.0",
-                "symfony/http-kernel": "~2.3|~3.0",
-                "symfony/monolog-bridge": "~2.3|~3.0"
+                "symfony/config": "~2.7|~3.0",
+                "symfony/dependency-injection": "~2.7|~3.0",
+                "symfony/http-kernel": "~2.7|~3.0",
+                "symfony/monolog-bridge": "~2.7|~3.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.8",
@@ -2123,7 +2123,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -2151,7 +2151,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2017-01-02 19:04:26"
+            "time": "2017-01-10 20:01:51"
         },
         {
             "name": "symfony/polyfill-intl-icu",
