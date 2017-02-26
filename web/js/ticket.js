@@ -698,9 +698,7 @@ var ticketer = (function() {
       });
 
       Handlebars.registerHelper('ifContains', function(haystack, needle, options) {
-        if (haystack.indexOf(needle) !== -1) {
-          return options.fn(this);
-        }
+        return (haystack.indexOf(needle) === -1) ? '' : options.fn(this);
       });
 
       this.manageTemplate = Handlebars.compile(
