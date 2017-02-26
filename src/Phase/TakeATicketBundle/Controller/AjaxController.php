@@ -86,7 +86,10 @@ class AjaxController extends BaseController
                 $platforms
             );
             $song['platforms'] = $platforms;
-            
+            //Legacy format - TODO remove this, use ['song']['platforms']
+            $song['inRb3'] = in_array('RB3', $song['platforms']);
+            $song['inRb4'] = in_array('RB4', $song['platforms']);
+
             $hydrated[] = $song;
         }
 
