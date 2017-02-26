@@ -8,6 +8,8 @@ php:
 os:
   - linux
 # osx/php testing not supported by travis
+before_script:
+  - mysql -e 'create database travis_app_test DEFAULT CHARACTER SET utf8mb4 collate utf8mb4_unicode_ci;'
 install:
  - cp app/config/parameters-docker.yml app/config/parameters.yml
  - composer install
