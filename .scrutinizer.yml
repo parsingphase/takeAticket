@@ -1,4 +1,23 @@
+filter:
+    excluded_paths:
+        - 'tests/*'
+checks:
+    php: true
+    javascript: true
+coding_style:
+    php:
+        spaces:
+            around_operators:
+                concatenation: true
+            other:
+                after_type_cast: false
 build:
+    dependencies:
+        before:
+            - mysql -e 'create database symfony DEFAULT CHARACTER SET utf8mb4 collate utf8mb4_unicode_ci;'
     environment:
         php:
-            version: 7.0
+            version: "7.0"
+    tests:
+        override:
+            - ./vendor/bin/phing test-all
