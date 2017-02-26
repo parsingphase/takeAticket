@@ -40,6 +40,7 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
                 }
 
                 foreach ($songInserts as $insertSql) {
+                    $insertSql = trim($insertSql);
                     if ($insertSql && !preg_match('/^\s+-- /', $insertSql)) {
                         $databases[$k]->exec($insertSql);
                     }
