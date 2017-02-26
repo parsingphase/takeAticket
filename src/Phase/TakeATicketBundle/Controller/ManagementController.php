@@ -32,13 +32,16 @@ class ManagementController extends BaseController
 
         $performers = $this->getDataStore()->generatePerformerStats();
 
+        $viewParams = $this->defaultViewParams();
+
+        $viewParams += [
+            'tickets' => $tickets,
+            'performers' => $performers
+        ];
+
         return $this->render(
             'default/manage.html.twig',
-            [
-                'tickets' => $tickets,
-                'performers' => $performers,
-                'displayOptions' => $this->getDisplayOptions(),
-            ]
+            $viewParams
         );
     }
 

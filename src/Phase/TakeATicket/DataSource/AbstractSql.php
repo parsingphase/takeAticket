@@ -833,6 +833,28 @@ abstract class AbstractSql
     }
 
     /**
+     * Fetch all available platforms
+     *
+     * @return Platform[]
+     */
+    public function fetchAllPlatforms()
+    {
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('platforms')
+            ->orderBy('id');
+
+        $rows = $query->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+        $platforms = [];
+        foreach ($rows as $row) {
+            $platforms[] = $this->buildPlatformFromDbRow($row);
+        }
+
+        return $platforms;
+    }
+
+    /**
      * @param $songId
      * @param array $platformIds
      */

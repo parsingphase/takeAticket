@@ -2,7 +2,6 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends BaseController
@@ -24,29 +23,10 @@ class DefaultController extends BaseController
         return $this->render('default/songSearch.html.twig', $viewParams);
     }
 
-    /**
-     * @return array
-     */
-    protected function defaultViewParams()
-    {
-        //$protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
-        $protocol = 'http'; // $_SERVER['HTTPS'] ? 'https' : 'http';
-        /**
- * @noinspection RealpathInSteamContextInspection
-*/
-        $viewParams = [
-            //'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/',
-            'serverInfo' => $protocol.'://127.0.0.1:8000/', //FIXME get server name (from config if not in request?)
-            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
-        ];
-        $viewParams['displayOptions'] = $this->getDisplayOptions();
-
-        return $viewParams;
-    }
-
     public function announceAction($section)
     {
-        $rootDir = realpath(__DIR__.'/../../../../');
+        /** @noinspection RealpathInSteamContextInspection */
+        $rootDir = realpath(__DIR__.'/../../../../'); // FIXME get from Kernel
         $announceDir = $rootDir.'/docs/announcements';
 
         if (!preg_match('/^\w+$/', $section)) {

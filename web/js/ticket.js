@@ -27,6 +27,11 @@ var ticketer = (function() {
      */
     performers: [],
 
+    /**
+     * List of all platform names in the system
+     */
+    platforms: [],
+
     performerExists: function(performerName) {
       for (var i = 0; i < this.performers.length; i++) {
         if (this.performers[i].performerName.toLowerCase() == performerName.toLowerCase()) {
@@ -689,24 +694,30 @@ var ticketer = (function() {
       });
 
       Handlebars.registerHelper('gameList', function(song) {
-        var all = [];
-        if (song.inRb3) {
-          all.push('RB3');
+        return song.platforms.join(', ');
+      });
+
+      Handlebars.registerHelper('ifContains', function(haystack, needle, options) {
+        if (haystack.indexOf(needle) !== -1) {
+          return options.fn(this);
         }
-        if (song.inRb4) {
-          all.push('RB4');
-        }
-        return all.join(', ');
       });
 
       this.manageTemplate = Handlebars.compile(
         '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}' +
-        ' {{#if ticket.song.inRb3}}rb3ticket{{/if}} {{#if ticket.song.inRb4}}rb4ticket{{/if}}' +
+        ' {{#each ticket.song.platforms }}platform{{ this }} {{/each}}' +
         ' {{#if ticket.band.K}}withKeys{{/if}}"' +
         ' data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
-        '        <div class="gameMarker gameMarkerRb3">{{#if ticket.song.inRb3}}RB3{{/if}}</div>' +
-        '        <div class="gameMarker gameMarkerRb4">{{#if ticket.song.inRb4}}RB4{{/if}}</div>' +
+        (function() {
+          var s = '';
+          for (var i = 0; i < that.platforms.length; i++) {
+            var p = that.platforms[i];
+            s += '<div class="gameMarker gameMarker' + p + '">' +
+              '{{#ifContains ticket.song.platforms "' + p + '" }}' + p + '{{/ifContains}}</div>';
+          }
+          return s;
+        })() +
         '        <button class="btn btn-primary performButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
         '        <button class="btn btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
         '        <button class="btn editButton" data-ticket-id="{{ ticket.id }}">' +

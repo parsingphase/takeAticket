@@ -8,8 +8,10 @@
             var tickets = {{ tickets|json_encode|raw }};
             var performers = {{ performers|json_encode|raw }};
             var displayOptions = {{ displayOptions|json_encode|raw }};
+            var platforms = {{ allPlatforms|json_encode|raw }};
             $(function() {
                 ticketer.performers = performers;
+                ticketer.platforms = platforms;
                 ticketer.displayOptions = displayOptions;
                 ticketer.manage(tickets);
             });

@@ -9,6 +9,7 @@
 namespace Phase\TakeATicketBundle\Controller;
 
 use Phase\TakeATicket\DataSource\AbstractSql;
+use Phase\TakeATicket\Model\Platform;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phase\TakeATicket\DataSource\Factory;
 
@@ -63,5 +64,32 @@ abstract class BaseController extends Controller
     protected function getUpcomingCount()
     {
         return $this->getDataStore()->fetchSetting('upcomingCount') ?: 3;
+    }
+
+    /**
+     * @return array
+     */
+    protected function defaultViewParams()
+    {
+        //$protocol = $_SERVER['HTTPS'] ? 'https' : 'http';
+        $protocol = 'http'; // $_SERVER['HTTPS'] ? 'https' : 'http';
+        /**
+         * @noinspection RealpathInSteamContextInspection
+         */
+        $allPlatforms = $this->getDataStore()->fetchAllPlatforms();
+        $platformNames = array_map(function (Platform $platform) {
+            return $platform->getName();
+        }, $allPlatforms);
+
+        /** @noinspection RealpathInSteamContextInspection */
+        $viewParams = [
+            //'serverInfo' => $protocol . '://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . '/',
+            'serverInfo' => $protocol . '://127.0.0.1:8000/', //FIXME get server name (from config if not in request?)
+            'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
+            'allPlatforms' => $platformNames,
+        ];
+        $viewParams['displayOptions'] = $this->getDisplayOptions();
+
+        return $viewParams;
     }
 }
