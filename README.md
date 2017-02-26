@@ -1,8 +1,8 @@
 TakeATicket 
 ===========
-[![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket)
-[![Dependency Status](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/?branch=master)
+| Travis | VersionEye | Scrutinizer |
+| ---    | ---        | --- |
+| [![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket) | [![Dependency Status](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/build.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/build-status/master) |
 
 Queue management tool for Rock Club London (http://rockclublondon.com/)
 

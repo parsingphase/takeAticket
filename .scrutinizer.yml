@@ -1,6 +1,8 @@
 filter:
     excluded_paths:
         - 'tests/*'
+        - 'var/*'
+        - 'vendor/*'
 checks:
     php: true
     javascript: true
