@@ -22,4 +22,5 @@ matrix:
 branches:
   only:
     - master
-    - dev
+    - /dev.*/
+    - schema-refactor
