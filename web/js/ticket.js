@@ -656,13 +656,14 @@ var ticketer = (function() {
       var that = this;
 
       // CommaList = each, with commas joining. Returns value at t as tuple {k,v}
-      // TODO work out how to use options to more closely mimic 'each'
+      // "The options hash contains a function (options.fn) that behaves like a normal compiled Handlebars template."
+      // If called without inner template, options.fn is not populated
       Handlebars.registerHelper('commalist', function(context, options) {
         var retList = [];
 
         for (var key in context) {
           if (context.hasOwnProperty(key)) {
-            retList.push(options.fn({k: key, v: context[key]}));
+            retList.push(options.fn ? options.fn({k: key, v: context[key]}) : context[key]);
           }
         }
 
@@ -775,10 +776,10 @@ var ticketer = (function() {
         '" data-ticket-id="{{ ticket.id }}">' +
 
         (this.displayOptions.adminQueueHasControls && this.displayOptions.isAdmin ?
-        '<div class="ticketAdminControls">' +
-        '<button class="btn btn-sm btn-primary performingButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
-        '<button class="btn btn-sm btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
-        '</div>'
+          '<div class="ticketAdminControls">' +
+          '<button class="btn btn-sm btn-primary performingButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
+          '<button class="btn btn-sm btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
+          '</div>'
           : '') +
 
 
@@ -800,10 +801,10 @@ var ticketer = (function() {
         '{{/each}}' +
         '    </p>' +
         (this.displayOptions.songInPreview ?
-        '{{#if ticket.song}}<p class="text-center song auto-font">' +
-        '{{ticket.song.artist}}: {{ticket.song.title}}' +
-        ' ({{gameList ticket.song}})' +
-        '</p>{{/if}}' : '') +
+          '{{#if ticket.song}}<p class="text-center song auto-font">' +
+          '{{ticket.song.artist}}: {{ticket.song.title}}' +
+          ' ({{gameList ticket.song}})' +
+          '</p>{{/if}}' : '') +
         '        </div>' +
         '</div>  '
       );
@@ -917,9 +918,8 @@ var ticketer = (function() {
         '<table>' +
         '<tr><th>Duration</th><td>{{durationToMS song.duration}}</td></tr> ' +
         '<tr><th>Code</th><td>{{song.codeNumber}}</td></tr> ' +
-        '<tr><th>Harmony? </th><td>{{#if song.hasHarmony}}Yes{{else}}No{{/if}}</td></tr> ' +
-        '<tr><th>Keys?</th><td>{{#if song.hasKeys}}Yes{{else}}No{{/if}}</td></tr> ' +
-        '<tr><th>Games</th><td>{{#if song.inRb3}}RB3{{/if}} {{#if song.inRb4}}RB4{{/if}}</td></tr> ' +
+        '<tr><th>Instruments </th><td>{{commalist song.instruments}}</td></tr> ' +
+        '<tr><th>Games</th><td>{{commalist song.platforms}}</td></tr> ' +
         '<tr><th>Source</th><td>{{song.source}}</td></tr> ' +
         '</table>' +
         '</div>'
