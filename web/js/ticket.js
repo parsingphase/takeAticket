@@ -777,7 +777,8 @@ var ticketer = (function() {
 
         (this.displayOptions.adminQueueHasControls && this.displayOptions.isAdmin ?
           '<div class="ticketAdminControls">' +
-          '<button class="btn btn-sm btn-primary performingButton" data-ticket-id="{{ ticket.id }}">Performing</button>' +
+          '<button class="btn btn-sm btn-primary performingButton"' +
+          ' data-ticket-id="{{ ticket.id }}">Performing</button>' +
           '<button class="btn btn-sm btn-danger removeButton" data-ticket-id="{{ ticket.id }}">Remove</button>' +
           '</div>'
           : '') +

@@ -220,7 +220,11 @@ abstract class AbstractSql
                     $performerName = trim($performerName);
                     $performerId = $this->fetchPerformerIdByName($performerName, true);
                     if ($performerId) {
-                        $link = ['ticketId' => $ticketId, 'performerId' => $performerId, 'instrumentId' => $instrumentId];
+                        $link = [
+                            'ticketId' => $ticketId,
+                            'performerId' => $performerId,
+                            'instrumentId' => $instrumentId
+                        ];
                         $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
                     }
                 }
@@ -875,7 +879,8 @@ abstract class AbstractSql
     public function fetchInstrumentsForSongId($songId)
     {
         $instrumentRows = $this->dbConn->fetchAll(
-            'SELECT i.* FROM songs_x_instruments si INNER JOIN instruments i ON si.instrumentId = i.id WHERE si.songId = :songId',
+            'SELECT i.* FROM songs_x_instruments si 
+              INNER JOIN instruments i ON si.instrumentId = i.id WHERE si.songId = :songId',
             ['songId' => $songId]
         );
 
@@ -897,7 +902,8 @@ abstract class AbstractSql
     public function fetchPlatformsForSongId($songId)
     {
         $platformRows = $this->dbConn->fetchAll(
-            'SELECT p.* FROM songs_x_platforms sp INNER JOIN platforms p ON sp.platformId = p.id WHERE sp.songId = :songId',
+            'SELECT p.* FROM songs_x_platforms sp 
+              INNER JOIN platforms p ON sp.platformId = p.id WHERE sp.songId = :songId',
             ['songId' => $songId]
         );
 

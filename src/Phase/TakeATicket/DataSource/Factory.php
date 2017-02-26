@@ -15,7 +15,7 @@ class Factory
     /**
      * @param Connection $connection
      *
-     * @return MySql|Sqlite
+     * @return AbstractSql
      */
     public static function datasourceFromDbConnection(Connection $connection)
     {

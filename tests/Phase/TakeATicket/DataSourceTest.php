@@ -100,18 +100,18 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     {
         // Note: we start these tests with an empty, truncated user table
         $dataSource = Factory::datasourceFromDbConnection($conn);
-        $noSuchUser = $dataSource->getPerformerIdByName('Bob');
+        $noSuchUser = $dataSource->fetchPerformerIdByName('Bob');
         $this->assertFalse($noSuchUser, "Nonexistent user must not be found ($dbName)");
 
-        $firstUserId = $dataSource->getPerformerIdByName('Bob', true);
+        $firstUserId = $dataSource->fetchPerformerIdByName('Bob', true);
         $this->assertEquals(1, $firstUserId, "Creating first user must return ID=1 ($dbName)");
         // Only works for DBs with monotonic int IDs - may need later revision
 
-        $secondUserId = $dataSource->getPerformerIdByName('Harry', true);
+        $secondUserId = $dataSource->fetchPerformerIdByName('Harry', true);
         $this->assertTrue($secondUserId > 1, "Creating second user must return ID>1 ($dbName)");
         // Only works for DBs with monotonic int IDs - may need later revision
 
-        $existingUserId = $dataSource->getPerformerIdByName(strtolower('Bob'), false);
+        $existingUserId = $dataSource->fetchPerformerIdByName(strtolower('Bob'), false);
         // strtolower - check that we don't need case matching
         $this->assertEquals($firstUserId, $existingUserId, "Second search for same user must return same ID ($dbName)");
     }
