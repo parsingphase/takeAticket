@@ -13,7 +13,6 @@ testConfig.php
 www/docs/images
 docs/announcements
 /build/
-/phpunit.xml
 /var/*
 !/var/cache
 /var/cache/*
