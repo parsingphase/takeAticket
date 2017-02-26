@@ -136,7 +136,7 @@ class AjaxController extends BaseController
         if (preg_match('/^[a-f0-9]{6}$/i', $songKey)) {
             $song = $this->getDataStore()->fetchSongByKey($songKey);
         } elseif (preg_match('/^\d+$/', $songKey)) {
-            $song = $this->getDataStore()->fetchSongById($songKey);
+            $song = $this->getDataStore()->fetchSongRowById($songKey);
         }
 
         if ($song) {

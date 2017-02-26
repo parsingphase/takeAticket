@@ -110,9 +110,9 @@ abstract class AbstractSql
     /**
      * @param $songId
      *
-     * @return mixed
+     * @return array
      */
-    public function fetchSongById($songId)
+    public function fetchSongRowById($songId)
     {
         $song = $this->getDbConn()->fetchAssoc('SELECT * FROM songs WHERE id = :code', ['code' => $songId]);
         if ($song) {
@@ -132,11 +132,22 @@ abstract class AbstractSql
         $ticket = $this->normaliseTicketRecord($ticket);
 
         if ($ticket['songId']) {
-            $ticket['song'] = $this->fetchSongById($ticket['songId']);
+            $ticket['song'] = $this->fetchSongRowById($ticket['songId']);
         }
-        //FIXME inefficient, but different pages expect different structure while we refactor
+        //FIXED inefficient, but different pages expect different structure while we refactor
         $ticket['band'] = $this->fetchPerformersWithInstrumentByTicketId($ticket['id']);
-        $ticket['performers'] = $this->fetchPerformersByTicketId($ticket['id']);
+//        $ticket['performers'] = $this->fetchPerformersByTicketId($ticket['id']);
+
+        $ticket['song']['platforms'] = array_map(
+            function (Platform $platform) {
+                return $platform->getName();
+            },
+            $this->fetchPlatformsForSongId($ticket['songId'])
+        );
+
+        //Legacy format - TODO remove this, use ['song']['platforms']
+        $ticket['song']['inRb3'] = in_array('RB3', $ticket['song']['platforms']);
+        $ticket['song']['inRb4'] = in_array('RB4', $ticket['song']['platforms']);
 
         return $ticket;
     }
@@ -900,7 +911,7 @@ abstract class AbstractSql
 
         return $platforms;
     }
-    
+
     /**
      * @param $row
      * @return Instrument
@@ -1007,6 +1018,4 @@ abstract class AbstractSql
         $asArray['name'] = $platform->getName();
         return $asArray;
     }
-
-
 }
