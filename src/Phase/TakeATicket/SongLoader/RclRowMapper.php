@@ -134,7 +134,7 @@ class RclRowMapper implements RowMapperInterface
 
         $sourceName = trim($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_SOURCE]]);
         if ($sourceName) {
-            $source = $this->dataStore->getSourceByName($sourceName);
+            $source = $this->dataStore->fetchSourceByName($sourceName);
             if (!$source) {
                 $source = new Source($sourceName);
                 $this->dataStore->storeSource($source);
@@ -154,7 +154,7 @@ class RclRowMapper implements RowMapperInterface
         ];
         foreach ($platformFields as $field => $platformName) {
             if (trim($flattenedRow[$this->fieldLookup[$field]])) {
-                $platform = $this->dataStore->getPlatformByName($platformName);
+                $platform = $this->dataStore->fetchPlatformByName($platformName);
                 if (!$platform) {
                     $platform = new Platform($platformName);
                     $this->dataStore->storePlatform($platform);
@@ -173,7 +173,7 @@ class RclRowMapper implements RowMapperInterface
         $datastore = $this->dataStore;
         $instrumentIds = array_map(
             function ($name) use ($datastore) {
-                $instrument = $datastore->getInstrumentByName($name);
+                $instrument = $datastore->fetchInstrumentByName($name);
                 return $instrument ? $instrument->getId() : null;
             },
             $instruments

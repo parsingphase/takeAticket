@@ -92,7 +92,7 @@ class ManagementController extends BaseController
         $dataStore = $this->getDataStore();
 
         foreach ($settingKeys as $key => $default) {
-            $value = $dataStore->getSetting($key);
+            $value = $dataStore->fetchSetting($key);
             if (is_null($value)) {
                 $value = $default;
             } else {
@@ -211,7 +211,7 @@ class ManagementController extends BaseController
 
         // -------------------
 
-        $defaults = ['customCss' => $dataStore->getSetting('customCss')];
+        $defaults = ['customCss' => $dataStore->fetchSetting('customCss')];
 
         $stylingSubmit = 'Update styles';
         $stylingForm = $formFactory->createNamedBuilder('stylingForm', FormType::class, $defaults)

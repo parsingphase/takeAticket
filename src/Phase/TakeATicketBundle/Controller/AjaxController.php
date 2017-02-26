@@ -83,7 +83,7 @@ class AjaxController extends BaseController
 
     public function remotesRedirectAction()
     {
-        return new JsonResponse($this->getDataStore()->getSetting('remotesUrl'));
+        return new JsonResponse($this->getDataStore()->fetchSetting('remotesUrl'));
     }
 
     public function saveTicketAction(Request $request)

@@ -186,13 +186,13 @@ abstract class AbstractSql
         $this->getDbConn()->delete(self::TICKETS_X_PERFORMERS_TABLE, ['ticketId' => $ticketId]);
 
         foreach ($band as $instrumentCode => $performers) {
-            $instrument = $this->getInstrumentByAbbreviation($instrumentCode);
+            $instrument = $this->fetchInstrumentByAbbreviation($instrumentCode);
             if ($instrument) {
                 $instrumentId = $instrument->getId();
 
                 foreach ($performers as $performerName) {
                     $performerName = trim($performerName);
-                    $performerId = $this->getPerformerIdByName($performerName, true);
+                    $performerId = $this->fetchPerformerIdByName($performerName, true);
                     if ($performerId) {
                         $link = ['ticketId' => $ticketId, 'performerId' => $performerId, 'instrumentId' => $instrumentId];
                         $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
@@ -204,7 +204,7 @@ abstract class AbstractSql
         }
     }
 
-    public function getPerformerIdByName($performerName, $createMissing = false)
+    public function fetchPerformerIdByName($performerName, $createMissing = false)
     {
         $conn = $this->getDbConn();
         $sql = 'SELECT id FROM performers p WHERE p.name LIKE :name LIMIT 1';
@@ -505,9 +505,10 @@ abstract class AbstractSql
             $song[$k] = (bool)$song[$k];
         }
 
-//        if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
-//            $song['queued'] = (bool)$song['queued'];
-//        }
+        // Search API adds a 'queued' parameter to show if song is taken
+        if (isset($song['queued'])) { //TODO see if this is safe to move to $boolFields
+            $song['queued'] = (bool)$song['queued'];
+        }
 
         return $song;
     }
@@ -548,7 +549,7 @@ abstract class AbstractSql
      * @param  $key
      * @return mixed|null
      */
-    public function getSetting($key)
+    public function fetchSetting($key)
     {
         $conn = $this->getDbConn();
         $query = $conn->executeQuery('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
@@ -573,7 +574,7 @@ abstract class AbstractSql
         } else {
             $conn->insert('settings', ['settingValue' => $v, 'settingKey' => $k]);
         }
-        return $this->getSetting($k);
+        return $this->fetchSetting($k);
     }
 
     /**
@@ -740,7 +741,7 @@ abstract class AbstractSql
      *
      * @return null|Source
      */
-    public function getSourceByName($sourceName)
+    public function fetchSourceByName($sourceName)
     {
         $source = null;
         $query = $this->dbConn->createQueryBuilder()
@@ -761,7 +762,7 @@ abstract class AbstractSql
         return $source;
     }
 
-    public function getPlatformByName($platformName)
+    public function fetchPlatformByName($platformName)
     {
         $platform = null;
         $query = $this->dbConn->createQueryBuilder()
@@ -799,7 +800,7 @@ abstract class AbstractSql
      * @param $name
      * @return null|Instrument
      */
-    public function getInstrumentByName($name)
+    public function fetchInstrumentByName($name)
     {
         $instrument = null;
         $query = $this->dbConn->createQueryBuilder()
@@ -822,7 +823,7 @@ abstract class AbstractSql
         return $instrument;
     }
 
-    protected function getInstrumentByAbbreviation($abbreviation)
+    protected function fetchInstrumentByAbbreviation($abbreviation)
     {
         $instrument = null;
         $query = $this->dbConn->createQueryBuilder()

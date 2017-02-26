@@ -47,7 +47,7 @@ abstract class BaseController extends Controller
             $this->getParameter('displayOptions') : [];
 
         $displayOptions['upcomingCount'] = $this->getUpcomingCount();
-        $displayOptions['songInPreview'] = (bool)$this->getDataStore()->getSetting('songInPreview');
+        $displayOptions['songInPreview'] = (bool)$this->getDataStore()->fetchSetting('songInPreview');
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $displayOptions['songInPreview'] = true; // force for logged-in users
@@ -62,6 +62,6 @@ abstract class BaseController extends Controller
      */
     protected function getUpcomingCount()
     {
-        return $this->getDataStore()->getSetting('upcomingCount') ?: 3;
+        return $this->getDataStore()->fetchSetting('upcomingCount') ?: 3;
     }
 }

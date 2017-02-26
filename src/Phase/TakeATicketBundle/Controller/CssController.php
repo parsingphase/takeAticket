@@ -14,8 +14,8 @@ class CssController extends BaseController
 {
     public function customCssAction()
     {
-        $backgroundFilename = $this->getDataStore()->getSetting('backgroundFilename');
-        $customCss = $this->getDataStore()->getSetting('customCss');
+        $backgroundFilename = $this->getDataStore()->fetchSetting('backgroundFilename');
+        $customCss = $this->getDataStore()->fetchSetting('customCss');
         $backgroundFullPath = dirname($this->get('kernel')->getRootDir()) . '/web/uploads/' . $backgroundFilename;
 
         $backgroundUrl = null;

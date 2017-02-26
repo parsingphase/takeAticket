@@ -50,7 +50,7 @@ class MySql extends AbstractSql
      *
      * @return mixed
      */
-    public function getPerformerIdByName($performerName, $createMissing = false)
+    public function fetchPerformerIdByName($performerName, $createMissing = false)
     {
         $conn = $this->getDbConn();
         $sql = 'SELECT id FROM performers p WHERE p.name LIKE :name LIMIT 1';

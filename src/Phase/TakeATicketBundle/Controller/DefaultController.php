@@ -10,8 +10,8 @@ class DefaultController extends BaseController
     public function indexAction()
     {
         $viewParams = $this->defaultViewParams();
-        $viewParams['freeze'] = $this->getDataStore()->getSetting('freeze');
-        $viewParams['freezeMessage'] = $this->getDataStore()->getSetting('freezeMessage');
+        $viewParams['freeze'] = $this->getDataStore()->fetchSetting('freeze');
+        $viewParams['freezeMessage'] = $this->getDataStore()->fetchSetting('freezeMessage');
 
         // replace this example code with whatever you need
         return $this->render('default/upcoming.html.twig', $viewParams);
@@ -20,7 +20,7 @@ class DefaultController extends BaseController
     public function songSearchAction()
     {
         $viewParams = $this->defaultViewParams();
-        $viewParams['freeze'] = $this->getDataStore()->getSetting('freeze');
+        $viewParams['freeze'] = $this->getDataStore()->fetchSetting('freeze');
         return $this->render('default/songSearch.html.twig', $viewParams);
     }
 
