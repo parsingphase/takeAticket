@@ -8,6 +8,8 @@
 
 namespace Phase\TakeATicketBundle\Controller;
 
+use Phase\TakeATicket\Model\Instrument;
+use Phase\TakeATicket\Model\Platform;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,9 +58,39 @@ class AjaxController extends BaseController
         if ($request->get('searchCount')) {
             $searchCount = $request->get('searchCount');
         }
-        $songs = $this->getDataStore()->findSongsBySearchString($searchString, $searchCount);
+        $dataStore = $this->getDataStore();
+        $songs = $dataStore->findSongsBySearchString($searchString, $searchCount);
+        // Need to add sources, instruments
+        $hydrated = [];
 
-        $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $songs]);
+        foreach ($songs as $song) {
+            $instruments = $dataStore->fetchInstrumentsForSongId($song['id']);
+            $instruments = array_map(
+                function (Instrument $instrument) {
+                    return $instrument->getName();
+                },
+                $instruments
+            );
+            $song['instruments'] = $instruments;
+
+            $source = $dataStore->fetchSourceById($song['sourceId']);
+            if ($source) {
+                $song['source'] = $source->getName();
+            }
+
+            $platforms = $dataStore->fetchPlatformsForSongId($song['id']);
+            $platforms = array_map(
+                function (Platform $platform) {
+                    return $platform->getName();
+                },
+                $platforms
+            );
+            $song['platforms'] = $platforms;
+            
+            $hydrated[] = $song;
+        }
+
+        $jsonResponse = new JsonResponse(['ok' => 'ok', 'searchString' => $searchString, 'songs' => $hydrated]);
 
         return $jsonResponse;
     }
