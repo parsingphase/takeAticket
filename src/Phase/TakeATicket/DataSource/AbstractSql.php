@@ -9,12 +9,12 @@
 namespace Phase\TakeATicket\DataSource;
 
 use Doctrine\DBAL\Connection;
-use Monolog\Logger;
 use PDO;
 use Phase\TakeATicket\Model\Instrument;
 use Phase\TakeATicket\Model\Platform;
 use Phase\TakeATicket\Model\Song;
 use Phase\TakeATicket\Model\Source;
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
@@ -49,7 +49,7 @@ abstract class AbstractSql
     protected $upcomingCount = 3;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -88,7 +88,7 @@ abstract class AbstractSql
     }
 
     /**
-     * @return Logger
+     * @return LoggerInterface
      */
     public function getLogger()
     {
@@ -100,9 +100,9 @@ abstract class AbstractSql
     }
 
     /**
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      */
-    public function setLogger(Logger $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
