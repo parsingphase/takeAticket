@@ -17,6 +17,21 @@ use Phase\TakeATicket\Model\Song;
 use Phase\TakeATicket\Model\Source;
 use Psr\Log\NullLogger;
 
+/**
+ * Base Datasource
+ *
+ * Onward naming convention for methods (note that some are currently misnamed)
+ *
+ * get*() property getter
+ * set*() property setter
+ *
+ * fetch*Row() Returns raw DB content as array
+ * fetch*Data() Returns non-object data that's not just homogenous rows
+ * fetch[ModelName]() Returns model objects
+ *
+ * protected build[ModelName]FromDbRow() Return single model object from array
+ * protected [modelName]ToDbRow() Return single array suitable for DB insertion from model object
+ */
 abstract class AbstractSql
 {
     const TICKETS_TABLE = 'tickets';
@@ -142,7 +157,7 @@ abstract class AbstractSql
         return $tickets;
     }
 
-    public function potentialCodeNumber($searchString)
+    public function isPotentialCodeNumber($searchString)
     {
         $codeLength = (int)self::CODE_LENGTH;
         $regexp = '/^[a-f0-9]{' . $codeLength . '}$/i';
@@ -251,7 +266,7 @@ abstract class AbstractSql
 
     public function fetchPerformersWithInstrumentByTicketId($ticketId)
     {
-        $ticketPerformerSql = 'SELECT x.performerId, i.abbreviation as instrument
+        $ticketPerformerSql = 'SELECT x.performerId, i.abbreviation AS instrument
           FROM tickets_x_performers x INNER JOIN instruments i ON x.instrumentId = i.id
           WHERE x.ticketId = :ticketId';
         $performerRows = $this->getDbConn()->fetchAll($ticketPerformerSql, ['ticketId' => $ticketId]);
@@ -300,7 +315,7 @@ abstract class AbstractSql
         ];
 
         // this may be unnecessary - chances of a code number hitting anything else is minimal
-        if ($this->potentialCodeNumber($searchString)) {
+        if ($this->isPotentialCodeNumber($searchString)) {
             $sql = "SELECT s.*, max(CASE WHEN t.id IS NOT NULL THEN 1 ELSE 0 END) as queued
             FROM songs s
             LEFT OUTER JOIN tickets t ON s.id = t.songId AND t.deleted=0
@@ -665,14 +680,7 @@ abstract class AbstractSql
      */
     public function storeInstrument(Instrument $instrument)
     {
-        $asArray = [];
-        if ($instrument->getId()) {
-            $asArray['id'] = $instrument->getId();
-        }
-
-        $asArray['name'] = $instrument->getName();
-        $asArray['abbreviation'] = $instrument->getAbbreviation();
-        $asArray['iconHtml'] = $instrument->getIconHtml();
+        $asArray = $this->instrumentToDbRow($instrument);
         if ($this->getDbConn()->insert('instruments', $asArray)) {
             $instrument->setId($this->dbConn->lastInsertId());
         }
@@ -685,12 +693,7 @@ abstract class AbstractSql
      */
     public function storePlatform(Platform $platform)
     {
-        $asArray = [];
-        if ($platform->getId()) {
-            $asArray['id'] = $platform->getId();
-        }
-
-        $asArray['name'] = $platform->getName();
+        $asArray = $this->platformToDbRow($platform);
         if ($this->getDbConn()->insert('platforms', $asArray)) {
             $platform->setId($this->dbConn->lastInsertId());
         }
@@ -703,12 +706,7 @@ abstract class AbstractSql
      */
     public function storeSource(Source $source)
     {
-        $asArray = [];
-        if ($source->getId()) {
-            $asArray['id'] = $source->getId();
-        }
-
-        $asArray['name'] = $source->getName();
+        $asArray = $this->sourceToDbRow($source);
         if ($this->getDbConn()->insert('sources', $asArray)) {
             $source->setId($this->dbConn->lastInsertId());
         }
@@ -721,16 +719,7 @@ abstract class AbstractSql
      */
     public function storeSong(Song $song)
     {
-        $asArray = [];
-        if ($song->getId()) {
-            $asArray['id'] = $song->getId();
-        }
-
-        $asArray['artist'] = $song->getArtist();
-        $asArray['title'] = $song->getTitle();
-        $asArray['duration'] = $song->getDuration();
-        $asArray['sourceId'] = $song->getSourceId();
-        $asArray['codeNumber'] = $song->getCodeNumber();
+        $asArray = $this->songToDbRow($song);
         if ($this->getDbConn()->insert('songs', $asArray)) {
             $song->setId($this->dbConn->lastInsertId());
         }
@@ -753,10 +742,30 @@ abstract class AbstractSql
         $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $source = new Source();
-            $source
-                ->setId($row['id'])
-                ->setName($row['name']);
+            $source = $this->buildSourceFromDbRow($row);
+        }
+
+        return $source;
+    }
+
+
+    /**
+     * @param $sourceId
+     * @return null|Source
+     */
+    public function fetchSourceById($sourceId)
+    {
+        $source = null;
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('sources')
+            ->where('id = :id')
+            ->setParameter(':id', $sourceId);
+
+        $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $source = $this->buildSourceFromDbRow($row);
         }
 
         return $source;
@@ -774,10 +783,7 @@ abstract class AbstractSql
         $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $platform = new Platform();
-            $platform
-                ->setId($row['id'])
-                ->setName($row['name']);
+            $platform = $this->buildPlatformFromDbRow($row);
         }
 
         return $platform;
@@ -812,12 +818,7 @@ abstract class AbstractSql
         $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $instrument = new Instrument();
-            $instrument
-                ->setId($row['id'])
-                ->setName($row['name'])
-                ->setAbbreviation($row['abbreviation'])
-                ->setIconHtml($row['iconHtml']);
+            $instrument = $this->buildInstrumentFromDbRow($row);
         }
 
         return $instrument;
@@ -835,12 +836,7 @@ abstract class AbstractSql
         $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $instrument = new Instrument();
-            $instrument
-                ->setId($row['id'])
-                ->setName($row['name'])
-                ->setAbbreviation($row['abbreviation'])
-                ->setIconHtml($row['iconHtml']);
+            $instrument = $this->buildInstrumentFromDbRow($row);
         }
 
         return $instrument;
@@ -860,4 +856,157 @@ abstract class AbstractSql
             $this->dbConn->insert('songs_x_instruments', ['songId' => $songId, 'instrumentId' => $instrumentId]);
         }
     }
+
+    /**
+     * @param $songId
+     * @return Instrument[]
+     */
+    public function fetchInstrumentsForSongId($songId)
+    {
+        $instrumentRows = $this->dbConn->fetchAll(
+            'SELECT i.* FROM songs_x_instruments si INNER JOIN instruments i ON si.instrumentId = i.id WHERE si.songId = :songId',
+            ['songId' => $songId]
+        );
+
+        $dbConn = $this;
+        $instruments = array_map(
+            function ($row) use ($dbConn) {
+                return $dbConn->buildInstrumentFromDbRow($row);
+            },
+            $instrumentRows
+        );
+
+        return $instruments;
+    }
+
+    /**
+     * @param $songId
+     * @return Platform[]
+     */
+    public function fetchPlatformsForSongId($songId)
+    {
+        $platformRows = $this->dbConn->fetchAll(
+            'SELECT p.* FROM songs_x_platforms sp INNER JOIN platforms p ON sp.platformId = p.id WHERE sp.songId = :songId',
+            ['songId' => $songId]
+        );
+
+        $dbConn = $this;
+        $platforms = array_map(
+            function ($row) use ($dbConn) {
+                return $dbConn->buildPlatformFromDbRow($row);
+            },
+            $platformRows
+        );
+
+        return $platforms;
+    }
+    
+    /**
+     * @param $row
+     * @return Instrument
+     */
+    protected function buildInstrumentFromDbRow($row)
+    {
+        $instrument = new Instrument();
+        $instrument
+            ->setId($row['id'])
+            ->setName($row['name'])
+            ->setAbbreviation($row['abbreviation'])
+            ->setIconHtml($row['iconHtml']);
+        return $instrument;
+    }
+
+    /**
+     * @param $row
+     * @return Platform
+     */
+    protected function buildPlatformFromDbRow($row)
+    {
+        $platform = new Platform();
+        $platform
+            ->setId($row['id'])
+            ->setName($row['name']);
+        return $platform;
+    }
+
+    /**
+     * @param $row
+     * @return Source
+     */
+    protected function buildSourceFromDbRow($row)
+    {
+        $source = new Source();
+        $source
+            ->setId($row['id'])
+            ->setName($row['name']);
+        return $source;
+    }
+
+    /**
+     * @param Song $song
+     * @return array
+     */
+    protected function songToDbRow(Song $song)
+    {
+        $asArray = [];
+        if ($song->getId()) {
+            $asArray['id'] = $song->getId();
+        }
+
+        $asArray['artist'] = $song->getArtist();
+        $asArray['title'] = $song->getTitle();
+        $asArray['duration'] = $song->getDuration();
+        $asArray['sourceId'] = $song->getSourceId();
+        $asArray['codeNumber'] = $song->getCodeNumber();
+        return $asArray;
+    }
+
+    /**
+     * @param Source $source
+     * @return array
+     */
+    protected function sourceToDbRow(Source $source)
+    {
+        $asArray = [];
+        if ($source->getId()) {
+            $asArray['id'] = $source->getId();
+        }
+
+        $asArray['name'] = $source->getName();
+        return $asArray;
+    }
+
+    /**
+     * @param Instrument $instrument
+     * @return array
+     */
+    protected function instrumentToDbRow(Instrument $instrument)
+    {
+        $asArray = [];
+        if ($instrument->getId()) {
+            $asArray['id'] = $instrument->getId();
+        }
+
+        $asArray['name'] = $instrument->getName();
+        $asArray['abbreviation'] = $instrument->getAbbreviation();
+        $asArray['iconHtml'] = $instrument->getIconHtml();
+        return $asArray;
+    }
+
+    /**
+     * @param Platform $platform
+     * @return array
+     */
+    protected function platformToDbRow(Platform $platform)
+    {
+        $asArray = [];
+        if ($platform->getId()) {
+            $asArray['id'] = $platform->getId();
+        }
+
+        $asArray['name'] = $platform->getName();
+        return $asArray;
+    }
+
+
 }
