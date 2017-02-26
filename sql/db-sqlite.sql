@@ -21,7 +21,7 @@ CREATE TABLE songs (
   id         INT PRIMARY KEY,
   artist     TEXT,
   title      TEXT,
-  source     INT DEFAULT NULL,
+  sourceId     INT DEFAULT NULL,
   duration   INT DEFAULT NULL,
   codeNumber TEXT
 );

@@ -174,7 +174,7 @@ abstract class AbstractSql
      * Save band to ticket
      *
      * @param $ticketId
-     * @param array    $band ['instrumentCode' => 'name'] FIXME update
+     * @param array $band ['instrumentCode' => 'name'] FIXME update
      */
     public function storeBandToTicket($ticketId, $band)
     {
@@ -185,14 +185,21 @@ abstract class AbstractSql
         // remove existing performers
         $this->getDbConn()->delete(self::TICKETS_X_PERFORMERS_TABLE, ['ticketId' => $ticketId]);
 
-        foreach ($band as $instrument => $performers) {
-            foreach ($performers as $performerName) {
-                $performerName = trim($performerName);
-                $performerId = $this->getPerformerIdByName($performerName, true);
-                if ($performerId) {
-                    $link = ['ticketId' => $ticketId, 'performerId' => $performerId, 'instrument' => $instrument];
-                    $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
+        foreach ($band as $instrumentCode => $performers) {
+            $instrument = $this->getInstrumentByAbbreviation($instrumentCode);
+            if ($instrument) {
+                $instrumentId = $instrument->getId();
+
+                foreach ($performers as $performerName) {
+                    $performerName = trim($performerName);
+                    $performerId = $this->getPerformerIdByName($performerName, true);
+                    if ($performerId) {
+                        $link = ['ticketId' => $ticketId, 'performerId' => $performerId, 'instrumentId' => $instrumentId];
+                        $this->getDbConn()->insert(self::TICKETS_X_PERFORMERS_TABLE, $link);
+                    }
                 }
+            } else {
+                throw new \UnexpectedValueException("Unknown instrument abbreviation '$instrumentCode'");
             }
         }
     }
@@ -244,7 +251,9 @@ abstract class AbstractSql
 
     public function fetchPerformersWithInstrumentByTicketId($ticketId)
     {
-        $ticketPerformerSql = 'SELECT performerId, instrument FROM tickets_x_performers WHERE ticketId = :ticketId';
+        $ticketPerformerSql = 'SELECT x.performerId, i.abbreviation as instrument
+          FROM tickets_x_performers x INNER JOIN instruments i ON x.instrumentId = i.id
+          WHERE x.ticketId = :ticketId';
         $performerRows = $this->getDbConn()->fetchAll($ticketPerformerSql, ['ticketId' => $ticketId]);
         $performerIds = [];
         $instrumentsByPerformer = [];
@@ -256,7 +265,6 @@ abstract class AbstractSql
 
         //todo Can probably clean up this algorithm
         $allPerformers = $this->generatePerformerStats();
-        $trackPerformers = [];
         $trackPerformersByInstrument = [];
         foreach ($allPerformers as $performer) {
             $performerId = $performer['performerId'];
@@ -265,7 +273,6 @@ abstract class AbstractSql
                 if (!isset($trackPerformersByInstrument[$instrument])) {
                     $trackPerformersByInstrument[$instrument] = [];
                 }
-                $trackPerformers[] = $performer;
                 $trackPerformersByInstrument[$instrument][] = $performer;
             }
         }
@@ -487,8 +494,8 @@ abstract class AbstractSql
      */
     public function normaliseSongRecord($song)
     {
-        $boolFields = ['hasHarmony', 'hasKeys', 'inRb3', 'inRb4'];
-        $intFields = ['id', 'duration'];
+        $boolFields = [];
+        $intFields = ['id', 'duration', 'sourceId'];
 
         foreach ($intFields as $k) {
             $song[$k] = is_null($song[$k]) ? null : (int)$song[$k];
@@ -498,9 +505,9 @@ abstract class AbstractSql
             $song[$k] = (bool)$song[$k];
         }
 
-        if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
-            $song['queued'] = (bool)$song['queued'];
-        }
+//        if (isset($song['queued'])) { //FIXME see if this is safe to move to $boolFields
+//            $song['queued'] = (bool)$song['queued'];
+//        }
 
         return $song;
     }
@@ -777,7 +784,7 @@ abstract class AbstractSql
 
     /**
      * @param $songId
-     * @param array  $platformIds
+     * @param array $platformIds
      */
     public function storeSongPlatformLinks($songId, array $platformIds)
     {
@@ -815,9 +822,33 @@ abstract class AbstractSql
         return $instrument;
     }
 
+    protected function getInstrumentByAbbreviation($abbreviation)
+    {
+        $instrument = null;
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('instruments')
+            ->where('abbreviation = :abbreviation')
+            ->setParameter(':abbreviation', $abbreviation);
+
+        $row = $query->execute()->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            $instrument = new Instrument();
+            $instrument
+                ->setId($row['id'])
+                ->setName($row['name'])
+                ->setAbbreviation($row['abbreviation'])
+                ->setIconHtml($row['iconHtml']);
+        }
+
+        return $instrument;
+    }
+
+
     /**
      * @param $songId
-     * @param array  $instrumentIds
+     * @param array $instrumentIds
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function storeSongInstrumentLinks($songId, array $instrumentIds)
