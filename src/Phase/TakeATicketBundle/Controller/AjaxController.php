@@ -64,31 +64,7 @@ class AjaxController extends BaseController
         $hydrated = [];
 
         foreach ($songs as $song) {
-            $instruments = $dataStore->fetchInstrumentsForSongId($song['id']);
-            $instruments = array_map(
-                function (Instrument $instrument) {
-                    return $instrument->getName();
-                },
-                $instruments
-            );
-            $song['instruments'] = $instruments;
-
-            $source = $dataStore->fetchSourceById($song['sourceId']);
-            if ($source) {
-                $song['source'] = $source->getName();
-            }
-
-            $platforms = $dataStore->fetchPlatformsForSongId($song['id']);
-            $platforms = array_map(
-                function (Platform $platform) {
-                    return $platform->getName();
-                },
-                $platforms
-            );
-            $song['platforms'] = $platforms;
-            //Legacy format - TODO remove this, use ['song']['platforms']
-            $song['inRb3'] = in_array('RB3', $song['platforms']);
-            $song['inRb4'] = in_array('RB4', $song['platforms']);
+            $song = $dataStore->expandSongData($song);
 
             $hydrated[] = $song;
         }

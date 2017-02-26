@@ -584,7 +584,7 @@ var ticketer = (function() {
         editTicketBlock.find('input.selectedSongId').val(selectedId);
         editTicketBlock.find('.selectedSong').text(selectedSong);
         var keysTab = controlPanelOuter.find('.instrumentKeys');
-        if (song.hasKeys) {
+        if (song.instruments && (song.instruments.indexOf('Keyboard') !== -1)) {
           keysTab.removeClass('instrumentUnused');
         } else {
           keysTab.addClass('instrumentUnused');

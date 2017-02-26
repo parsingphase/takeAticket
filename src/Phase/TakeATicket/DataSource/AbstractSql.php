@@ -123,6 +123,8 @@ abstract class AbstractSql
     }
 
     /**
+     * Fill out names of linked object ids for given ticket
+     *
      * @param $ticket
      *
      * @return mixed
@@ -132,22 +134,10 @@ abstract class AbstractSql
         $ticket = $this->normaliseTicketRecord($ticket);
 
         if ($ticket['songId']) {
-            $ticket['song'] = $this->fetchSongRowById($ticket['songId']);
+            $ticket['song'] = $this->expandSongData($this->fetchSongRowById($ticket['songId']));
         }
         //FIXED inefficient, but different pages expect different structure while we refactor
         $ticket['band'] = $this->fetchPerformersWithInstrumentByTicketId($ticket['id']);
-//        $ticket['performers'] = $this->fetchPerformersByTicketId($ticket['id']);
-
-        $ticket['song']['platforms'] = array_map(
-            function (Platform $platform) {
-                return $platform->getName();
-            },
-            $this->fetchPlatformsForSongId($ticket['songId'])
-        );
-
-        //Legacy format - TODO remove this, use ['song']['platforms']
-        $ticket['song']['inRb3'] = in_array('RB3', $ticket['song']['platforms']);
-        $ticket['song']['inRb4'] = in_array('RB4', $ticket['song']['platforms']);
 
         return $ticket;
     }
@@ -166,6 +156,44 @@ abstract class AbstractSql
         }
 
         return $tickets;
+    }
+
+
+    /**
+     * Fill out names of linked object ids for given song
+     *
+     * @param $song
+     * @return mixed
+     */
+    public function expandSongData($song)
+    {
+        $dataStore = $this;
+        $instruments = $dataStore->fetchInstrumentsForSongId($song['id']);
+        $instruments = array_map(
+            function (Instrument $instrument) {
+                return $instrument->getName();
+            },
+            $instruments
+        );
+        $song['instruments'] = $instruments;
+
+        $source = $dataStore->fetchSourceById($song['sourceId']);
+        if ($source) {
+            $song['source'] = $source->getName();
+        }
+
+        $platforms = $dataStore->fetchPlatformsForSongId($song['id']);
+        $platforms = array_map(
+            function (Platform $platform) {
+                return $platform->getName();
+            },
+            $platforms
+        );
+        $song['platforms'] = $platforms;
+        //Legacy format - TODO remove this, use ['song']['platforms']
+        $song['inRb3'] = in_array('RB3', $song['platforms']);
+        $song['inRb4'] = in_array('RB4', $song['platforms']);
+        return $song;
     }
 
     public function isPotentialCodeNumber($searchString)
