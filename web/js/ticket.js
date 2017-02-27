@@ -10,6 +10,7 @@ var ticketer = (function() {
     songAutocompleteItemTemplate: null,
     editTicketTemplate: null,
     songDetailsTemplate: null,
+    manageInstrumentTabsTemplate: null,
     appMessageTarget: null,
     searchCount: 10,
     instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
@@ -168,6 +169,13 @@ var ticketer = (function() {
       });
     },
 
+    /**
+     * Activate the search box at the given location
+     *
+     * @param {string} songSearchInput Input field identifier
+     * @param {string} songSearchResultsTarget Container for output list
+     * @param {function} songClickHandler Function to call when a listed song is clicked
+     */
     enableSongSearchBox: function(songSearchInput, songSearchResultsTarget, songClickHandler) {
       var that = this;
       $(songSearchInput).keyup(
@@ -263,16 +271,6 @@ var ticketer = (function() {
         }
       );
 
-      // Enable the instrument tabs
-      var allInstrumentTabs = controlPanelOuter.find('.instrument');
-
-      allInstrumentTabs.click(
-        function() {
-          selectedInstrument = $(this).data('instrumentShortcode');
-          setActiveTab(selectedInstrument);
-        }
-      );
-
       var ticketTitleInput = $('.editTicketTitle');
 
       // Copy band name into summary area on Enter
@@ -334,13 +332,19 @@ var ticketer = (function() {
           templateParams.ticket = ticket;
         }
         controlPanelOuter.html(that.editTicketTemplate(templateParams));
-        updateInstrumentTabs();
-        rebuildPerformerList(controlPanelOuter.find('.performers'));
         if (ticket && ticket.song) {
           applyNewSong(ticket.song);
         }
+        updateInstrumentTabPerformers();
+        rebuildPerformerList();
       }
 
+      /**
+       * Return the instrument abbreviation played by a given performer name
+       *
+       * @param name
+       * @returns {*}
+       */
       function findPerformerInstrument(name) {
         var instrumentPlayers;
         for (var instrumentCode in currentBand) {
@@ -485,11 +489,24 @@ var ticketer = (function() {
         that.resetEditTicketBlock();
       }
 
+      /**
+       * Return tab corresponding to a given instrument abbreviation
+       *
+       * @param {string} instrument Abbreviation
+       * @returns {jQuery}
+       */
       function getTabByInstrument(instrument) {
         return controlPanelOuter.find('.instrument[data-instrument-shortcode=' + instrument + ']');
       }
 
+      /**
+       * Set the tab for the specified instrument abbreviation as active
+       *
+       * @param selectedInstrument
+       * @returns {jQuery}
+       */
       function setActiveTab(selectedInstrument) {
+        var allInstrumentTabs = controlPanelOuter.find('.instrument');
         allInstrumentTabs.removeClass('instrumentSelected');
         var selectedTab = getTabByInstrument(selectedInstrument);
         selectedTab.addClass('instrumentSelected');
@@ -497,6 +514,9 @@ var ticketer = (function() {
         return selectedTab;
       }
 
+      /**
+       * Update the band summary line in the manage area
+       */
       function updateBandSummary() {
         var bandName = $('.editTicketTitle').val();
         var members = [];
@@ -512,7 +532,10 @@ var ticketer = (function() {
         $('.selectedBand').html(summaryHtml);
       }
 
-      function updateInstrumentTabs() {
+      /**
+       * Update all instrument tabs with either performer names or 'needed' note
+       */
+      function updateInstrumentTabPerformers() {
         var performersSpan;
         var performerString;
 
@@ -530,6 +553,7 @@ var ticketer = (function() {
           performersSpan.html(performerString);
         }
 
+        //TODO re-enable tab clicks
         updateBandSummary();
       }
 
@@ -563,7 +587,7 @@ var ticketer = (function() {
         currentBand[selectedInstrument] = newInstrumentPerformers;
         // Now update band with new performers of this instrument
 
-        updateInstrumentTabs();
+        updateInstrumentTabPerformers();
         rebuildPerformerList();
 
         if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
@@ -573,8 +597,9 @@ var ticketer = (function() {
       }
 
       /**
+       * Handle click on a song in manage page search results
        *
-       * @param {{id, title, artist, hasKeys, hasHarmony}} song
+       * @param {{id, title, artist, instruments}} song
        */
       function applyNewSong(song) {
         var selectedId = song.id;
@@ -588,16 +613,25 @@ var ticketer = (function() {
 
         editTicketBlock.find('input.selectedSongId').val(selectedId);
         editTicketBlock.find('.selectedSong').text(selectedSong);
-        var keysTab = controlPanelOuter.find('.instrumentKeys');
-        if (song.instruments && (song.instruments.indexOf('Keyboard') !== -1)) {
-          keysTab.removeClass('instrumentUnused');
-        } else {
-          keysTab.addClass('instrumentUnused');
-          // Also uncheck any performer for instrument (allow use elsewhere)
-          currentBand.K = [];
-          keysTab.find('.instrumentPerformer').html('<i>Needed</i>');
-          rebuildPerformerList();
-        }
+
+        // Redraw instrument tabs according to current songs
+        var instrumentDiv = controlPanelOuter.find('.instruments');
+        instrumentDiv.html(that.manageInstrumentTabsTemplate(song.instruments));
+        instrumentDiv.find('.instrument').removeClass('instrumentSelected');
+        instrumentDiv.find('.instrument:first').addClass('instrumentSelected');
+
+        // Enable the instrument tabs
+        // var allInstrumentTabs = controlPanelOuter.find('.instrument');
+
+        instrumentDiv.find('.instrument').click(
+          function() {
+            selectedInstrument = $(this).data('instrumentShortcode');
+            setActiveTab(selectedInstrument);
+          }
+        );
+
+        updateInstrumentTabPerformers();
+        rebuildPerformerList();
       }
 
       function removeSong() {
@@ -886,26 +920,6 @@ var ticketer = (function() {
         '<div class="bandControls">' +
         '<div class="bandTabsOuter">' +
         '<div class="instruments">' +
-        ' <div class="instrument instrumentVocals instrumentSelected" data-instrument-shortcode="V">' +
-        '  <div class="instrumentName">Vocals</div>' +
-        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
-        ' </div>' +
-        ' <div class="instrument instrumentGuitar" data-instrument-shortcode="G">' +
-        '  <div class="instrumentName">Guitar</div>' +
-        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
-        ' </div>' +
-        ' <div class="instrument instrumentBass" data-instrument-shortcode="B">' +
-        '  <div class="instrumentName">Bass</div>' +
-        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
-        ' </div>' +
-        ' <div class="instrument instrumentDrums" data-instrument-shortcode="D">' +
-        '  <div class="instrumentName">Drums</div>' +
-        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
-        ' </div>' +
-        ' <div class="instrument instrumentKeys instrumentUnused" data-instrument-shortcode="K">' +
-        '  <div class="instrumentName">Keyboard</div>' +
-        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
-        ' </div>' +
         '</div>' + // /instruments
         '<div class="performerSelect">' +
         '<div class="input-group input-group">' +
@@ -921,6 +935,15 @@ var ticketer = (function() {
         '<div class="clearfix"></div>' + // Clear after editTicketBandColumn
         '</div>' + // /editTicketInner
         '</div>' // /editTicket
+      );
+
+      this.manageInstrumentTabsTemplate = Handlebars.compile(
+        '{{#each this}}' +
+        ' <div class="instrument instrument{{ this.abbreviation }}" data-instrument-shortcode="{{ this.abbreviation }}">' +
+        '  <div class="instrumentName">{{ this.name }}</div>' +
+        '  <div class="instrumentPerformer"><i>Needed</i></div>' +
+        ' </div>' +
+        '{{/each}}'
       );
 
       this.songDetailsTemplate = Handlebars.compile(
@@ -1057,7 +1080,9 @@ var ticketer = (function() {
 
     searchPageSongSelectionClick: function(song) {
       var target = $('#searchTarget');
-      song.instruments = song.instruments.map(function(s) { return s.name; }); // Unwrap objects
+      song.instruments = song.instruments.map(function(s) {
+        return s.name;
+      }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
     },
 
