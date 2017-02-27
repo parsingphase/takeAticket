@@ -1057,6 +1057,7 @@ var ticketer = (function() {
 
     searchPageSongSelectionClick: function(song) {
       var target = $('#searchTarget');
+      song.instruments = song.instruments.map(function(s) { return s.name; }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
     },
 

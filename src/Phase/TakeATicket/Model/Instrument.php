@@ -8,7 +8,9 @@
 
 namespace Phase\TakeATicket\Model;
 
-class Instrument
+use JsonSerializable;
+
+class Instrument implements JsonSerializable
 {
     /**
      * DB ID
@@ -108,5 +110,28 @@ class Instrument
     {
         $this->iconHtml = $iconHtml;
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'abbreviation' => $this->getAbbreviation(),
+            'iconHtml' => $this->getIconHtml(),
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

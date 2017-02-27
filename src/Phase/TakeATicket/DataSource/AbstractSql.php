@@ -171,7 +171,7 @@ abstract class AbstractSql
         $instruments = $dataStore->fetchInstrumentsForSongId($song['id']);
         $instruments = array_map(
             function (Instrument $instrument) {
-                return $instrument->getName();
+                return $instrument->jsonSerialize();
             },
             $instruments
         );
