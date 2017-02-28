@@ -552,8 +552,6 @@ var ticketer = (function() {
           }
           performersSpan.html(performerString);
         }
-
-        //TODO re-enable tab clicks
         updateBandSummary();
       }
 
@@ -939,7 +937,8 @@ var ticketer = (function() {
 
       this.manageInstrumentTabsTemplate = Handlebars.compile(
         '{{#each this}}' +
-        ' <div class="instrument instrument{{ this.abbreviation }}" data-instrument-shortcode="{{ this.abbreviation }}">' +
+        ' <div class="instrument instrument{{ this.abbreviation }}" ' +
+        '   data-instrument-shortcode="{{ this.abbreviation }}">' +
         '  <div class="instrumentName">{{ this.name }}</div>' +
         '  <div class="instrumentPerformer"><i>Needed</i></div>' +
         ' </div>' +
