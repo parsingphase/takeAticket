@@ -628,6 +628,16 @@ var ticketer = (function() {
           }
         );
 
+        // Iterate through currentBand and remove any instruments not present in song abbreviations
+        var validInstruments = song.instruments.map(function(i) {
+          return i.abbreviation;
+        });
+        for (var instrument in currentBand) {
+          if (validInstruments.indexOf(instrument) === -1) {
+            currentBand[instrument] = [];
+          }
+        }
+
         updateInstrumentTabPerformers();
         rebuildPerformerList();
       }
