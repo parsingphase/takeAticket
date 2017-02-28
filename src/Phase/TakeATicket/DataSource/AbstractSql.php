@@ -855,6 +855,28 @@ abstract class AbstractSql
     }
 
     /**
+     * Fetch all available instruments
+     *
+     * @return Instrument[]
+     */
+    public function fetchAllInstruments()
+    {
+        $query = $this->dbConn->createQueryBuilder()
+            ->select('*')
+            ->from('instruments')
+            ->orderBy('id');
+
+        $rows = $query->execute()->fetchAll(PDO::FETCH_ASSOC);
+
+        $instruments = [];
+        foreach ($rows as $row) {
+            $instruments[] = $this->buildInstrumentFromDbRow($row);
+        }
+
+        return $instruments;
+    }
+
+    /**
      * @param $songId
      * @param array $platformIds
      */

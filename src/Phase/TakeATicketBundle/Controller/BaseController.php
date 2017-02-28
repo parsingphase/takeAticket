@@ -9,6 +9,7 @@
 namespace Phase\TakeATicketBundle\Controller;
 
 use Phase\TakeATicket\DataSource\AbstractSql;
+use Phase\TakeATicket\Model\Instrument;
 use Phase\TakeATicket\Model\Platform;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Phase\TakeATicket\DataSource\Factory;
@@ -76,10 +77,16 @@ abstract class BaseController extends Controller
             return $platform->getName();
         }, $allPlatforms);
 
+        $instruments = $this->getDataStore()->fetchAllInstruments();
+        $instrumentOrder = array_map(function (Instrument $instrument) {
+            return $instrument->getAbbreviation();
+        }, $instruments);
+
         /** @noinspection RealpathInSteamContextInspection */
         $viewParams = [
             'base_dir' => realpath($this->getParameter('kernel.root_dir') . '/..'),
             'allPlatforms' => $platformNames,
+            'instrumentOrder' => $instrumentOrder,
         ];
         $viewParams['displayOptions'] = $this->getDisplayOptions();
 

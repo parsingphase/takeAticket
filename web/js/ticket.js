@@ -13,7 +13,7 @@ var ticketer = (function() {
     manageInstrumentTabsTemplate: null,
     appMessageTarget: null,
     searchCount: 10,
-    instrumentOrder: ['V', 'G', 'B', 'D', 'K'],
+    instrumentOrder: null,
     defaultSongLengthSeconds: 240,
     defaultSongIntervalSeconds: 120,
     messageTimer: null,

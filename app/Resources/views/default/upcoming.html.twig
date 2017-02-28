@@ -6,8 +6,10 @@
     {% block pageJs %}
         <script>
             var displayOptions = {{ displayOptions|json_encode|raw }};
+            var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
             $(function() {
                 ticketer.displayOptions = displayOptions;
+                ticketer.instrumentOrder = instrumentOrder;
                 ticketer.go();
                 {% if not is_granted('ROLE_ADMIN') %}
                 ticketer.checkRemoteRedirect();
