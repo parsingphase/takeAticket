@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo Starting server
-php -S 0:8080 -t www/
+php bin/console server:run -e prod 0.0.0.0:8000

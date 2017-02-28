@@ -29,23 +29,23 @@ RUN mkdir /app
 ADD . /app
 
 WORKDIR /app
-RUN mkdir var #excluded in .dockerfile - see http://stackoverflow.com/questions/34198591/
+RUN mkdir -p var/db #excluded in .dockerfile - see http://stackoverflow.com/questions/34198591/
 RUN cp app/config/parameters-docker.yml app/config/parameters.yml
 RUN /usr/local/bin/composer --ansi install
 RUN npm install
 
-RUN sqlite3 db/app.db < sql/db-sqlite.sql
+RUN sqlite3 var/db/app.db < sql/db-sqlite.sql
 
-RUN ln -s ../components web/components
-#&& \
-#    ln -s ../../docs/images web/docs/image
+RUN mkdir -p web/docs
+RUN ln -s ../components web/components && \
+    ln -s ../../docs/images web/docs/images
 
 RUN php bin/console doctrine:schema:update --force && \
     php bin/console fos:user:create admin admin@localhost admin --super-admin
 RUN vendor/bin/phing test-all
 
 # Sample data:
-RUN sqlite3 db/app.db < sql/sampleSongs.sql
+RUN sqlite3 var/db/app.db < sql/sampleSongs.sql
 
 RUN rm -rf var/cache/*
 # Avoid Cannot rename "/app/var/cache/dev" to "/app/var/cache/de~".

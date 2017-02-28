@@ -6,7 +6,7 @@ parameters:
     database_name: ~
     database_user: ~
     database_password: ~
-    database_path: '%kernel.root_dir%/../db/app.db'
+    database_path: '%kernel.root_dir%/../var/db/app.db'
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null

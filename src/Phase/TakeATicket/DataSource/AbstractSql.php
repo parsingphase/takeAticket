@@ -612,7 +612,8 @@ abstract class AbstractSql
         $conn = $this->getDbConn();
         $query = $conn->executeQuery('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
 
-        return $query->rowCount() ? $query->fetchColumn() : null;
+//        return $query->rowCount() ? $query->fetchColumn() : null;
+        return $query->fetchColumn(); // rowCount seems to not work on sqlite
     }
 
 
