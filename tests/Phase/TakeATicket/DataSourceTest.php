@@ -7,6 +7,7 @@ use /** @noinspection PhpInternalEntityUsedInspection */
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Phase\TakeATicket\DataSource\Factory;
+use Phase\TakeATicket\Model\Song;
 
 class DataSourceTest extends \PHPUnit_Framework_TestCase
 {
@@ -210,6 +211,30 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertTrue($ok, "Can update tracks to reversed order ($dbName)");
     }
+
+    /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testMultipleSongStore($dbName, $conn)
+    {
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+
+        $song = new Song();
+        $song->setSourceId(1)->setArtist('Disturbed')->setTitle('The Sound of Silence')->setDuration(240);
+        $dataSource->storeSong($song);
+        $firstSongId = $song->getId();
+        $this->assertTrue($firstSongId > 0, "Stored song has ID (DB $dbName)");
+
+        $song = new Song();
+        $song->setSourceId(1)->setArtist('Skunk Anansie')->setTitle('Secretly')->setDuration(240);
+        $dataSource->storeSong($song);
+        $secondSongId = $song->getId();
+        $this->assertTrue($secondSongId > $firstSongId, "Second song has ID above first (DB $dbName)");
+
+    }
+
 
     /**
      * @param $connectionParams

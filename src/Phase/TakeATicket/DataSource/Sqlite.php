@@ -19,4 +19,18 @@ class Sqlite extends AbstractSql
     {
         return implode('||', $fields);
     }
+
+    /**
+     * Get current value of a named setting, NULL if missing
+     *
+     * @param  $key
+     * @return mixed|null
+     */
+    public function fetchSetting($key)
+    {
+        $conn = $this->getDbConn();
+        $query = $conn->executeQuery('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
+
+        return $query->fetchColumn(); // rowCount seems to not work on sqlite
+    }
 }
