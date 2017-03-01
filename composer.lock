@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "31f70c3ab1e3c74341b56fd832838bc0",
-    "content-hash": "72fbcaa4385e52e3368db669f316fa11",
+    "hash": "2dcd12680a3df1843bf9fcc50e07efab",
+    "content-hash": "507569f9cb276207a59495490cf4147b",
     "packages": [
         {
             "name": "aptoma/twig-markdown",
@@ -2703,6 +2703,54 @@
     ],
     "packages-dev": [
         {
+            "name": "fzaninotto/faker",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "44f9a286a04b80c76a4e5fb7aad8bb539b920123"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/44f9a286a04b80c76a4e5fb7aad8bb539b920123",
+                "reference": "44f9a286a04b80c76a4e5fb7aad8bb539b920123",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3|^7.0"
+            },
+            "require-dev": {
+                "ext-intl": "*",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": []
+            },
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2016-04-29 12:21:54"
+        },
+        {
             "name": "leafo/lessphp",
             "version": "v0.5.0",
             "source": {
@@ -2742,6 +2790,55 @@
             "description": "lessphp is a compiler for LESS written in PHP.",
             "homepage": "http://leafo.net/lessphp/",
             "time": "2014-11-24 18:39:20"
+        },
+        {
+            "name": "maple-syrup-group/dbsampler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MapleSyrupGroup/dbsampler.git",
+                "reference": "ae5d2752688874e164fc015898e93cd4412db9d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MapleSyrupGroup/dbsampler/zipball/ae5d2752688874e164fc015898e93cd4412db9d1",
+                "reference": "ae5d2752688874e164fc015898e93cd4412db9d1",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^2.5",
+                "fzaninotto/faker": "^1.6",
+                "monolog/monolog": "^1.22",
+                "pimple/pimple": "^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "phing/phing": "^2.16",
+                "phpunit/phpunit": "^5.7",
+                "roave/security-advisories": "dev-master",
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "bin": [
+                "bin/dbsampler"
+            ],
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Quidco\\DbSampler\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maple Syrup Media",
+                    "email": "tech@quidco.com"
+                }
+            ],
+            "description": "Rule-based generation of fixture databases by sampling operational databases",
+            "time": "2017-03-01 17:25:41"
         },
         {
             "name": "myclabs/deep-copy",
@@ -3471,6 +3568,52 @@
                 "xunit"
             ],
             "time": "2016-12-08 20:27:08"
+        },
+        {
+            "name": "pimple/pimple",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/silexphp/Pimple.git",
+                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/a30f7d6e57565a2e1a316e1baf2a483f788b258a",
+                "reference": "a30f7d6e57565a2e1a316e1baf2a483f788b258a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pimple": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Pimple, a simple Dependency Injection Container",
+            "homepage": "http://pimple.sensiolabs.org",
+            "keywords": [
+                "container",
+                "dependency injection"
+            ],
+            "time": "2015-09-11 15:10:35"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -4229,7 +4372,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 10,
-        "roave/security-advisories": 20
+        "roave/security-advisories": 20,
+        "maple-syrup-group/dbsampler": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -45,7 +45,12 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
                 foreach ($songInserts as $insertSql) {
                     $insertSql = trim($insertSql);
                     if ($insertSql && !preg_match('/^\s+-- /', $insertSql)) {
-                        $databases[$k]->exec($insertSql);
+                        try {
+                            $databases[$k]->exec(str_replace("\\'", "''", $insertSql));
+                        } catch (\Exception $e) {
+                            print("\nError importing $insertSql:\n" . $e->getMessage() . "\n");
+                            throw $e;
+                        }
                     }
                 }
             }
@@ -85,8 +90,8 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSearch($dbName, $conn)
     {
-        $searchString = 'When you';
-        // should return The Killers: When You Were Young
+        $searchString = strtolower($conn->fetchColumn('SELECT title FROM songs LIMIT 5,1'));
+        // grab exact title to search for
 
         $dataSource = Factory::datasourceFromDbConnection($conn);
         $hits = $dataSource->findSongsBySearchString($searchString);

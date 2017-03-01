@@ -34,7 +34,7 @@ RUN cp app/config/parameters-docker.yml app/config/parameters.yml
 RUN /usr/local/bin/composer --ansi install
 RUN npm install
 
-RUN sqlite3 var/db/app.db < sql/db-sqlite.sql
+RUN sqlite3 var/db/app.sqlite < sql/db-sqlite.sql
 
 RUN mkdir -p web/docs
 RUN ln -s ../components web/components && \
@@ -45,7 +45,7 @@ RUN php bin/console doctrine:schema:update --force && \
 RUN vendor/bin/phing test-all
 
 # Sample data:
-RUN sqlite3 var/db/app.db < sql/sampleSongs.sql
+RUN sqlite3 var/db/app.sqlite < sql/sampleSongs.sql
 
 RUN rm -rf var/cache/*
 # Avoid Cannot rename "/app/var/cache/dev" to "/app/var/cache/de~".

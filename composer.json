@@ -47,6 +47,7 @@
     },
     "require-dev": {
         "leafo/lessphp": "^0.5.0",
+        "maple-syrup-group/dbsampler": "dev-master",
         "phing/phing": "^2.16",
         "phpunit/phpunit": "^5.6",
         "sensio/generator-bundle": "^3.0",

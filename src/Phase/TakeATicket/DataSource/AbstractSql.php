@@ -134,7 +134,10 @@ abstract class AbstractSql
         $ticket = $this->normaliseTicketRecord($ticket);
 
         if ($ticket['songId']) {
-            $ticket['song'] = $this->expandSongData($this->fetchSongRowById($ticket['songId']));
+            $song = $this->fetchSongRowById($ticket['songId']);
+            if ($song) {
+                $ticket['song'] = $this->expandSongData($song);
+            }
         }
         //FIXED inefficient, but different pages expect different structure while we refactor
         $ticket['band'] = $this->fetchPerformersWithInstrumentByTicketId($ticket['id']);
