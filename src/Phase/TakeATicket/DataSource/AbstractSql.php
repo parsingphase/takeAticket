@@ -765,6 +765,8 @@ abstract class AbstractSql
         $asArray = $this->songToDbRow($song);
         if ($this->getDbConn()->insert('songs', $asArray)) {
             $song->setId($this->dbConn->lastInsertId());
+        } else {
+            throw new \Exception('insert failed');
         }
     }
 

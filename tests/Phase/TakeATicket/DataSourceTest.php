@@ -11,6 +11,8 @@ use Phase\TakeATicket\Model\Song;
 
 class DataSourceTest extends \PHPUnit_Framework_TestCase
 {
+    const SONG_SOURCE_TESTS = 999;
+
     /**
      * @var \Doctrine\DBAL\Connection[]
      * Loaded on demand by ::getConfiguredDatabases
@@ -221,20 +223,33 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     {
         $dataSource = Factory::datasourceFromDbConnection($conn);
 
+        $duration1 = mt_rand(500, 600);
+
         $song = new Song();
-        $song->setSourceId(1)->setArtist('Disturbed')->setTitle('The Sound of Silence')->setDuration(240);
+        $song
+            ->setSourceId(self::SONG_SOURCE_TESTS)
+            ->setArtist('Disturbed')
+            ->setTitle('The Sound of Silence')
+            ->setDuration($duration1);
+
         $dataSource->storeSong($song);
         $firstSongId = $song->getId();
         $this->assertTrue($firstSongId > 0, "Stored song has ID (DB $dbName)");
 
+        $fetched = $dataSource->fetchSongRowById($firstSongId);
+        $this->assertEquals($duration1, $fetched['duration']);
+        $this->assertEquals(self::SONG_SOURCE_TESTS, $fetched['sourceId']);
+
         $song = new Song();
-        $song->setSourceId(1)->setArtist('Skunk Anansie')->setTitle('Secretly')->setDuration(240);
+        $song
+            ->setSourceId(self::SONG_SOURCE_TESTS)
+            ->setArtist('Skunk Anansie')
+            ->setTitle('Secretly')
+            ->setDuration(240);
         $dataSource->storeSong($song);
         $secondSongId = $song->getId();
         $this->assertTrue($secondSongId > $firstSongId, "Second song has ID above first (DB $dbName)");
-
     }
-
 
     /**
      * @param $connectionParams
@@ -246,9 +261,7 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         /** @noinspection PhpInternalEntityUsedInspection */
         $config = new Configuration();
 
-        $conn = DriverManager::getConnection($connectionParams, $config);
-
-        return $conn;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 
     /**

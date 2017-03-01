@@ -18,7 +18,7 @@ CREATE TABLE tickets (
 DROP TABLE IF EXISTS songs;
 
 CREATE TABLE songs (
-  id         INT PRIMARY KEY,
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
   artist     TEXT,
   title      TEXT,
   sourceId     INT DEFAULT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE songs (
 DROP TABLE IF EXISTS performers;
 
 CREATE TABLE performers (
-  id   INT PRIMARY KEY,
+  id   INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE tickets_x_performers (
 DROP TABLE IF EXISTS settings;
 
 CREATE TABLE settings (
-  id      INT PRIMARY KEY,
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
   settingKey TEXT,
   settingValue TEXT
 );
