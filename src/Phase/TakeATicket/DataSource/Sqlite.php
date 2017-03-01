@@ -29,8 +29,9 @@ class Sqlite extends AbstractSql
     public function fetchSetting($key)
     {
         $conn = $this->getDbConn();
-        $query = $conn->executeQuery('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
+        $row = $conn->fetchAssoc('SELECT settingValue FROM settings WHERE settingKey=:key', ['key' => $key]);
 
-        return $query->fetchColumn(); // rowCount seems to not work on sqlite
+        return $row ? $row['settingValue'] : null;
+        // rowCount seems to not work on sqlite: http://php.net/manual/en/pdostatement.rowcount.php
     }
 }

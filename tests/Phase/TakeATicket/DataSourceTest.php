@@ -252,6 +252,27 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testSettings($dbName, $conn)
+    {
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+
+        $empty = $dataSource->fetchSetting('nosuch');
+        $this->assertNull($empty, "$dbName: non-existing setting should return null");
+
+        $rand = mt_rand(1234, 5678);
+        $dataSource->updateSetting('randomNumber', $rand);
+        $this->assertEquals(
+            $rand,
+            $dataSource->fetchSetting('randomNumber'),
+            "$dbName: existing setting should return stored value"
+        );
+    }
+
+    /**
      * @param $connectionParams
      * @return \Doctrine\DBAL\Connection
      * @throws \Doctrine\DBAL\DBALException
