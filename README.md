@@ -10,45 +10,61 @@ Software created by Richard George (richard@phase.org)
 
 Canonical source: https://github.com/parsingphase/takeAticket
 
-# CAVEAT
+## Quick start
 
-This README is currently out of date until I revise it to cover the migration of the codebase to Symfony3. Most of the
-functionality is valid but the setup is outdated. See the [Dockerfile](Dockerfile) for setup steps in the meantime.
+You can use Docker to download and run the app locally in two steps:
+
+ 1) Install Docker from https://www.docker.com/community-edition#/download
+ 2) Run `docker run -i -t -p 8000:8000 parsingphase/takeaticket:latest` at a command line
+
+Note that both these downloads are quite large, but both only need to be downloaded once until an update comes along.
+
+Important notes:
+
+The docker version of this software is not designed as a full production system, but you can use it on a closed system
+if you understand the following limitations: 
+
+ 1) The admin account/password is locked to 'admin/admin' (password changing will follow later!)
+ 2) If you stop the running docker image, your queue and song list will be wiped.
+ 3) The image contains a small example song list, but you can upload more via the admin interface
 
 ## Setup
 
-The tool can use either a sqlite3 or mySQL database, and run under a standard server or PHP's internal server mode.
+**WARNING** These steps are probably not entirely complete. See the [Dockerfile](Dockerfile) for the canonical list of setup steps.
+If you've ever installed a Symfony project, you'll recognise most steps - refer to 
+http://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application
+
+The app can use either a sqlite3 or mySQL database, and run under a standard server or PHP's internal server mode. 
+The following instructions are for sqlite and the internal server; you can extrapolate from there to run it more 
+professionally if you're familiar with mySQL, Apache and (ideally) Symfony.
 
 To install the source code (requires Composer - https://getcomposer.org):
 
     git clone git@github.com:parsingphase/takeAticket.git
     cd takeAticket
     composer install
+    ./vendor/bin/phing deploy-current
+    
+You'll then need to run various steps manually:     
  
-To create database file/schema:
+To create database file/schema and create the admin user:
 
-    sqlite3 db/app.db < sql/db-sqlite.sql
-    sqlite3 db/app.db < vendor/jasongrimes/silex-simpleuser/sql/sqlite.sql
+    sqlite3 var/db/app.sqlite < sql/db-sqlite.sql
+    php bin/console doctrine:schema:update --force
+    php bin/console fos:user:create admin admin@localhost adminpassword --super-admin
 
-or create a mysql database and a user with  DROP,SELECT,INSERT,UPDATE,DELETE permissions on that database, and load the following schema files:
+or create a mysql database and a user with DROP,SELECT,INSERT,UPDATE,DELETE permissions on that database, and load the 
+`sql/db-mysql.sql` schema file
 
-*  `sql/db-mysql.sql`
-*  `vendor/jasongrimes/silex-simpleuser/sql/mysql.sql`
- 
 A couple of symlinks are required to make certain frontend resources available:
 
-    ln -s ../components www/components
-    ln -s ../../docs/images www/docs/images
- 
-To configure the database and optional settings
- 
-    cp config/config.sample.php config/config.php
-
-The sample file is documented to help with setup.
+    mkdir -p web/docs
+    ln -s ../components web/components
+    ln -s ../../docs/images web/docs/images
  
 To load song the library from a spreadsheet:
 
-    php cli/loadSongsDb path/to/songlib.xls
+    php bin/console ticket:load-songs path/to/spreadsheet.xls
     
 (file format to follow but see `Phase\TakeATicket\SongLoader::$fileFields`)
  
@@ -56,14 +72,13 @@ To start the app in PHP's internal server.
 
     ./startServer.sh
 
-Running the app under any other server is left as an exercise to the reader. The document root is `/web`; 
-refer to [Silex setup documentation](http://silex.sensiolabs.org/doc/web_servers.html) for further details. 
+Running the app under any other server is left as an exercise to the reader. 
 
 ## Usage
 
-Using the startServer script, the app runs on localhost & all attached IPs at port 8080 
+Using the startServer script, the app runs on localhost & all attached IPs at port 8000 
 (copy & edit `startServer.sh` to change this).
-Visit http://localhost:8080 when the server is running. The URLs in the documentation below all assume that this is the 
+Visit http://localhost:8000 when the server is running. The URLs in the documentation below all assume that this is the 
 server being used.
 
 ### Navigation
@@ -117,25 +132,6 @@ You can also add a band name if you want, but this is optional.
 Click "Add" to store the track once song names and band member lists appear above their respective inputs:
 
 ![Management interface](docs/images/AddTicketFormFilled.png)
-
-
-### Login
-
-http://localhost:8080/users/login 
-
-You can register a user here but the confirmation email will **not** be sent - the system is designed to work on a closed network 
-without access to either the internet in general or a mailserver. Once you've registered, you'll need to edit your account to enable
-it and add admin capability:
-
-     takeAticket $ sqlite3 db/app.db 
-     sqlite> select * from users;
-     1|richard@phase.org|...
-     
-Find your user (probably the only one) and check the id field (the first field shown here). Then enable the account and add ROLE_ADMIN:
-     
-     sqlite> update users set roles = 'ROLE_USER,ROLE_ADMIN', isEnabled=1 WHERE id=1;
-
-You can now log in, and will be able to use the 'manage' page. Once logged in, the login icon will be replaced with a logout icon.
 
 ## TODO 
 
