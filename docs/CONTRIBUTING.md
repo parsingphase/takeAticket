@@ -9,7 +9,7 @@ Please add an issue on GitHub for any TODO task you start.
 
 This project is intended to run with the absolute minimum of dependencies, except:
 
-* PHP 5.5+
+* PHP 5.6+
 * Composer
 * sqlite3
 

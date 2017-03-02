@@ -25,7 +25,7 @@ INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumbe
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (18,'AC/DC','Moneytalks (Live)',5,233,'261E1A');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (19,'AC/DC','Back in Black (Live)',5,237,'B74198');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (20,'AC/DC','Highway to Hell (Live)',5,267,'28BBC4');
-INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (21,'AC/DC','Hell Ain\'t a Bad Place to Be (Live)',5,268,'0E8152');
+INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (21,'AC/DC','Hell Ain''t a Bad Place to Be (Live)',5,268,'0E8152');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (22,'AC/DC','Whole Lotta Rosie (Live)',5,279,'25D9B0');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (23,'AC/DC','Dirty Deeds Done Dirt Cheap (Live)',5,280,'154FA0');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (24,'AC/DC','Shoot to Thrill (Live)',5,324,'68F7B2');
@@ -49,12 +49,12 @@ INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumbe
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (42,'Aerosmith','Back in the Saddle',3,286,'D5B7EA');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (43,'Aerosmith','Sweet Emotion',3,287,'09B0E7');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (44,'Aerosmith','Dream On (Live)',3,297,'22EEEF');
-INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (45,'Aerosmith','Cryin\'',3,386,'5AE975');
+INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (45,'Aerosmith','Cryin''',3,386,'5AE975');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (46,'Aerosmith','Love In An Elevator',3,394,'D26EAA');
-INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (47,'Aerosmith','Train Kept A Rollin\'',6,343,'CEF070');
+INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (47,'Aerosmith','Train Kept A Rollin''',6,343,'CEF070');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (48,'Aerosmith','Toys in the Attic',2,185,'399745');
 INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (49,'AFI','The Missing Frame',1,286,'538B1A');
-INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (50,'AFI','Girl\'s Not Grey',4,194,'748D67');
+INSERT INTO `songs` (`id`, `artist`, `title`, `sourceId`, `duration`, `codeNumber`) VALUES (50,'AFI','Girl''s Not Grey',4,194,'748D67');
 INSERT INTO `songs_x_instruments` (`songId`, `instrumentId`) VALUES (1,1);
 INSERT INTO `songs_x_instruments` (`songId`, `instrumentId`) VALUES (1,2);
 INSERT INTO `songs_x_instruments` (`songId`, `instrumentId`) VALUES (1,3);
