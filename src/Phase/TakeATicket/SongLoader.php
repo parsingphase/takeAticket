@@ -12,7 +12,9 @@ namespace Phase\TakeATicket;
 use Doctrine\DBAL\Connection;
 use Iterator;
 use Phase\TakeATicket\DataSource\Factory;
-use Phase\TakeATicket\SongLoader\RclRowMapper;
+use Phase\TakeATicket\SongLoader\RclKaraokeRowMapper;
+use Phase\TakeATicket\SongLoader\RclRockBandRowMapper;
+use Phase\TakeATicket\SongLoader\RowMapperInterface;
 
 class SongLoader
 {
@@ -112,13 +114,13 @@ class SongLoader
     }
 
     /**
-     * FIXME redefine as return RowMapperInterface
+     * Get the currently configured RowMapper
      *
      * @param $dataStore
-     * @return RclRowMapper
+     * @return RowMapperInterface
      */
     protected function getRowMapper($dataStore)
     {
-        return new RclRowMapper($dataStore);
+        return new RclKaraokeRowMapper($dataStore);
     }
 }

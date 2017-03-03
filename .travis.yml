@@ -23,6 +23,5 @@ matrix:
 
 branches:
   only:
-    - master
-    - /dev.*/
-    - schema-refactor
+    - gh-pages
+    - /.*/

@@ -17,9 +17,9 @@ use Phase\TakeATicket\Model\Source;
 /**
  * Input file row mapper for the Rock Club London XLS file format
  *
- * To load other file formats, extend / replace this class and implement
+ * To load other file formats, extend / replace this class and implement RowMapperInterface
  */
-class RclRowMapper implements RowMapperInterface
+class RclRockBandRowMapper implements RowMapperInterface
 {
     /**
      * @var AbstractSql
@@ -80,6 +80,8 @@ class RclRowMapper implements RowMapperInterface
 
     /**
      * Perform any once-only operations
+     *
+     * @return void
      */
     public function init()
     {
@@ -117,22 +119,22 @@ class RclRowMapper implements RowMapperInterface
      * Primary table is songs (one per input line)
      * Must also manage instruments, platforms, sources
      *
-     * @param array $flattenedRow
+     * @param array $row Simple array representation of row (character-indexed)
      * @return bool
      */
-    public function storeRawRow(array $flattenedRow)
+    public function storeRawRow(array $row)
     {
         $song = new Song();
         $song
-            ->setArtist($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_ARTIST]])
-            ->setTitle($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_TITLE]]);
+            ->setArtist($row[$this->fieldLookup[self::INPUT_FIELD_ARTIST]])
+            ->setTitle($row[$this->fieldLookup[self::INPUT_FIELD_TITLE]]);
 
-        $durationMS = trim($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_DURATION_MMSS]]);
+        $durationMS = trim($row[$this->fieldLookup[self::INPUT_FIELD_DURATION_MMSS]]);
         if ($durationMS && preg_match('/^\s*(\d+):(\d+)\s*$/', $durationMS, $matches)) {
             $song->setDuration(($matches[1] * 60) + $matches[2]);
         }
 
-        $sourceName = trim($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_SOURCE]]);
+        $sourceName = trim($row[$this->fieldLookup[self::INPUT_FIELD_SOURCE]]);
         if ($sourceName) {
             $source = $this->dataStore->fetchSourceByName($sourceName);
             if (!$source) {
@@ -153,7 +155,7 @@ class RclRowMapper implements RowMapperInterface
             self::INPUT_FIELD_IN_RB4 => 'RB4',
         ];
         foreach ($platformFields as $field => $platformName) {
-            if (trim($flattenedRow[$this->fieldLookup[$field]])) {
+            if (trim($row[$this->fieldLookup[$field]])) {
                 $platform = $this->dataStore->fetchPlatformByName($platformName);
                 if (!$platform) {
                     $platform = new Platform($platformName);
@@ -166,7 +168,7 @@ class RclRowMapper implements RowMapperInterface
 
         // Instruments - all stored at init(); // TODO add harmony
         $instruments = ['Vocals', 'Guitar', 'Bass', 'Drums'];
-        if (trim($flattenedRow[$this->fieldLookup[self::INPUT_FIELD_HAS_KEYS]])) {
+        if (trim($row[$this->fieldLookup[self::INPUT_FIELD_HAS_KEYS]])) {
             $instruments[] = 'Keyboard';
         }
 
