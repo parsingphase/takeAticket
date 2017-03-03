@@ -14,3 +14,7 @@ services:
         arguments: ['@markdown.engine']
         tags:
             - { name: twig.extension }
+    songloader.rowmappermanager:
+        class: Phase\TakeATicket\SongLoader\RowMapperManager
+        arguments: ['@database_connection', '%song_loader_row_formatters%']
+

@@ -22,7 +22,19 @@ class SongLoader
 
     protected $startRow = 2;
 
+    /**
+     * @var bool
+     */
     protected $showProgress = false;
+
+    /**
+     * Class to instantiate as RowMapper
+     *
+     * Must implement RowMapperInterface
+     *
+     * @var string
+     */
+    protected $rowMapperClass = RclRockBandRowMapper::class;
 
     /**
      * Store contents of specified XLS file to the given database handle
@@ -95,6 +107,34 @@ class SongLoader
     }
 
     /**
+     * @return string
+     */
+    public function getRowMapperClass()
+    {
+        return $this->rowMapperClass;
+    }
+
+    /**
+     * Set RowMapper class to use
+     *
+     * @param string $rowMapperClass
+     * @return SongLoader
+     * @throws \InvalidArgumentException If classname not valid
+     */
+    public function setRowMapperClass($rowMapperClass)
+    {
+        $class = new \ReflectionClass($rowMapperClass);
+        if ($class->isSubclassOf(RowMapperInterface::class)) {
+            $this->rowMapperClass = $rowMapperClass;
+        } else {
+            throw new \InvalidArgumentException(
+                "$rowMapperClass must implement " . RowMapperInterface::class
+            );
+        }
+        return $this;
+    }
+
+    /**
      * @param $i
      */
     protected function printProgressMarker($i)
@@ -121,6 +161,7 @@ class SongLoader
      */
     protected function getRowMapper($dataStore)
     {
-        return new RclKaraokeRowMapper($dataStore);
+        $rowMapperClass = $this->getRowMapperClass();
+        return new $rowMapperClass($dataStore);
     }
 }

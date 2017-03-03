@@ -8,8 +8,31 @@
 
 namespace Phase\TakeATicket\SongLoader;
 
+use Phase\TakeATicket\DataSource\AbstractSql;
+
 interface RowMapperInterface
 {
+
+    /**
+     * RowMapperInterface constructor.
+     *
+     * @param AbstractSql $dataStore
+     */
+    public function __construct(AbstractSql $dataStore);
+
+    /**
+     * Get formatter name for interface
+     *
+     * @return string
+     */
+    public function getFormatterName();
+
+    /**
+     * Get short name for form keys, CLI etc. Must be unique
+     *
+     * @return string
+     */
+    public function getShortName();
 
     /**
      * Initialise the RowMapper. May create some DB records if already known

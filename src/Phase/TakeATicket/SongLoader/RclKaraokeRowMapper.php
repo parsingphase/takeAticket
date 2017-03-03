@@ -81,6 +81,16 @@ class RclKaraokeRowMapper implements RowMapperInterface
     }
 
     /**
+     * Get formatter name for interface / selection
+     *
+     * @return string
+     */
+    public function getFormatterName()
+    {
+        return 'RCL Karaoke formatter';
+    }
+
+    /**
      * Initialise the RowMapper
      *
      * @return void
@@ -131,5 +141,15 @@ class RclKaraokeRowMapper implements RowMapperInterface
         }
 
         return true;
+    }
+
+    /**
+     * Get short name for form keys, CLI etc
+     *
+     * @return string
+     */
+    public function getShortName()
+    {
+        return 'RclKaraoke';
     }
 }

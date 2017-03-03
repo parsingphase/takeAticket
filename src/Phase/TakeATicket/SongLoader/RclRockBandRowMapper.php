@@ -187,9 +187,9 @@ class RclRockBandRowMapper implements RowMapperInterface
         return true;
     }
 
-    protected function getFormatterName()
+    public function getFormatterName()
     {
-        return 'RCL XLS formatter';
+        return 'RCL multi-instrument formatter';
     }
 
 
@@ -233,5 +233,15 @@ class RclRockBandRowMapper implements RowMapperInterface
         }
 
         return $storable;
+    }
+
+    /**
+     * Get short name for form keys, CLI etc. Must be unique
+     *
+     * @return string
+     */
+    public function getShortName()
+    {
+        return 'RclRockBand';
     }
 }
