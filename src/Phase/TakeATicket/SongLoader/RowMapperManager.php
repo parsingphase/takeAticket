@@ -78,6 +78,14 @@ class RowMapperManager
     }
 
     /**
+     * @return RowMapperInterface[]
+     */
+    public function getRowMappers()
+    {
+        return $this->rowMappers;
+    }
+
+    /**
      * Ensure that provided classname is a valid RowMapperInterface
      *
      * @param $rowMapperClass
