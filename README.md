@@ -1,8 +1,8 @@
 TakeATicket 
 ===========
-| Travis | VersionEye | Scrutinizer |
-| ---    | ---        | --- |
-| [![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket) | [![Dependency Status](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/build.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/build-status/master) |
+| Travis | VersionEye | Scrutinizer | Quay.io |
+| ---    | ---        | ---         | ---     |
+| [![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket) | [![Dependency Status](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/build.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/build-status/master) | [![Docker Repository on Quay](https://quay.io/repository/parsingphase/takeaticket/status "Docker Repository on Quay")](https://quay.io/repository/parsingphase/takeaticket)
 
 Queue management tool for Rock Club London (http://rockclublondon.com/)
 
@@ -15,9 +15,13 @@ Canonical source: https://github.com/parsingphase/takeAticket
 You can use Docker to download and run the app locally in two steps:
 
  1) Install Docker from https://www.docker.com/community-edition#/download
- 2) Run `docker run -i -t -p 8000:8000 parsingphase/takeaticket:latest` at a command line
+ 2) Run `docker run -i -t -p 8000:8000 quay.io/parsingphase/takeaticket` at a command line to download & run the image
 
-Note that both these downloads are quite large, but both only need to be downloaded once until an update comes along.
+Note that both these downloads are quite large, but both only need to be downloaded once until an update comes along:
+
+ - Docker itself is about 100MB
+ - The image is about 750MB - any docker experts who want to put it on a smaller image are welcome to 
+ [contribute](./docs/CONTRIBUTING.md)
 
 Important notes:
 
