@@ -34,6 +34,20 @@ CSS is compiled from www/css/ticket.less to www/css/ticket.css
 * Run `./rebuildLess.sh` to compile
 * CSS file must be checked in
 
+### Input files
+Songlist import from XLS files is supported either from the command line or via the management interface. These are 
+processed by RowMappers which convert the tabular Excel data to songs, instruments etc. 
+
+Two of these are included with the project, from the original use at [Rock Club London](http://rockclublondon.com):
+
+* RclRockBandRowMapper
+  * Uploads songs with the full Rock Band instrument set
+* RclKaraokeRowMapper
+  * Uploads the same file format as RclRockBandRowMapper, but only includes a Vocal part rather than all instruments
+  
+To handle other file formats, create a new class implementing the RowMapperInterface and register the classname in
+`app/config/parameters.yml` under `song_loader_row_formatters`.
+
 ### Testing
 * Run `./vendor/bin/phing -p` for details of tests and tools. You **must** run `./vendor/bin/phing test-mindeps` before 
 submitting code; `./vendor/bin/phing test-all` is optional, but your code **must** pass this when travis runs it to be accepted.

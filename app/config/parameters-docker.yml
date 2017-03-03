@@ -18,3 +18,6 @@ parameters:
     displayOptions:
         songInPreview: 'false,'
         upcomingCount: !!float 4
+    song_loader_row_formatters:
+        - \Phase\TakeATicket\SongLoader\RclKaraokeRowMapper
+        - \Phase\TakeATicket\SongLoader\RclRockBandRowMapper

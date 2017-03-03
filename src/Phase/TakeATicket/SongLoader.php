@@ -12,7 +12,9 @@ namespace Phase\TakeATicket;
 use Doctrine\DBAL\Connection;
 use Iterator;
 use Phase\TakeATicket\DataSource\Factory;
-use Phase\TakeATicket\SongLoader\RclRowMapper;
+use Phase\TakeATicket\SongLoader\RclKaraokeRowMapper;
+use Phase\TakeATicket\SongLoader\RclRockBandRowMapper;
+use Phase\TakeATicket\SongLoader\RowMapperInterface;
 
 class SongLoader
 {
@@ -20,7 +22,19 @@ class SongLoader
 
     protected $startRow = 2;
 
+    /**
+     * @var bool
+     */
     protected $showProgress = false;
+
+    /**
+     * Class to instantiate as RowMapper
+     *
+     * Must implement RowMapperInterface
+     *
+     * @var string
+     */
+    protected $rowMapperClass = RclRockBandRowMapper::class;
 
     /**
      * Store contents of specified XLS file to the given database handle
@@ -93,6 +107,34 @@ class SongLoader
     }
 
     /**
+     * @return string
+     */
+    public function getRowMapperClass()
+    {
+        return $this->rowMapperClass;
+    }
+
+    /**
+     * Set RowMapper class to use
+     *
+     * @param string $rowMapperClass
+     * @return SongLoader
+     * @throws \InvalidArgumentException If classname not valid
+     */
+    public function setRowMapperClass($rowMapperClass)
+    {
+        $class = new \ReflectionClass($rowMapperClass);
+        if ($class->isSubclassOf(RowMapperInterface::class)) {
+            $this->rowMapperClass = $rowMapperClass;
+        } else {
+            throw new \InvalidArgumentException(
+                "$rowMapperClass must implement " . RowMapperInterface::class
+            );
+        }
+        return $this;
+    }
+
+    /**
      * @param $i
      */
     protected function printProgressMarker($i)
@@ -112,13 +154,14 @@ class SongLoader
     }
 
     /**
-     * FIXME redefine as return RowMapperInterface
+     * Get the currently configured RowMapper
      *
      * @param $dataStore
-     * @return RclRowMapper
+     * @return RowMapperInterface
      */
     protected function getRowMapper($dataStore)
     {
-        return new RclRowMapper($dataStore);
+        $rowMapperClass = $this->getRowMapperClass();
+        return new $rowMapperClass($dataStore);
     }
 }

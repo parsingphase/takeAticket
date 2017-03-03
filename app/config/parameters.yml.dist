@@ -23,6 +23,10 @@ parameters:
     admin_notification_from_name: TakeATicket
     admin_notification_to_email:  noreply@localhost
 
+    song_loader_row_formatters:
+        - \Phase\TakeATicket\SongLoader\RclKaraokeRowMapper
+        - \Phase\TakeATicket\SongLoader\RclRockBandRowMapper
+
     displayOptions:
         songInPreview: false,
         upcomingCount: 4, # number of tickets to show on upcoming page

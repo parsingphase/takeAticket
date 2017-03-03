@@ -10,6 +10,7 @@ namespace Phase\TakeATicketBundle\Controller;
 
 use Phase\TakeATicket\SongLoader;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -167,8 +168,6 @@ class ManagementController extends BaseController
                 && $resetForm->get($resetSubmit)->isClicked()
             ) {
                 $data = $resetForm->getData();
-                //                var_dump($data);
-                //                die();
                 if (trim($data['resetMessage']) === $requiredResetText) {
                     $dataStore->resetAllSessionData();
                     $resetFormSaved = true;
@@ -178,8 +177,17 @@ class ManagementController extends BaseController
 
         // -------------------
 
+        $rowMapperManager = $this->container->get('songloader.rowmappermanager');
+        /** @var  SongLoader\RowMapperManager $rowMapperManager */
+        $mappers = $rowMapperManager->getRowMappers();
+        $mapperInput = [];
+        foreach ($mappers as $mapper) {
+            $mapperInput[$mapper->getFormatterName()] = $mapper->getShortName();
+        }
+
         $songListSubmit = 'Upload song list';
         $songListForm = $formFactory->createNamedBuilder('songListForm', FormType::class)
+            ->add('rowMapper', ChoiceType::class, ['choices' => $mapperInput, 'label' => 'Input formatter'])
             ->add('songListFile', FileType::class)
             ->add($songListSubmit, SubmitType::class)
             ->getForm();
@@ -205,7 +213,7 @@ class ManagementController extends BaseController
                  */
 
                 $loader = new SongLoader();
-
+                $loader->setRowMapperClass($rowMapperManager->getRowMapperClassByShortName($data['rowMapper']));
                 $songsLoaded = $loader->run($file->getPathname(), $this->get('database_connection'));
 
                 $songFormSaved = true;
