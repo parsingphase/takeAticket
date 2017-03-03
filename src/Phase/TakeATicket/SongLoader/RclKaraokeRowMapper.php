@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicket\SongLoader;
 
-
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Phase\TakeATicket\DataSource\AbstractSql;
 use Phase\TakeATicket\Model\Instrument;

@@ -8,7 +8,6 @@
 
 namespace Phase\TakeATicket\SongLoader;
 
-
 use Doctrine\DBAL\Connection;
 use Phase\TakeATicket\DataSource\Factory;
 
