@@ -5,7 +5,6 @@ Feature Requests
     
 * ~~Add admin interface for settings DB~~
     * Ensure that remoteUrl setting is valid? ~~(Or redirect to / on error)~~
-* Put instrument parts on manage page in standard order
 * Allow clicking in checkbox itself in "manage" toggle button (currently double-toggles)
 * Allow multi-line messages
     * And/or change min block height for message-only tickets
@@ -18,9 +17,6 @@ Feature Requests
     * Arrows in search
     * Button tab order?
 * Use foreign keys in MySQL
-* Add "platform" concept to replace temporary inRb3, inRb4 hack 
-* Allow customisation of instrument selection, order, default usage
-    * Eg for non-instrumental karaoke, possibly multiple vocal parts
 * Add "session" concept to allow multiple sessions to be stored in DB without reset
 * Rewrite the whole overcomplex mess in Angular ~~(/+Symfony?)~~
     
@@ -50,11 +46,15 @@ Feature Requests
 * ~~Display performers in instrument order on manage page~~
 * ~~Remove song from ticket (can currently only replace)~~
 * ~~Force title icon + title on manage tickets onto same line (span nowrap)~~
+* ~~Add code tests~~
+* ~~Put instrument parts on manage page in standard order~~
+* ~~Add "platform" concept to replace temporary inRb3, inRb4 hack~~
+* ~~Allow customisation of instrument selection, order, default usage~~
+    * ~~Eg for non-instrumental karaoke, possibly multiple vocal parts~~
 
 ### Deferred
 
 * Announcements on private list -- create a dedicated 'backstage' page (output only)?
-* Add code tests
 * Warn on duplicate submission - warns on song search for now
 * Total done/remaining indicator
 * Colour codes/patches for names? Bold Zeros?

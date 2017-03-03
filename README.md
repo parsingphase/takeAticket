@@ -4,18 +4,18 @@ TakeATicket
 | ---    | ---        | ---         | ---     |
 | [![Build Status](https://travis-ci.org/parsingphase/takeAticket.svg?branch=master)](https://travis-ci.org/parsingphase/takeAticket) | [![Dependency Status](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57bc7d77968d6400336020a3) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/parsingphase/takeAticket/badges/build.png?b=master)](https://scrutinizer-ci.com/g/parsingphase/takeAticket/build-status/master) | [![Docker Repository on Quay](https://quay.io/repository/parsingphase/takeaticket/status "Docker Repository on Quay")](https://quay.io/repository/parsingphase/takeaticket)
 
-Queue management tool for Rock Club London (http://rockclublondon.com/)
+Queue management web app for Karaoke and Rock Band events, created for Rock Club London (http://rockclublondon.com/)
 
 Software created by Richard George (richard@phase.org)
 
-Canonical source: https://github.com/parsingphase/takeAticket
+Canonical source: [https://github.com/parsingphase/takeAticket](https://github.com/parsingphase/takeAticket)
 
 ## Quick start
 
 You can use Docker to download and run the app locally in two steps:
 
- 1) Install Docker from https://www.docker.com/community-edition#/download
- 2) Run `docker run -i -t -p 8000:8000 quay.io/parsingphase/takeaticket` at a command line to download & run the image
+ 1. Install Docker from [https://www.docker.com/community-edition#/download](https://www.docker.com/community-edition#/download)
+ 2. Run `docker run -i -t -p 8000:8000 quay.io/parsingphase/takeaticket` at a command line to download & run the image
 
 Note that both these downloads are quite large, but both only need to be downloaded once until an update comes along:
 
@@ -28,15 +28,15 @@ Important notes:
 The docker version of this software is not designed as a full production system, but you can use it on a closed system
 if you understand the following limitations: 
 
- 1) The admin account/password is locked to 'admin/admin' (password changing will follow later!)
- 2) If you stop the running docker image, your queue and song list will be wiped.
- 3) The image contains a small example song list, but you can upload more via the admin interface
+ 1. The admin account/password is locked to 'admin/admin' (password changing will follow later!)
+ 2. If you stop the running docker image, your queue and song list will be wiped. 
+ 3. The image contains a small example song list, but you can upload more via the admin interface
 
 ## Setup
 
 **WARNING** These steps are probably not entirely complete. See the [Dockerfile](Dockerfile) for the canonical list of setup steps.
 If you've ever installed a Symfony project, you'll recognise most steps - refer to 
-http://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application
+[http://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application](http://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application)
 
 The app can use either a sqlite3 or mySQL database, and run under a standard server or PHP's internal server mode. 
 The following instructions are for sqlite and the internal server; you can extrapolate from there to run it more 
@@ -145,4 +145,5 @@ report bugs, or "upvote" existing tasks.
 
 ## CONTRIBUTING 
 
-See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for details on how to run included tests and/or contribute to the project.
+See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for details on how to run included tests and extend and/or contribute
+to the project.
