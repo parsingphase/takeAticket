@@ -1,4 +1,1 @@
-parsingphase/takeAticket
-========================
-
-Queue management software for Karaoke and Rock Band events.
+**takeAticket** exists to smooth the running of Karaoke sessions, Rock Club evenings, or any event where attendees sign up to perfom songs from a set list.
