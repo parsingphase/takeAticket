@@ -17,8 +17,13 @@ A powerful queue management interface allows event runners to quickly enter requ
 everyone gets a fair turn. Time estimates show how long the existing queue will last and colour highlighting shows new performers and 
 those performing repeatedly on consecutive songs.
 
-Event runners can also add their own background image and styling via the managment interface.
+Event runners can also add their own background image and styling via the management interface. Songs are uploaded from Excel spreadsheets
+through a choice of processors which determine which instruments are available for each song - or you can upload as voice-only for karaoke.
+[Custom processors](PROCESSORS.md) for different database structures or instruments can be added in minutes with a little understanding of 
+PHP code  (not available on QuickStart without some technical knowledge).
 
 ------
 
-The software is free (and open source) and can be run with a single command under the Docker container platform (see [Quick Start](QUICKSTART.md)) or installed on your own webserver ([Installation](INSTALL.md)). Once installed, all operations can be carried out via the web interface.
+The software is free, open source and extensible, and can be run with a single command under the Docker container platform 
+(see [Quick Start](QUICKSTART.md)) or installed on your own webserver ([Installation](INSTALL.md)). 
+Once installed, all operations can be carried out via the web interface.
