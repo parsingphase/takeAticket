@@ -21,4 +21,4 @@ Event runners can also add their own background image and styling via the managm
 
 ------
 
-The software is free (and open source) and can be run with a single command under the Docker container platform (see [Quick Start](QUICKSTART.md) or installed on your own webserver ([Installation](INSTALL.md)). Once installed, all operations can be carried out via the web interface.
+The software is free (and open source) and can be run with a single command under the Docker container platform (see [Quick Start](QUICKSTART.md)) or installed on your own webserver ([Installation](INSTALL.md)). Once installed, all operations can be carried out via the web interface.
