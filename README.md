@@ -17,6 +17,8 @@ A powerful queue management interface allows event runners to quickly enter requ
 everyone gets a fair turn. Time estimates show how long the existing queue will last and colour highlighting shows new performers and 
 those performing repeatedly on consecutive songs.
 
+Event runners can also add their own background image and styling via the managment interface.
+
 ------
 
-The software is free (and open source) and can be run with a single command under the Docker container platform.
+The software is free (and open source) and can be run with a single command under the Docker container platform (see [Quick Start](QUICKSTART.md) or installed on your own webserver ([Installation](INSTALL.md)). Once installed, all operations can be carried out via the web interface.
