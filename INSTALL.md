@@ -55,3 +55,5 @@ To run under an external web server such as Apache or NGINX, consult the Symfony
 ## Further help
 
  - [Standard Symfony app install guide](http://symfony.com/doc/current/deployment.html) 
+
+{% include footer.md %}
