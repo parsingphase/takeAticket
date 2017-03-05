@@ -1,0 +1,52 @@
+<project name="parsingphase/takeAticket" default="test-all" basedir=".">
+
+    <target name="test-mindeps" depends="phplint,phpcs"
+            description="Perform all tests that only require basic dependencies"/>
+    <target name="test-all" depends="phplint,phpcs,jstests,phpunit"
+            description="Perform all tests, including those which may require extra dependencies"/>
+
+    <target name="phplint"
+            description="Perform syntax check of sourcecode files"
+    >
+        <phplint
+                haltonfailure="true"
+        >
+            <fileset dir="${project.basedir}">
+                <include name="**/*.php"/>
+                <exclude name="vendor/"/>
+            </fileset>
+        </phplint>
+    </target>
+
+    <target name="phpcs"
+            description="Perform codesniffer check of sourcecode files"
+    >
+        <phpcodesniffer
+                standard="PSR2"
+                allowedFileExtensions="php"
+                haltonerror="true"
+                haltonwarning="true"
+        >
+            <fileset dir="${project.basedir}">
+                <include name="src/**/*.php"/>
+                <exclude name="vendor/"/>
+            </fileset>
+            <formatter type="full" usefile="false"/>
+        </phpcodesniffer>
+    </target>
+
+    <target name="phpunit"
+            description="Run PHPUnit tests">
+        <exec command="vendor/bin/phpunit --fail-on-warning" checkreturn="true" passthru="true" />
+    </target>
+
+    <target name="jstests"
+            description="Perform any tests specified by node package.json">
+        <!-- delegate to npm-->
+        <exec
+                command="npm test"
+                checkreturn="true"
+                logoutput="true"
+        />
+    </target>
+</project>

@@ -1,58 +1,16 @@
-<project name="parsingphase/takeAticket" default="deploy-current" basedir=".">
+<project name="parsingphase/takeAticket" default="test-all" basedir=".">
 
     <property file="build.properties"/> <!-- local overrides -->
     <property file="build.dist.properties"/> <!-- defaults -->
 
-    <target name="test-mindeps" depends="phplint,phpcs"
-            description="Perform all tests that only require basic dependencies"/>
-    <target name="test-all" depends="phplint,phpcs,jstests,phpunit"
-            description="Perform all tests, including those which may require extra dependencies"/>
-
-    <target name="phplint"
-            description="Perform syntax check of sourcecode files"
-    >
-        <phplint
-                haltonfailure="true"
-        >
-            <fileset dir="${project.basedir}">
-                <include name="**/*.php"/>
-                <exclude name="vendor/"/>
-            </fileset>
-        </phplint>
+    <!-- Single phing command in case -f is missed (phing and ant both expect build.xml) -->
+    <target name="test-all"
+            description="Run all tests with phing">
+        <echo message="Use vendor/bin/phing -f phing.xml [command] to run phing directly" />
+        <exec command="vendor/bin/phing -f phing.xml test-all" checkreturn="true" passthru="true" />
     </target>
 
-    <target name="phpcs"
-            description="Perform codesniffer check of sourcecode files"
-    >
-        <phpcodesniffer
-                standard="PSR2"
-                allowedFileExtensions="php"
-                haltonerror="true"
-                haltonwarning="true"
-        >
-            <fileset dir="${project.basedir}">
-                <include name="src/**/*.php"/>
-                <exclude name="vendor/"/>
-            </fileset>
-            <formatter type="full" usefile="false"/>
-        </phpcodesniffer>
-    </target>
-
-    <target name="phpunit"
-            description="Run PHPUnit tests">
-        <exec command="vendor/bin/phpunit --fail-on-warning" checkreturn="true" passthru="true" />
-    </target>
-
-    <target name="jstests"
-            description="Perform any tests specified by node package.json">
-        <!-- delegate to npm-->
-        <exec
-                command="npm test"
-                checkreturn="true"
-                logoutput="true"
-        />
-    </target>
-
+    <!-- Installation and deployment tasks all use ant for greater reliability -->
     <target name="deploy-latest"
             description="Pull latest code from master and redeploy"
             depends="git-pull,deploy-current">

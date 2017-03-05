@@ -21,3 +21,4 @@ parameters:
     song_loader_row_formatters:
         - \Phase\TakeATicket\SongLoader\RclKaraokeRowMapper
         - \Phase\TakeATicket\SongLoader\RclRockBandRowMapper
+        - \Phase\TakeATicket\SongLoader\SimpleKaraokeRowMapper

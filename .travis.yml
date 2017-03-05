@@ -15,7 +15,7 @@ install:
  - composer install
  - npm install
 #JS tools installed by npm required for validation only, not for app execution or development
-script: vendor/bin/phing test-all
+script: vendor/bin/phing -f phing.xml test-all
 #Disable nightly-build test until I fix deps
 matrix:
   allow_failures:
