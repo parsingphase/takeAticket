@@ -11,9 +11,9 @@ Please add an issue on GitHub for any TODO task you start.
 
 This project is intended to run with the absolute minimum of dependencies, except:
 
-* PHP 5.6+
-* Composer
-* sqlite3
+ - PHP 5.6+
+ - Composer
+ - sqlite3
 
 so that it can be run from most Linux or OSX desktop environments without server configuration / further installs being needed.
 
@@ -31,8 +31,8 @@ Please discuss before adding any further requirements, or adding any further dep
 ### CSS
 CSS is compiled from www/css/ticket.less to www/css/ticket.css 
  
-* Run `./rebuildLess.sh` to compile
-* CSS file must be checked in
+ - Run `./rebuildLess.sh` to compile
+ - CSS file must be checked in
 
 ### Input files
 See [PROCESSORS](PROCESSORS.md) for details of how to add custom format loaders.
@@ -42,5 +42,5 @@ The included Dockerfile runs the codebase on an Ubuntu base image - this makes f
 I'm most familiar with. Migration to a smaller base image, at least as a branch option, would be welcomed.
 
 ### Testing
-* Run `./vendor/bin/phing -f phing.xml -p` for details of tests and tools. You **must** run `./vendor/bin/phing -f phing.xml test-mindeps` before 
+Run `./vendor/bin/phing -f phing.xml -p` for details of tests and tools. You **must** run `./vendor/bin/phing -f phing.xml test-mindeps` before 
 submitting code; `./vendor/bin/phing -f phing.xml test-all` is optional, but your code **must** pass this when travis runs it to be accepted.
