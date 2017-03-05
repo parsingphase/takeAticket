@@ -27,3 +27,9 @@ PHP code  (not available on QuickStart without some technical knowledge).
 The software is free, open source and extensible, and can be run with a single command under the Docker container platform 
 (see [Quick Start](QUICKSTART.md)) or installed on your own webserver ([Installation](INSTALL.md)). 
 Once installed, all operations can be carried out via the web interface.
+
+-------
+
+To contribute to development, see [CONTRIBUTING](CONTRIBUTING.md); for feature requests or queries feel free to 
+[open a ticket](https://github.com/parsingphase/takeAticket/issues) - refer to the existing 
+[TODO list](https://github.com/parsingphase/takeAticket/blob/master/TODO.md) for what's planned.
