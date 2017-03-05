@@ -15,7 +15,7 @@ Users can browse an online catalogue of songs (uploaded by the event runner) and
 
 A powerful queue management interface allows event runners to quickly enter requests and drag tickets to re-order the queue to ensure 
 everyone gets a fair turn. Time estimates show how long the existing queue will last and colour highlighting shows new performers and 
-those performing repeatedly on consecutive songs.
+those performing repeatedly on consecutive songs. More details: [QueueManagement](QueueManagement.md).
 
 Event runners can also add their own background image and styling via the management interface. Songs are uploaded from Excel spreadsheets
 through a choice of processors which determine which instruments are available for each song - or you can upload as voice-only for karaoke.
