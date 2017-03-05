@@ -16,11 +16,11 @@ See [http://parsingphase.github.io/takeAticket/](http://parsingphase.github.io/t
 
 ## TODO 
 
-See [docs/TODO.md](./docs/TODO.md) for intended further work; 
+See [TODO.md](TODO.md) for intended further work; 
 feel free to [open issues on github](https://github.com/parsingphase/takeAticket/issues) to make feature requests, 
 report bugs, or "upvote" existing tasks.
 
 ## CONTRIBUTING 
 
-See [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for details on how to run included tests and extend and/or contribute
-to the project.
+See [https://parsingphase.github.io/takeAticket/CONTRIBUTE.html](https://parsingphase.github.io/takeAticket/CONTRIBUTE.html) 
+for details on how to run included tests and extend and/or contribute to the project.
