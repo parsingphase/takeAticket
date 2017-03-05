@@ -44,3 +44,5 @@ I'm most familiar with. Migration to a smaller base image, at least as a branch 
 ### Testing
 Run `./vendor/bin/phing -f phing.xml -p` for details of tests and tools. You **must** run `./vendor/bin/phing -f phing.xml test-mindeps` before 
 submitting code; `./vendor/bin/phing -f phing.xml test-all` is optional, but your code **must** pass this when travis runs it to be accepted.
+
+{% include footer.md %}

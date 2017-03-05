@@ -21,3 +21,4 @@ if you understand the following limitations:
  2. If you stop the running docker image, your queue and song list will be wiped. 
  3. The image contains a small example song list, but you can upload more via the admin interface
 
+{% include footer.md %}

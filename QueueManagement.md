@@ -21,3 +21,5 @@ Assigning a performer will skip to the next instrument, so to add multiple perfo
 instrument.
 
 You can also add a band name if you want, but this is optional.
+
+{% include footer.md %}

@@ -31,3 +31,5 @@ Don't forget to clear symfony's cache after changing this list:
               
        php bin/console cache:clear --env=dev --no-debug
        php bin/console cache:clear --env=prod --no-debug
+       
+{% include footer.md %}       

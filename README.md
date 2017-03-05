@@ -33,3 +33,5 @@ Once installed, all operations can be carried out via the web interface.
 To contribute to development, see [CONTRIBUTE](CONTRIBUTE.md); for feature requests or queries feel free to 
 [open a ticket](https://github.com/parsingphase/takeAticket/issues) - refer to the existing 
 [TODO list](https://github.com/parsingphase/takeAticket/blob/master/TODO.md) for what's planned.
+
+{% include footer.md %}
