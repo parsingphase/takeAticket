@@ -6,8 +6,8 @@
     <!-- Single phing command in case -f is missed (phing and ant both expect build.xml) -->
     <target name="test-all"
             description="Run all tests with phing">
-        <echo message="Use vendor/bin/phing -f phing.xml [command] to run phing directly" />
-        <exec command="vendor/bin/phing -f phing.xml test-all" checkreturn="true" passthru="true" />
+        <echo message="Use vendor/bin/phing -f phing.xml [command] to run phing directly"/>
+        <exec command="vendor/bin/phing -f phing.xml test-all" checkreturn="true" passthru="true"/>
     </target>
 
     <!-- Installation and deployment tasks all use ant for greater reliability -->
@@ -52,20 +52,21 @@
     </target>
 
     <target name="composer-install">
-        <exec executable="${composer.exe}">
+        <exec executable="${composer.exe}" failonerror="true">
+            <env key="SYMFONY_ENV" value="prod"/>
             <arg value="install"/>
             <arg value="--no-dev"/>
         </exec>
     </target>
 
     <target name="composer-install-dev">
-        <exec executable="${composer.exe}">
+        <exec executable="${composer.exe}" failonerror="true">
             <arg value="install"/>
         </exec>
     </target>
 
     <target name="npm-install">
-        <exec executable="${npm.exe}">
+        <exec executable="${npm.exe}" failonerror="true">
             <arg value="install"/>
         </exec>
     </target>
@@ -104,12 +105,27 @@
         </exec>
     </target>
 
-    <target name="check-acl-method">
+    <target name="check-acl-method" depends="switch-acl-method" if="autoFacl">
+        <exec executable="which" outputproperty="which-set-facl">
+            <arg value="setfacl"/>
+        </exec>
+        <condition property="set-var-dir-access-by-chmod-plus-a">
+            <equals arg1="${which-set-facl}" arg2="1"/>
+        </condition>
+        <condition property="accessCtrlCmdSetfacl">
+            <equals arg1="${which-set-facl}" arg2="0"/>
+        </condition>
+    </target>
+
+    <target name="switch-acl-method">
         <condition property="set-var-dir-access-by-chmod-plus-a">
             <equals arg1="${acl.method}" arg2="chmod+a"/>
         </condition>
         <condition property="accessCtrlCmdSetfacl">
             <equals arg1="${acl.method}" arg2="setfacl"/>
+        </condition>
+        <condition property="autoFacl">
+            <equals arg1="${acl.method}" arg2="auto"/>
         </condition>
     </target>
 
