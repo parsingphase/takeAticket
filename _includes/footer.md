@@ -1,3 +1,3 @@
 ------
-**[Index](README.md)**  | **[QuickStart](QUICKSTART.md)** | **[Install](INSTALL.md)** | **[Management](QueueManagement.md)** 
-| **[Song uploads](PROCESSORS.md)** | **[Contributing](CONTRIBUTE.md)**
+**[Index](index.html)**  | **[QuickStart](QUICKSTART.html)** | **[Install](INSTALL.html)** | **[Management](QueueManagement.html)** 
+| **[Song uploads](PROCESSORS.html)** | **[Contributing](CONTRIBUTE.html)**
