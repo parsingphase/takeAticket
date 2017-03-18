@@ -88,7 +88,8 @@ class ManagementController extends BaseController
             'freezeMessage' => '',
             'remotesUrl' => '/',
             'upcomingCount' => 3,
-            'songInPreview' => false
+            'songInPreview' => false,
+            'selfSubmission' => false
         ];
 
         $formDefaults = $settingKeys;
@@ -123,6 +124,7 @@ class ManagementController extends BaseController
             ->add('remotesUrl', TextType::class, ['label' => 'URL to display on remote screens'])
             ->add('upcomingCount', NumberType::class, ['label' => 'Upcoming songs to display'])
             ->add('songInPreview', CheckboxType::class, ['label' => 'Display song titles on public queue'])
+            ->add('selfSubmission', CheckboxType::class, ['label' => 'Enable self-submission'])
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 

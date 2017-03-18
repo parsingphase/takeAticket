@@ -10,6 +10,7 @@ var ticketer = (function() {
     songAutocompleteItemTemplate: null,
     editTicketTemplate: null,
     songDetailsTemplate: null,
+    selfSubmitTemplate: null,
     manageInstrumentTabsTemplate: null,
     appMessageTarget: null,
     searchCount: 10,
@@ -19,7 +20,7 @@ var ticketer = (function() {
     messageTimer: null,
 
     /**
-     * @var {{songInPreview,upcomingCount,iconMapHtml}}
+     * @var {{songInPreview,upcomingCount,iconMapHtml,selfSubmission}}
      */
     displayOptions: {},
 
@@ -960,11 +961,27 @@ var ticketer = (function() {
         '<table>' +
         '<tr><th>Duration</th><td>{{durationToMS song.duration}}</td></tr> ' +
         '<tr><th>Code</th><td>{{song.codeNumber}}</td></tr> ' +
-        '<tr><th>Instruments </th><td>{{commalist song.instruments}}</td></tr> ' +
+        '<tr><th>Instruments </th><td>{{commalist song.instrumentNames}}</td></tr> ' +
         '<tr><th>Games</th><td>{{commalist song.platforms}}</td></tr> ' +
         '<tr><th>Source</th><td>{{song.source}}</td></tr> ' +
         '</table>' +
+        '<span id="performSongButton" class="btn btn-success btn-lg" ' +
+        'style="display: none; margin-top: 6px;">Perform this song</span> ' +
         '</div>'
+      );
+
+      this.selfSubmitTemplate = Handlebars.compile(
+        // { song, players }
+        '<p>Enter each performer as "firstname initial" (eg "David B") the same way each time,' +
+        'so that we can quickly &amp; uniquely identify you and ensure everyone gets an equal chance to perform.' +
+        'Each performer can have up to three pending songs in the queue at a time.</p>' +
+        '<table class="table table-striped">' +
+        '{{#each song.instruments}}' +
+        '<tr><td><p><b>{{ this.name }} performer</b></p>' +
+        '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
+        '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td><td>{{ this.name }}' +
+        '{{/each}}' +
+        '</table>'
       );
 
     },
@@ -1089,10 +1106,26 @@ var ticketer = (function() {
 
     searchPageSongSelectionClick: function(song) {
       var target = $('#searchTarget');
-      song.instruments = song.instruments.map(function(s) {
+      song.instrumentNames = song.instruments.map(function(s) {
         return s.name;
       }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
+      if (this.displayOptions.selfSubmission) {
+        var that = this;
+        target.find('#performSongButton').show().click(function() {
+          that.performSongButtonClick(song);
+        });
+      }
+    },
+
+    performSongButtonClick: function(song) {
+      console.log(['perform', song]);
+      $('.songComplete').hide();
+      var userSubmitFormOuter = $('#userSubmitFormOuter');
+      userSubmitFormOuter.html(this.selfSubmitTemplate({song: song})).show();
+      $('html, body').animate({
+        scrollTop: (userSubmitFormOuter.offset().top)
+      }, 50);
     },
 
     updatePerformanceStats: function() {

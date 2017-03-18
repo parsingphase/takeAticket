@@ -5,16 +5,25 @@
 
     {% block pageJs %}
         <script>
-            var displayOptions = {{ displayOptions|json_encode|raw }};
-            $(function () {
-                ticketer.displayOptions = displayOptions;
-                ticketer.searchCount = 20;
-                ticketer.initSearchPage();
-            });
+          var displayOptions = {{ displayOptions|json_encode|raw }};
+          $(function() {
+            ticketer.displayOptions = displayOptions;
+            ticketer.searchCount = 20;
+            ticketer.initSearchPage();
+          });
         </script>
     {% endblock %}
 
     {% block appTarget %}
+        <div class="well col-md-12" style="margin-top: 20px; font-size: large">
+            {% if displayOptions.selfSubmission %}
+                Start by searching for a song to perform.
+            {% else %}
+                Search all available songs.
+            {% endif %}
+            Song that are already in the queue will be greyed out.
+        </div>
+
         <div class="searchContent">
             <div class="col-md-6">
                 <div class="input-group input-group">
@@ -30,5 +39,10 @@
             <div class="col-md-6 well searchTargetOuter">
                 <div id="searchTarget"></div>
             </div>
+        </div>
+
+        <div id="userSubmitFormOuter" class="well col-md-12"
+             style="display: none; margin-bottom: 80px;">
+
         </div>
     {% endblock %}

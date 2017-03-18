@@ -50,6 +50,7 @@ abstract class BaseController extends Controller
 
         $displayOptions['upcomingCount'] = $this->getUpcomingCount();
         $displayOptions['songInPreview'] = (bool)$this->getDataStore()->fetchSetting('songInPreview');
+        $displayOptions['selfSubmission'] = (bool)$this->getDataStore()->fetchSetting('selfSubmission');
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $displayOptions['songInPreview'] = true; // force for logged-in users
