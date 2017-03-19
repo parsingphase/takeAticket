@@ -381,11 +381,11 @@ var ticketer = (function() {
           var performerInstrument = findPerformerInstrument(performerName);
           var isPerforming = performerInstrument ? 1 : 0;
           var initialLetter = performerName.charAt(0).toUpperCase();
-          if (lastInitial !== initialLetter) { // if we're changing letter
+          if (lastInitial !== initialLetter) { // If we're changing letter
             if (letterSpan) {
-              targetElement.append(letterSpan); // stash the previous letterspan if present
+              targetElement.append(letterSpan); // Stash the previous letterspan if present
             }
-            letterSpan = $('<span class="letterSpan"></span>'); // create a new span
+            letterSpan = $('<span class="letterSpan"></span>'); // Create a new span
             if ((performerCount > 15)) {
               letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
             }
@@ -514,7 +514,7 @@ var ticketer = (function() {
         allInstrumentTabs.removeClass('instrumentSelected');
         var selectedTab = getTabByInstrument(selectedInstrument);
         selectedTab.addClass('instrumentSelected');
-        rebuildPerformerList(); // because current instrument context changed
+        rebuildPerformerList(); // Because current instrument context changed
         return selectedTab;
       }
 
@@ -590,7 +590,7 @@ var ticketer = (function() {
         // Now update band with new performers of this instrument
 
         updateInstrumentTabPerformers();
-        rebuildPerformerList(); // because performer allocations changed
+        rebuildPerformerList(); // Because performer allocations changed
 
         if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
           nextInstrumentTab();
@@ -623,7 +623,7 @@ var ticketer = (function() {
         instrumentDiv.find('.instrument:first').addClass('instrumentSelected');
 
         // Enable the instrument tabs
-        // var allInstrumentTabs = controlPanelOuter.find('.instrument');
+        // Var allInstrumentTabs = controlPanelOuter.find('.instrument');
 
         instrumentDiv.find('.instrument').click(
           function() {
@@ -643,7 +643,7 @@ var ticketer = (function() {
         }
 
         updateInstrumentTabPerformers();
-        rebuildPerformerList(); // because song changed
+        rebuildPerformerList(); // Because song changed
       }
 
       function removeSong() {
@@ -980,7 +980,8 @@ var ticketer = (function() {
         'Each performer can have up to three pending songs in the queue at a time.</p>' +
         '<table class="table table-striped">' +
         '{{#each song.instruments}}' +
-        '<tr class="instrumentRow" data-instrument="{{ this.abbreviation }}"><td><p><b>{{ this.name }} performer</b></p>' +
+        '<tr class="instrumentRow" data-instrument="{{ this.abbreviation }}">' +
+        '<td><p><b>{{ this.name }} performer</b></p>' +
         '<div class="performerControls"></div>' +
         '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
         '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td><td>{{ this.name }}' +
@@ -1128,7 +1129,6 @@ var ticketer = (function() {
      * @param song
      */
     performSongButtonClick: function(song) {
-      // console.log(['perform', song]);
       $('.songComplete').hide();
       var userSubmitFormOuter = $('#userSubmitFormOuter');
       userSubmitFormOuter.html(this.selfSubmitTemplate({song: song}));
@@ -1136,7 +1136,7 @@ var ticketer = (function() {
       var band = {};
       var that = this;
 
-      this.reloadPerformers(function () {
+      this.reloadPerformers(function() {
         userSubmitFormOuter.find('tr.instrumentRow').each(
           function() {
             var element = $(this);
@@ -1155,23 +1155,22 @@ var ticketer = (function() {
     drawPerformerButtonsForInstrumentInBand: function(targetElement, instrumentCode, band) {
       // $(element).html('PerformerButtons '+ instrumentCode);
       var newButton;
-      //FIXME: need to load latest performers list
+      // FIXME: need to load latest performers list
       targetElement.text(''); // Remove existing list
-      // targetElement.text('PerformerButtons ' + instrumentCode + ' P: ' + this.performers.length); // Remove existing list
 
       var lastInitial = '';
-      var performerCount = this.performers.length; // this.performers legitimately global
+      var performerCount = this.performers.length; // Legitimately global (performers is app-wide)
       var letterSpan;
       for (var pIdx = 0; pIdx < performerCount; pIdx++) {
         var performerName = this.performers[pIdx].performerName;
-        // var performerInstrument = findPerformerInstrument(performerName);
-        // var isPerforming = performerInstrument ? 1 : 0;
+        // X var performerInstrument = findPerformerInstrument(performerName);
+        // X var isPerforming = performerInstrument ? 1 : 0;
         var initialLetter = performerName.charAt(0).toUpperCase();
-        if (lastInitial !== initialLetter) { // if we're changing letter
+        if (lastInitial !== initialLetter) { // If we're changing letter
           if (letterSpan) {
-            targetElement.append(letterSpan); // stash the previous letterspan if present
+            targetElement.append(letterSpan); // Stash the previous letterspan if present
           }
-          letterSpan = $('<span class="letterSpan"></span>'); // create a new span
+          letterSpan = $('<span class="letterSpan"></span>'); // Create a new span
           if ((performerCount > 15)) {
             letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
           }
@@ -1180,12 +1179,16 @@ var ticketer = (function() {
 
         newButton = $('<span></span>');
         newButton.addClass('btn addPerformerButton btn-default');
-        // newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
-        // if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
-        //   newButton.attr('disabled', 'disabled');
-        // }
+        /*
+         // newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
+         // if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
+         //   newButton.attr('disabled', 'disabled');
+         // }
+         */
         newButton.text(performerName);
+        /*
         // newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
+        */
         letterSpan.append(newButton);
       }
       targetElement.append(letterSpan);
