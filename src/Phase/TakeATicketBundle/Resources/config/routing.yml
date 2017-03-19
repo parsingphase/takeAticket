@@ -53,6 +53,11 @@ deleteTicketAjax:
     defaults: { _controller: TakeATicketBundle:Ajax:deleteTicket }
     methods:  [POST]
 
+performersAjax:
+    path: /api/performers
+    defaults: { _controller: TakeATicketBundle:Ajax:reloadPerformers }
+    methods:  [GET]
+
 manage:
     path:     /manage
     defaults: { _controller: TakeATicketBundle:Management:index }

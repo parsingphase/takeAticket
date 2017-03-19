@@ -370,7 +370,7 @@ var ticketer = (function() {
        */
       function rebuildPerformerList() {
         var newButton;
-        var targetElement = controlPanelOuter.find('.performers');
+        var targetElement = controlPanelOuter.find('.performerControls');
         targetElement.text(''); // Remove existing list
 
         var lastInitial = '';
@@ -939,7 +939,7 @@ var ticketer = (function() {
         '<input class="newPerformer form-control" placeholder="New performer (Firstname Initial)"/>' +
         '</div>' +
 
-        '<div class="performers"></div>' +
+        '<div class="performerControls"></div>' +
         '</div>' + // /performerSelect
         '</div>' + // /bandTabsOuter
         '</div>' + // /bandControls
@@ -980,7 +980,8 @@ var ticketer = (function() {
         'Each performer can have up to three pending songs in the queue at a time.</p>' +
         '<table class="table table-striped">' +
         '{{#each song.instruments}}' +
-        '<tr><td><p><b>{{ this.name }} performer</b></p>' +
+        '<tr class="instrumentRow" data-instrument="{{ this.abbreviation }}"><td><p><b>{{ this.name }} performer</b></p>' +
+        '<div class="performerControls"></div>' +
         '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
         '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td><td>{{ this.name }}' +
         '{{/each}}' +
@@ -1121,14 +1122,74 @@ var ticketer = (function() {
       }
     },
 
+    /**
+     * Callback that opens & builds the self-submission form
+     *
+     * @param song
+     */
     performSongButtonClick: function(song) {
       // console.log(['perform', song]);
       $('.songComplete').hide();
       var userSubmitFormOuter = $('#userSubmitFormOuter');
-      userSubmitFormOuter.html(this.selfSubmitTemplate({song: song})).show();
-      $('html, body').animate({
-        scrollTop: (userSubmitFormOuter.offset().top)
-      }, 50);
+      userSubmitFormOuter.html(this.selfSubmitTemplate({song: song}));
+
+      var band = {};
+      var that = this;
+
+      this.reloadPerformers(function () {
+        userSubmitFormOuter.find('tr.instrumentRow').each(
+          function() {
+            var element = $(this);
+            var instrument = element.data('instrument');
+            that.drawPerformerButtonsForInstrumentInBand(element.find('.performerControls'), instrument, band);
+          }
+        );
+
+        userSubmitFormOuter.show();
+        $('html, body').animate({
+          scrollTop: (userSubmitFormOuter.offset().top)
+        }, 50);
+      });
+    },
+
+    drawPerformerButtonsForInstrumentInBand: function(targetElement, instrumentCode, band) {
+      // $(element).html('PerformerButtons '+ instrumentCode);
+      var newButton;
+      //FIXME: need to load latest performers list
+      targetElement.text(''); // Remove existing list
+      // targetElement.text('PerformerButtons ' + instrumentCode + ' P: ' + this.performers.length); // Remove existing list
+
+      var lastInitial = '';
+      var performerCount = this.performers.length; // this.performers legitimately global
+      var letterSpan;
+      for (var pIdx = 0; pIdx < performerCount; pIdx++) {
+        var performerName = this.performers[pIdx].performerName;
+        // var performerInstrument = findPerformerInstrument(performerName);
+        // var isPerforming = performerInstrument ? 1 : 0;
+        var initialLetter = performerName.charAt(0).toUpperCase();
+        if (lastInitial !== initialLetter) { // if we're changing letter
+          if (letterSpan) {
+            targetElement.append(letterSpan); // stash the previous letterspan if present
+          }
+          letterSpan = $('<span class="letterSpan"></span>'); // create a new span
+          if ((performerCount > 15)) {
+            letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
+          }
+        }
+        lastInitial = initialLetter;
+
+        newButton = $('<span></span>');
+        newButton.addClass('btn addPerformerButton btn-default');
+        // newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
+        // if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
+        //   newButton.attr('disabled', 'disabled');
+        // }
+        newButton.text(performerName);
+        // newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
+        letterSpan.append(newButton);
+      }
+      targetElement.append(letterSpan);
+
     },
 
     updatePerformanceStats: function() {
@@ -1298,6 +1359,16 @@ var ticketer = (function() {
           });
         },
         10000);
+    },
+
+    reloadPerformers: function(callback) {
+      var that = this;
+      $.get('/api/performers', function(performers) {
+        that.performers = performers;
+        if (callback) {
+          callback();
+        }
+      });
     }
   };
 }());

@@ -51,6 +51,12 @@ class AjaxController extends BaseController
         return new JsonResponse($show);
     }
 
+    public function reloadPerformersAction()
+    {
+        $performers = $this->getDataStore()->generatePerformerStats();
+        return new JsonResponse($performers);
+    }
+
     public function songSearchAction(Request $request)
     {
         $searchString = $request->get('searchString');
@@ -141,6 +147,7 @@ class AjaxController extends BaseController
             $updated
         );
 
+        // think this is legacy?
         if ($this->bandIdentifier === self::BAND_IDENTIFIER_PERFORMERS) {
             $this->getDataStore()->storeBandToTicket($ticketId, $band);
         }
