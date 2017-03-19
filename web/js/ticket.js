@@ -337,7 +337,7 @@ var ticketer = (function() {
           applyNewSong(ticket.song);
         }
         updateInstrumentTabPerformers();
-        rebuildPerformerList();
+        rebuildPerformerList(); // Initial management form display
       }
 
       /**
@@ -364,6 +364,9 @@ var ticketer = (function() {
       /**
        * Rebuild list of performer buttons according to overall performers list
        * and which instruments they are assigned to
+       *
+       * TODO refactor so that the current standard method is as for the management page and calls an internal
+       * function (buildPerformerList ?) with targetElement,Callback,instrument functions?
        */
       function rebuildPerformerList() {
         var newButton;
@@ -378,11 +381,11 @@ var ticketer = (function() {
           var performerInstrument = findPerformerInstrument(performerName);
           var isPerforming = performerInstrument ? 1 : 0;
           var initialLetter = performerName.charAt(0).toUpperCase();
-          if (lastInitial !== initialLetter) {
+          if (lastInitial !== initialLetter) { // if we're changing letter
             if (letterSpan) {
-              targetElement.append(letterSpan);
+              targetElement.append(letterSpan); // stash the previous letterspan if present
             }
-            letterSpan = $('<span class="letterSpan"></span>');
+            letterSpan = $('<span class="letterSpan"></span>'); // create a new span
             if ((performerCount > 15)) {
               letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
             }
@@ -511,7 +514,7 @@ var ticketer = (function() {
         allInstrumentTabs.removeClass('instrumentSelected');
         var selectedTab = getTabByInstrument(selectedInstrument);
         selectedTab.addClass('instrumentSelected');
-        rebuildPerformerList(); // Rebuild in current context
+        rebuildPerformerList(); // because current instrument context changed
         return selectedTab;
       }
 
@@ -587,7 +590,7 @@ var ticketer = (function() {
         // Now update band with new performers of this instrument
 
         updateInstrumentTabPerformers();
-        rebuildPerformerList();
+        rebuildPerformerList(); // because performer allocations changed
 
         if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
           nextInstrumentTab();
@@ -640,7 +643,7 @@ var ticketer = (function() {
         }
 
         updateInstrumentTabPerformers();
-        rebuildPerformerList();
+        rebuildPerformerList(); // because song changed
       }
 
       function removeSong() {
@@ -1119,7 +1122,7 @@ var ticketer = (function() {
     },
 
     performSongButtonClick: function(song) {
-      console.log(['perform', song]);
+      // console.log(['perform', song]);
       $('.songComplete').hide();
       var userSubmitFormOuter = $('#userSubmitFormOuter');
       userSubmitFormOuter.html(this.selfSubmitTemplate({song: song})).show();
