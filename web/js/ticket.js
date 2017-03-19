@@ -18,6 +18,10 @@ var ticketer = (function() {
     defaultSongLengthSeconds: 240,
     defaultSongIntervalSeconds: 120,
     messageTimer: null,
+    adminFormCurrentState: {
+      instrument: null,
+      band: {} // {{abbreviation: name}}
+    },
 
     /**
      * @var {{songInPreview,upcomingCount,iconMapHtml,selfSubmission}}
@@ -229,6 +233,208 @@ var ticketer = (function() {
     },
 
     /**
+     * Return the instrument abbreviation played by a given performer name
+     *
+     * @param name
+     * @param currentBand
+     * @returns {*}
+     */
+    findPerformerInstrument: function(name, currentBand) {
+      var instrumentPlayers;
+      for (var instrumentCode in currentBand) {
+        if (currentBand.hasOwnProperty(instrumentCode)) {
+          instrumentPlayers = currentBand[instrumentCode];
+          for (var i = 0; i < instrumentPlayers.length; i++) {
+            if (instrumentPlayers[i].toUpperCase() == name.toUpperCase()) {
+              return instrumentCode;
+            }
+          }
+        }
+      }
+      return null;
+    },
+
+    /**
+     * (re-)Draw the list of performer buttons for a given instrument
+     *
+     * @param targetElement
+     * @param instrumentCode
+     * @param band {{abbreviation: name}}
+     * @param onclick
+     */
+    buildPerformerList: function(targetElement, instrumentCode, band, onclick) {
+      var that = this;
+      var newButton;
+
+      targetElement.text(''); // Remove existing list
+
+      var lastInitial = '';
+      var performerCount = that.performers.length;
+      var letterSpan;
+      for (var pIdx = 0; pIdx < performerCount; pIdx++) {
+        var performerName = that.performers[pIdx].performerName;
+        var performerInstrument = this.findPerformerInstrument(performerName, band);
+
+        // findPerformerInstrument - return instrument code for named performer in current song
+
+        var isPerforming = performerInstrument ? 1 : 0;
+        var initialLetter = performerName.charAt(0).toUpperCase();
+        if (lastInitial !== initialLetter) { // if we're changing letter
+          if (letterSpan) {
+            targetElement.append(letterSpan); // stash the previous letterspan if present
+          }
+          letterSpan = $('<span class="letterSpan"></span>'); // create a new span
+          if ((performerCount > 15)) {
+            letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
+          }
+        }
+        lastInitial = initialLetter;
+
+        newButton = $('<span></span>');
+        newButton.addClass('btn addPerformerButton');
+        newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
+        if (isPerforming && (performerInstrument !== instrumentCode)) { // Dim out buttons for other instruments
+          newButton.attr('disabled', 'disabled');
+        }
+        newButton.text(performerName);
+        newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
+        letterSpan.append(newButton);
+      }
+      targetElement.append(letterSpan);
+
+      // Enable the new buttons
+
+      $('.addPerformerButton').click(onclick);
+    },
+
+
+    /**
+     * (re)Draw the add/edit ticket control panel in the .editTicketOuter element for the manage page
+     */
+    drawEditTicketForm: function(ticket, controlPanelOuter, currentBand) {
+      var templateParams = {performers: this.performers};
+      if (ticket) {
+        templateParams.ticket = ticket;
+      }
+      controlPanelOuter.html(this.editTicketTemplate(templateParams));
+      if (ticket && ticket.song) {
+        applyNewSong(ticket.song);
+      }
+      this.updateInstrumentTabPerformers(currentBand, controlPanelOuter);
+      this.buildAdminPerformerList(controlPanelOuter); // Initial management form display
+    },
+
+    /**
+     * Update all instrument tabs with either performer names or 'needed' note - admin-specific
+     */
+    updateInstrumentTabPerformers: function(currentBand, controlPanelOuter) {
+      var performersSpan;
+      var performerString;
+
+      for (var iIdx = 0; iIdx < this.instrumentOrder.length; iIdx++) {
+        var instrument = this.instrumentOrder[iIdx];
+
+        performersSpan = controlPanelOuter
+          .find('.instrument[data-instrument-shortcode=' + instrument + ']')
+          .find('.instrumentPerformer');
+
+        performerString = currentBand[instrument].join(', ');
+        if (!performerString) {
+          performerString = '<i>Needed</i>';
+        }
+        performersSpan.html(performerString);
+      }
+      this.updateBandSummary(currentBand);
+    },
+
+    /**
+     * Update the band summary line in the manage area
+     */
+    updateBandSummary: function(currentBand) {
+      var bandName = $('.editTicketTitle').val();
+      var members = [];
+      for (var instrument in currentBand) {
+        if (currentBand.hasOwnProperty(instrument)) {
+          for (var i = 0; i < currentBand[instrument].length; i++) {
+            members.push(currentBand[instrument][i]);
+          }
+        }
+      }
+      var memberList = members.join(', ');
+      var summaryHtml = (bandName ? bandName + '<br />' : '') + memberList;
+      $('.selectedBand').html(summaryHtml);
+    },
+
+    /**
+     * Rebuild list of performer buttons according to overall performers list
+     * and which instruments they are assigned to
+     *
+     * TODO refactor so that the current standard method is as for the management page and calls an internal
+     * function (buildPerformerList ?) with targetElement,Callback,instrument functions?
+     */
+    buildAdminPerformerList: function(controlPanelOuter) {
+      var targetElement = controlPanelOuter.find('.performers');
+      var that = this;
+
+      var selectedInstrument = this.adminFormCurrentState.instrument;
+
+      var onclick = function() {
+        var name = $(this).text();
+        var selected = $(this).data('selected') ? 0 : 1; // Reverse to get new state
+        if (selected) {
+          $(this).removeClass('btn-default').addClass('btn-primary');
+        } else {
+          $(this).removeClass('btn-primary').addClass('btn-default');
+        }
+        $(this).data('selected', selected); // Toggle
+
+        that.alterInstrumentPerformerList(selectedInstrument, name, selected);
+      };
+      /// band: {{abbreviation: name}}
+      this.buildPerformerList(targetElement, selectedInstrument, this.adminFormCurrentState.band, onclick);
+    },
+
+    /**
+     * Handle performer add / remove by performer button / text input
+     * @param instrument
+     * @param changedPerformer
+     * @param isAdd
+     */
+    alterInstrumentPerformerList: function(instrument, changedPerformer, isAdd) {
+      var currentInstrumentPerformers = currentBand[selectedInstrument];
+
+      var newInstrumentPerformers = [];
+      for (var i = 0; i < currentInstrumentPerformers.length; i++) {
+        var member = currentInstrumentPerformers[i].trim(); // Trim only required when we draw data from manual input
+        if (member.length) {
+          if (member.toUpperCase() != changedPerformer.toUpperCase()) {
+            // If it's not the name on our button, no change
+            newInstrumentPerformers.push(member);
+          }
+        }
+      }
+
+      if (isAdd) { // If we've just selected a new user, append them
+        newInstrumentPerformers.push(changedPerformer);
+        if (!that.performerExists(changedPerformer)) {
+          that.addPerformerByName(changedPerformer);
+        }
+      }
+
+      //TODO Ultimate aim of performer-list forms is to generate this currentBand value -
+       // we need to make it available to current interface's storage operations
+      currentBand[selectedInstrument] = newInstrumentPerformers;
+      // Now update band with new performers of this instrument
+
+      updateInstrumentTabPerformers();
+      this.buildAdminPerformerList(controlPanelOuter); // because performer allocations changed
+
+      if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
+        nextInstrumentTab(); // admin-specfific
+      }
+    },
+
+    /**
      * Completely (re)generate the add ticket control panel and enable its controls
      * @param {?number} currentTicket Optional
      */
@@ -257,7 +463,7 @@ var ticketer = (function() {
         // Store all instruments as arrays - most can only be single, but vocals is 1..n potentially
       }
 
-      drawEditTicketForm(currentTicket);
+      this.drawEditTicketForm(currentTicket, controlPanelOuter, currentBand);
       // X var editTicketBlock = $('.editTicket'); // only used in inner scope (applyNewSong)
 
       // Enable 'Add' button
@@ -322,101 +528,6 @@ var ticketer = (function() {
         if (newActiveTab.hasClass('instrumentUnused')) {
           nextInstrumentTab();
         }
-      }
-
-      /**
-       * (re)Draw the add/edit ticket control panel in the .editTicketOuter element
-       */
-      function drawEditTicketForm(ticket) {
-        var templateParams = {performers: that.performers};
-        if (ticket) {
-          templateParams.ticket = ticket;
-        }
-        controlPanelOuter.html(that.editTicketTemplate(templateParams));
-        if (ticket && ticket.song) {
-          applyNewSong(ticket.song);
-        }
-        updateInstrumentTabPerformers();
-        rebuildPerformerList(); // Initial management form display
-      }
-
-      /**
-       * Return the instrument abbreviation played by a given performer name
-       *
-       * @param name
-       * @returns {*}
-       */
-      function findPerformerInstrument(name) {
-        var instrumentPlayers;
-        for (var instrumentCode in currentBand) {
-          if (currentBand.hasOwnProperty(instrumentCode)) {
-            instrumentPlayers = currentBand[instrumentCode];
-            for (var i = 0; i < instrumentPlayers.length; i++) {
-              if (instrumentPlayers[i].toUpperCase() == name.toUpperCase()) {
-                return instrumentCode;
-              }
-            }
-          }
-        }
-        return null;
-      }
-
-      /**
-       * Rebuild list of performer buttons according to overall performers list
-       * and which instruments they are assigned to
-       *
-       * TODO refactor so that the current standard method is as for the management page and calls an internal
-       * function (buildPerformerList ?) with targetElement,Callback,instrument functions?
-       */
-      function rebuildPerformerList() {
-        var newButton;
-        var targetElement = controlPanelOuter.find('.performers');
-        targetElement.text(''); // Remove existing list
-
-        var lastInitial = '';
-        var performerCount = that.performers.length;
-        var letterSpan;
-        for (var pIdx = 0; pIdx < performerCount; pIdx++) {
-          var performerName = that.performers[pIdx].performerName;
-          var performerInstrument = findPerformerInstrument(performerName);
-          var isPerforming = performerInstrument ? 1 : 0;
-          var initialLetter = performerName.charAt(0).toUpperCase();
-          if (lastInitial !== initialLetter) { // if we're changing letter
-            if (letterSpan) {
-              targetElement.append(letterSpan); // stash the previous letterspan if present
-            }
-            letterSpan = $('<span class="letterSpan"></span>'); // create a new span
-            if ((performerCount > 15)) {
-              letterSpan.append($('<span class="initialLetter">' + initialLetter + '</span>'));
-            }
-          }
-          lastInitial = initialLetter;
-
-          newButton = $('<span></span>');
-          newButton.addClass('btn addPerformerButton');
-          newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
-          if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
-            newButton.attr('disabled', 'disabled');
-          }
-          newButton.text(performerName);
-          newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
-          letterSpan.append(newButton);
-        }
-        targetElement.append(letterSpan);
-
-        // Enable the new buttons
-        $('.addPerformerButton').click(function() {
-          var name = $(this).text();
-          var selected = $(this).data('selected') ? 0 : 1; // Reverse to get new state
-          if (selected) {
-            $(this).removeClass('btn-default').addClass('btn-primary');
-          } else {
-            $(this).removeClass('btn-primary').addClass('btn-default');
-          }
-          $(this).data('selected', selected); // Toggle
-
-          alterInstrumentPerformerList(selectedInstrument, name, selected);
-        });
       }
 
       /**
@@ -514,88 +625,8 @@ var ticketer = (function() {
         allInstrumentTabs.removeClass('instrumentSelected');
         var selectedTab = getTabByInstrument(selectedInstrument);
         selectedTab.addClass('instrumentSelected');
-        rebuildPerformerList(); // because current instrument context changed
+        buildAdminPerformerList(controlPanelOuter); // because current instrument context changed
         return selectedTab;
-      }
-
-      /**
-       * Update the band summary line in the manage area
-       */
-      function updateBandSummary() {
-        var bandName = $('.editTicketTitle').val();
-        var members = [];
-        for (var instrument in currentBand) {
-          if (currentBand.hasOwnProperty(instrument)) {
-            for (var i = 0; i < currentBand[instrument].length; i++) {
-              members.push(currentBand[instrument][i]);
-            }
-          }
-        }
-        var memberList = members.join(', ');
-        var summaryHtml = (bandName ? bandName + '<br />' : '') + memberList;
-        $('.selectedBand').html(summaryHtml);
-      }
-
-      /**
-       * Update all instrument tabs with either performer names or 'needed' note
-       */
-      function updateInstrumentTabPerformers() {
-        var performersSpan;
-        var performerString;
-
-        for (var iIdx = 0; iIdx < that.instrumentOrder.length; iIdx++) {
-          var instrument = that.instrumentOrder[iIdx];
-
-          performersSpan = controlPanelOuter
-            .find('.instrument[data-instrument-shortcode=' + instrument + ']')
-            .find('.instrumentPerformer');
-
-          performerString = currentBand[instrument].join(', ');
-          if (!performerString) {
-            performerString = '<i>Needed</i>';
-          }
-          performersSpan.html(performerString);
-        }
-        updateBandSummary();
-      }
-
-      /**
-       * Handle performer add / remove by performer button / text input
-       * @param instrument
-       * @param changedPerformer
-       * @param isAdd
-       */
-      function alterInstrumentPerformerList(instrument, changedPerformer, isAdd) {
-        var currentInstrumentPerformers = currentBand[selectedInstrument];
-
-        var newInstrumentPerformers = [];
-        for (var i = 0; i < currentInstrumentPerformers.length; i++) {
-          var member = currentInstrumentPerformers[i].trim(); // Trim only required when we draw data from manual input
-          if (member.length) {
-            if (member.toUpperCase() != changedPerformer.toUpperCase()) {
-              // If it's not the name on our button, no change
-              newInstrumentPerformers.push(member);
-            }
-          }
-        }
-
-        if (isAdd) { // If we've just selected a new user, append them
-          newInstrumentPerformers.push(changedPerformer);
-          if (!that.performerExists(changedPerformer)) {
-            that.addPerformerByName(changedPerformer);
-          }
-        }
-
-        currentBand[selectedInstrument] = newInstrumentPerformers;
-        // Now update band with new performers of this instrument
-
-        updateInstrumentTabPerformers();
-        rebuildPerformerList(); // because performer allocations changed
-
-        if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
-          nextInstrumentTab();
-        }
-
       }
 
       /**
@@ -643,7 +674,7 @@ var ticketer = (function() {
         }
 
         updateInstrumentTabPerformers();
-        rebuildPerformerList(); // because song changed
+        buildAdminPerformerList(); // because song changed
       }
 
       function removeSong() {
@@ -658,6 +689,7 @@ var ticketer = (function() {
     },
 
     manage: function(tickets) {
+      this.adminFormCurrentState.instrument = this.instrumentOrder[0];
       var that = this;
       this.appMessageTarget = $('#appMessages');
       this.initTemplates();
@@ -873,6 +905,9 @@ var ticketer = (function() {
         '</div>  '
       );
 
+      /**
+       * "Add / Edit new ticket" form in manage page
+       */
       this.editTicketTemplate = Handlebars.compile(
         '<div class="editTicket well">' +
         '<div class="pull-right editTicketButtons">' +
