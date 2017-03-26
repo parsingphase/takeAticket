@@ -276,17 +276,23 @@ var ticketer = (function() {
 
       // Copy band name into summary area on Enter
       ticketTitleInput.keydown(function(e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
           updateBandSummary();
         }
       });
 
       $('.newPerformer').keydown(function(e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
           var newPerformerInput = $('.newPerformer');
           var newName = newPerformerInput.val();
           if (newName.trim().length) {
-            alterInstrumentPerformerList(selectedInstrument, newName, true);
+            that.alterInstrumentPerformerList(currentBand, selectedInstrument, newName, true);
+            // Now update band with new performers of this instrument
+            updateInstrumentTabPerformers();
+            rebuildPerformerList(); // Because performer allocations changed
+            if (currentBand[selectedInstrument].length) { // If we've a performer for this instrument, skip to next
+              nextInstrumentTab();
+            }
           }
           newPerformerInput.val('');
         }
@@ -306,7 +312,7 @@ var ticketer = (function() {
         // Find what offset we're at in instrumentOrder
         var currentOffset = 0;
         for (var i = 0; i < that.instrumentOrder.length; i++) {
-          if (that.instrumentOrder[i] == selectedInstrument) {
+          if (that.instrumentOrder[i] === selectedInstrument) {
             currentOffset = i;
           }
         }
@@ -340,26 +346,6 @@ var ticketer = (function() {
         rebuildPerformerList(); // Initial management form display
       }
 
-      /**
-       * Return the instrument abbreviation played by a given performer name
-       *
-       * @param name
-       * @returns {*}
-       */
-      function findPerformerInstrument(name) {
-        var instrumentPlayers;
-        for (var instrumentCode in currentBand) {
-          if (currentBand.hasOwnProperty(instrumentCode)) {
-            instrumentPlayers = currentBand[instrumentCode];
-            for (var i = 0; i < instrumentPlayers.length; i++) {
-              if (instrumentPlayers[i].toUpperCase() == name.toUpperCase()) {
-                return instrumentCode;
-              }
-            }
-          }
-        }
-        return null;
-      }
 
       /**
        * Rebuild list of performer buttons according to overall performers list
@@ -378,7 +364,7 @@ var ticketer = (function() {
         var letterSpan;
         for (var pIdx = 0; pIdx < performerCount; pIdx++) {
           var performerName = that.performers[pIdx].performerName;
-          var performerInstrument = findPerformerInstrument(performerName);
+          var performerInstrument = that.findPerformerInstrument(performerName, currentBand);
           var isPerforming = performerInstrument ? 1 : 0;
           var initialLetter = performerName.charAt(0).toUpperCase();
           if (lastInitial !== initialLetter) { // If we're changing letter
@@ -415,7 +401,12 @@ var ticketer = (function() {
           }
           $(this).data('selected', selected); // Toggle
 
-          alterInstrumentPerformerList(selectedInstrument, name, selected);
+          that.alterInstrumentPerformerList(currentBand, selectedInstrument, name, selected);
+          updateInstrumentTabPerformers();
+          rebuildPerformerList(); // Because performer allocations changed
+          if (currentBand[selectedInstrument].length) { // If we've a performer for this instrument, skip to next
+            nextInstrumentTab();
+          }
         });
       }
 
@@ -557,45 +548,6 @@ var ticketer = (function() {
           performersSpan.html(performerString);
         }
         updateBandSummary();
-      }
-
-      /**
-       * Handle performer add / remove by performer button / text input
-       * @param instrument
-       * @param changedPerformer
-       * @param isAdd
-       */
-      function alterInstrumentPerformerList(instrument, changedPerformer, isAdd) {
-        var currentInstrumentPerformers = currentBand[selectedInstrument];
-
-        var newInstrumentPerformers = [];
-        for (var i = 0; i < currentInstrumentPerformers.length; i++) {
-          var member = currentInstrumentPerformers[i].trim(); // Trim only required when we draw data from manual input
-          if (member.length) {
-            if (member.toUpperCase() != changedPerformer.toUpperCase()) {
-              // If it's not the name on our button, no change
-              newInstrumentPerformers.push(member);
-            }
-          }
-        }
-
-        if (isAdd) { // If we've just selected a new user, append them
-          newInstrumentPerformers.push(changedPerformer);
-          if (!that.performerExists(changedPerformer)) {
-            that.addPerformerByName(changedPerformer);
-          }
-        }
-
-        currentBand[selectedInstrument] = newInstrumentPerformers;
-        // Now update band with new performers of this instrument
-
-        updateInstrumentTabPerformers();
-        rebuildPerformerList(); // Because performer allocations changed
-
-        if (newInstrumentPerformers.length) { // If we've a performer for this instrument, skip to next
-          nextInstrumentTab();
-        }
-
       }
 
       /**
@@ -1153,6 +1105,25 @@ var ticketer = (function() {
     },
 
     drawPerformerButtonsForInstrumentInBand: function(targetElement, instrumentCode, band) {
+      var that = this;
+      var clickCallback = function() {
+        var button = $(this);
+        var instrument = button.data('instrument');
+        var performer = button.data('performer');
+        band[instrument] = band[instrument] ? band[instrument] : [];
+        var existingInstrument = that.findPerformerInstrument(performer, band);
+        if (existingInstrument) {
+          // TODO If it's this instrument, remove this user
+          that.alterInstrumentPerformerList(band, instrument, performer, false);
+          // TODO If it's another instrument… we may have an issue
+        } else {
+          // Add this performer
+          that.alterInstrumentPerformerList(band, instrument, performer, true);
+        }
+        // TODO Do something with band data
+        // X console.log(['Clicked', performer, instrument, band]);
+      };
+
       // $(element).html('PerformerButtons '+ instrumentCode);
       var newButton;
       // FIXME: need to load latest performers list
@@ -1178,7 +1149,10 @@ var ticketer = (function() {
         lastInitial = initialLetter;
 
         newButton = $('<span></span>');
-        newButton.addClass('btn addPerformerButton btn-default');
+        newButton.addClass('btn addPerformerButton btn-default').data({
+          instrument: instrumentCode,
+          performer: performerName
+        });
         /*
          // newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
          // if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
@@ -1187,11 +1161,12 @@ var ticketer = (function() {
          */
         newButton.text(performerName);
         /*
-        // newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
-        */
+         // newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
+         */
         letterSpan.append(newButton);
       }
       targetElement.append(letterSpan);
+      targetElement.find('.addPerformerButton').click(clickCallback);
 
     },
 
@@ -1372,6 +1347,63 @@ var ticketer = (function() {
           callback();
         }
       });
+    },
+
+
+    /**
+     * Return the instrument abbreviation played by a given performer name
+     *
+     * @param performerName
+     * @param band
+     * @returns {*}
+     */
+    findPerformerInstrument: function(performerName, band) {
+      var instrumentPlayers;
+      for (var instrumentCode in band) {
+        if (band.hasOwnProperty(instrumentCode)) {
+          instrumentPlayers = band[instrumentCode];
+          for (var i = 0; i < instrumentPlayers.length; i++) {
+            if (instrumentPlayers[i].toUpperCase() === performerName.toUpperCase()) {
+              return instrumentCode;
+            }
+          }
+        }
+      }
+      return null;
+    },
+
+    /**
+     * Handle performer add / remove by performer button / text input
+     *
+     * @param band Object map of instrument: [performers]
+     * @param instrument Instrument code
+     * @param changedPerformer Performer to add or remove
+     * @param isAdd If true, add performer, else remove
+     */
+    alterInstrumentPerformerList: function(band, instrument, changedPerformer, isAdd) {
+      var that = this;
+      var currentInstrumentPerformers = band[instrument];
+
+      var newInstrumentPerformers = [];
+      for (var i = 0; i < currentInstrumentPerformers.length; i++) {
+        var member = currentInstrumentPerformers[i].trim(); // Trim only required when we draw data from manual input
+        if (member.length) {
+          if (member.toUpperCase() !== changedPerformer.toUpperCase()) {
+            // If it's not the name on our button, no change
+            newInstrumentPerformers.push(member);
+          }
+        }
+      }
+
+      if (isAdd) { // If we've just selected a new user, append them
+        newInstrumentPerformers.push(changedPerformer);
+        if (!that.performerExists(changedPerformer)) {
+          that.addPerformerByName(changedPerformer);
+        }
+      }
+
+      band[instrument] = newInstrumentPerformers;
+
     }
   };
 }());
