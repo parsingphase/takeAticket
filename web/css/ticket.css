@@ -366,6 +366,13 @@ div.songSearch .performerControls .btn {
   margin-top: 8px;
   margin-right: 8px;
 }
+div.manage .performerControls .btn.btn-primary[disabled="disabled"],
+div.songSearch .performerControls .btn.btn-primary[disabled="disabled"] {
+  font-style: italic;
+  background-color: #DDDDDD;
+  border-color: #888888;
+  color: #444444;
+}
 div.songSearch .searchContent {
   padding-top: 20px;
 }

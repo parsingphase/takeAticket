@@ -36,7 +36,7 @@ var ticketer = (function() {
 
     performerExists: function(performerName) {
       for (var i = 0; i < this.performers.length; i++) {
-        if (this.performers[i].performerName.toLowerCase() == performerName.toLowerCase()) {
+        if (this.performers[i].performerName.toLowerCase() === performerName.toLowerCase()) {
           return true;
         }
       }
@@ -928,7 +928,7 @@ var ticketer = (function() {
       this.selfSubmitTemplate = Handlebars.compile(
         // { song, players }
         '<p>Enter each performer as "firstname initial" (eg "David B") the same way each time,' +
-        'so that we can quickly &amp; uniquely identify you and ensure everyone gets an equal chance to perform.' +
+        'so that we can quickly &amp; uniquely identify you and ensure everyone gets an equal chance to perform. ' +
         'Each performer can have up to three pending songs in the queue at a time.</p>' +
         '<table class="table table-striped">' +
         '{{#each song.instruments}}' +
@@ -936,8 +936,8 @@ var ticketer = (function() {
         '<td><p><b>{{ this.name }} performer</b></p>' +
         '<div class="performerControls"></div>' +
         '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
-        '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td><td>{{ this.name }}' +
-        '{{/each}}' +
+        '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td>' +
+        '<td><p><b>{{ this.name }}</b></p><div class="performerList performerList_{{ this.abbreviation }}"></div> </td></tr>{{/each}}' +
         '</table>'
       );
 
@@ -1089,14 +1089,7 @@ var ticketer = (function() {
       var that = this;
 
       this.reloadPerformers(function() {
-        userSubmitFormOuter.find('tr.instrumentRow').each(
-          function() {
-            var element = $(this);
-            var instrument = element.data('instrument');
-            that.drawPerformerButtonsForInstrumentInBand(element.find('.performerControls'), instrument, band);
-          }
-        );
-
+        that.drawPerformerButtonsForAllInstruments(userSubmitFormOuter, band, song);
         userSubmitFormOuter.show();
         $('html, body').animate({
           scrollTop: (userSubmitFormOuter.offset().top)
@@ -1104,7 +1097,32 @@ var ticketer = (function() {
       });
     },
 
-    drawPerformerButtonsForInstrumentInBand: function(targetElement, instrumentCode, band) {
+    /**
+     *
+     * @param userSubmitFormOuter
+     * @param band
+     * @param song
+     */
+    drawPerformerButtonsForAllInstruments: function(userSubmitFormOuter, band, song) {
+      var that = this;
+      userSubmitFormOuter.find('tr.instrumentRow').each(
+        function() {
+          var element = $(this);
+          var instrument = element.data('instrument');
+          that.drawPerformerButtonsForInstrumentInBand(element.find('.performerControls'), instrument, band, song);
+        }
+      );
+    },
+
+    /**
+     * Compare rebuildPerformerList (Manage Tickets page)
+     *
+     * @param targetElement
+     * @param instrumentCode
+     * @param band
+     * @param song
+     */
+    drawPerformerButtonsForInstrumentInBand: function(targetElement, instrumentCode, band, song) {
       var that = this;
       var clickCallback = function() {
         var button = $(this);
@@ -1115,16 +1133,22 @@ var ticketer = (function() {
         if (existingInstrument) {
           // TODO If it's this instrument, remove this user
           that.alterInstrumentPerformerList(band, instrument, performer, false);
-          // TODO If it's another instrument… we may have an issue
+          // TODO If it's another instrument… we may have an issue (interface should (be made to) block this)
         } else {
           // Add this performer
           that.alterInstrumentPerformerList(band, instrument, performer, true);
         }
-        // TODO Do something with band data
+
         // X console.log(['Clicked', performer, instrument, band]);
+
+        var containingRow = $('.instrumentRow[data-instrument=' + instrument + ']'); // Display players under instrument
+        $(containingRow).find('.performerList').text(band[instrument].join(', ')); // FIXME display more neatly?
+
+        // after all changes, redraw ALL buttons
+        that.drawPerformerButtonsForAllInstruments($('#userSubmitFormOuter'), band, song);
       };
 
-      // $(element).html('PerformerButtons '+ instrumentCode);
+      // $(targetElement).html('PerformerButtons '+ instrumentCode);
       var newButton;
       // FIXME: need to load latest performers list
       targetElement.text(''); // Remove existing list
@@ -1134,8 +1158,8 @@ var ticketer = (function() {
       var letterSpan;
       for (var pIdx = 0; pIdx < performerCount; pIdx++) {
         var performerName = this.performers[pIdx].performerName;
-        // X var performerInstrument = findPerformerInstrument(performerName);
-        // X var isPerforming = performerInstrument ? 1 : 0;
+        var performerInstrument = this.findPerformerInstrument(performerName, band);
+        var isPerforming = performerInstrument ? 1 : 0;
         var initialLetter = performerName.charAt(0).toUpperCase();
         if (lastInitial !== initialLetter) { // If we're changing letter
           if (letterSpan) {
@@ -1149,24 +1173,24 @@ var ticketer = (function() {
         lastInitial = initialLetter;
 
         newButton = $('<span></span>');
-        newButton.addClass('btn addPerformerButton btn-default').data({
+        newButton.addClass('btn addPerformerButton').data({
           instrument: instrumentCode,
           performer: performerName
         });
-        /*
-         // newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
-         // if (isPerforming && (performerInstrument !== selectedInstrument)) { // Dim out buttons for other instruments
-         //   newButton.attr('disabled', 'disabled');
-         // }
-         */
+
+        newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
+        // X console.log('Compare "' + performerName + '" (' + isPerforming + '): ' + '"' + performerInstrument + '" ,"' + instrumentCode + '"');
+        if (isPerforming && (performerInstrument !== instrumentCode)) { // Dim out buttons for other instruments
+          newButton.attr('disabled', 'disabled');
+        }
         newButton.text(performerName);
-        /*
-         // newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
-         */
+        newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
         letterSpan.append(newButton);
       }
       targetElement.append(letterSpan);
       targetElement.find('.addPerformerButton').click(clickCallback);
+
+      //TODO enable text input too
 
     },
 
@@ -1364,6 +1388,7 @@ var ticketer = (function() {
           instrumentPlayers = band[instrumentCode];
           for (var i = 0; i < instrumentPlayers.length; i++) {
             if (instrumentPlayers[i].toUpperCase() === performerName.toUpperCase()) {
+              // X console.log(performerName + ' plays ' + instrumentCode);
               return instrumentCode;
             }
           }
