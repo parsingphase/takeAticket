@@ -937,7 +937,8 @@ var ticketer = (function() {
         '<div class="performerControls"></div>' +
         '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
         '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td>' +
-        '<td><p><b>{{ this.name }}</b></p><div class="performerList performerList_{{ this.abbreviation }}"></div> </td></tr>{{/each}}' +
+        '<td><p><b>{{ this.name }}</b></p><div class="performerList performerList_{{ this.abbreviation }}"></div> ' +
+        '</td></tr>{{/each}}' +
         '</table>'
       );
 
@@ -1179,7 +1180,6 @@ var ticketer = (function() {
         });
 
         newButton.addClass(isPerforming ? 'btn-primary' : 'btn-default');
-        // X console.log('Compare "' + performerName + '" (' + isPerforming + '): ' + '"' + performerInstrument + '" ,"' + instrumentCode + '"');
         if (isPerforming && (performerInstrument !== instrumentCode)) { // Dim out buttons for other instruments
           newButton.attr('disabled', 'disabled');
         }
@@ -1190,7 +1190,7 @@ var ticketer = (function() {
       targetElement.append(letterSpan);
       targetElement.find('.addPerformerButton').click(clickCallback);
 
-      //TODO enable text input too
+      // TODO enable text input too
 
     },
 
