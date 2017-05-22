@@ -345,6 +345,10 @@ div.songSearch .acSong .queued {
   font-style: italic;
   color: #bbb;
 }
+div.manage .performerControlsCell,
+div.songSearch .performerControlsCell {
+  width: 50%;
+}
 div.manage .performerControls .letterSpan,
 div.songSearch .performerControls .letterSpan {
   display: inline-block;
@@ -436,4 +440,44 @@ div.end:hover .docslink a {
 }
 div.end #appMessages .alert {
   margin-bottom: 0;
+}
+@media only screen and (max-width: 600px) {
+  .songCompleteOuter .songComplete {
+    position: relative !important;
+  }
+}
+@media only screen and (max-device-width: 480px) {
+  .noMobile {
+    display: none;
+  }
+  div.headerControls.pull-right {
+    float: none !important;
+    position: relative;
+    display: block;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  div.headerControls.pull-right .fa {
+    color: #555555;
+    padding-left: 0.1em;
+  }
+  .songSearch .searchContent {
+    padding-top: 0 !important;
+  }
+  .songSearch .songCompleteOuter .songComplete {
+    max-width: 240px;
+    margin-bottom: 6px;
+    position: relative !important;
+  }
+  .songSearch div.searchTargetOuter {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6px;
+    max-width: 95%;
+    float: none;
+  }
+  div.end {
+    display: none;
+  }
 }

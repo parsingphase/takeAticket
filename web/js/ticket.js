@@ -933,10 +933,10 @@ var ticketer = (function() {
         '<table class="table table-striped">' +
         '{{#each song.instruments}}' +
         '<tr class="instrumentRow" data-instrument="{{ this.abbreviation }}">' +
-        '<td><p><b>{{ this.name }} performer</b></p>' +
+        '<td class="performerControlsCell"><p><b>{{ this.name }} performer</b></p>' +
         '<div class="performerControls"></div>' +
         '<p>Or add a new name: <input class="performer" data-instrument="{{ this.abbreviation }}"/></p>' +
-        '</td><td><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td>' +
+        '</td><td class="noMobile"><span class="fa fa-arrow-right fa-3x" style="color: #999"></span></td>' +
         '<td><p><b>{{ this.name }}</b></p><div class="performerList performerList_{{ this.abbreviation }}"></div> ' +
         '</td></tr>{{/each}}' +
         '</table>'
@@ -1068,12 +1068,17 @@ var ticketer = (function() {
         return s.name;
       }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
+
       if (this.displayOptions.selfSubmission) {
         var that = this;
         target.find('#performSongButton').show().click(function() {
           that.performSongButtonClick(song);
         });
       }
+      // Scroll to choice
+      $('html, body').animate({
+        scrollTop: (target.offset().top)
+      }, 50);
     },
 
     /**

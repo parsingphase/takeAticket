@@ -425,6 +425,10 @@ div.songSearch {
     }
   }
 
+  .performerControlsCell {
+    width: 50%;
+  }
+
   .performerControls {
 
     .letterSpan {
@@ -543,5 +547,80 @@ div.end {
     }
   }
 }
+
+@media only screen and (max-width: 600px) {
+  .songCompleteOuter {
+    .songComplete {
+      position: relative !important;
+    }
+  }
+
+  div.searchTargetOuter {
+    //z-index: -100;
+  }
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px)
+  //@media only screen and (max-width: 600px)
+{
+  .noMobile {
+    display: none;
+  }
+
+  body {
+    //color: red;
+    //width: 500px;
+  }
+
+  div.container {
+    //width: 480px;
+  }
+
+  div.headerControls.pull-right {
+    float: none !important;
+    position: relative;
+    display: block;
+    background-color: white;
+    .fa {
+      //font-size: 1em;
+      color: #555555;
+      padding-left: 0.1em;
+    }
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .songSearch {
+
+    .searchContent {
+      padding-top: 0 !important;
+    }
+
+    .songCompleteOuter {
+      .songComplete {
+        //color: green;
+        max-width: 240px;
+        margin-bottom: 6px;
+        position: relative !important;
+      }
+    }
+
+    div.searchTargetOuter {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 6px;
+      //max-width: 300px;
+      max-width: 95%;
+      //z-index: -100;
+      float: none;
+    }
+  }
+
+  div.end {
+    display: none;
+  }
+}
+
 
 
