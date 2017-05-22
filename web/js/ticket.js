@@ -1096,6 +1096,32 @@ var ticketer = (function() {
 
       this.reloadPerformers(function() {
         that.drawPerformerButtonsForAllInstruments(userSubmitFormOuter, band, song);
+
+        // Also enable text input
+        // Copy band name into summary area on Enter
+        userSubmitFormOuter.find('input.performer').keydown(function(e) {
+          if (e.keyCode === 13) {
+            var input = $(this);
+            var instrument = input.data('instrument');
+            var performer = input.val().trim();
+            if (performer.match(/\w+\s\w+/)) {
+              band[instrument] = band[instrument] ? band[instrument] : [];
+              that.alterInstrumentPerformerList(band, instrument, performer, true);
+              var containingRow = $('.instrumentRow[data-instrument=' + instrument + ']');
+              // Display players under instrument
+              $(containingRow).find('.performerList').text(band[instrument].join(', ')); // FIXME display more neatly?
+              // after all changes, redraw ALL buttons
+              that.drawPerformerButtonsForAllInstruments($('#userSubmitFormOuter'), band, song);
+
+              input.val('');
+            } else {
+              window.alert('Name format must be Forename Initial');
+            }
+          }
+        });
+
+        // END enable text input
+
         userSubmitFormOuter.show();
         $('html, body').animate({
           scrollTop: (userSubmitFormOuter.offset().top)
@@ -1145,8 +1171,6 @@ var ticketer = (function() {
           that.alterInstrumentPerformerList(band, instrument, performer, true);
         }
 
-        // X console.log(['Clicked', performer, instrument, band]);
-
         var containingRow = $('.instrumentRow[data-instrument=' + instrument + ']'); // Display players under instrument
         $(containingRow).find('.performerList').text(band[instrument].join(', ')); // FIXME display more neatly?
 
@@ -1194,9 +1218,6 @@ var ticketer = (function() {
       }
       targetElement.append(letterSpan);
       targetElement.find('.addPerformerButton').click(clickCallback);
-
-      // TODO enable text input too
-
     },
 
     updatePerformanceStats: function() {
