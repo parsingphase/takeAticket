@@ -127,6 +127,9 @@ var ticketer = (function() {
               fixedWidth = 0;
             }
             fixedWidth = Number(fixedWidth);
+            if ((screen.width <= 480) && window.devicePixelRatio) {
+              fixedWidth = fixedWidth / 2; // Mobile CSS
+            }
 
             var spaceUsedByText = (this.scrollWidth - fixedWidth);
             var spaceAvailableForText = (this.clientWidth - fixedWidth);
@@ -1296,13 +1299,18 @@ var ticketer = (function() {
               data: ticket,
               url: '/api/saveTicket',
               success: function(data, status) {
-                that.showAppMessage('Saved ticket', 'success');
-
                 void(status);
 
-                formBlock.html('<div class="alert alert-success" role="alert">Ticket submitted</div>');
-                $('#userSubmitFormOuter').hide().html('');
-                $('#searchTarget').html('');
+                if (data.ticket) {
+                  that.showAppMessage('Saved ticket', 'success');
+                  formBlock.html('<div class="alert alert-success" role="alert">Ticket submitted</div>');
+                  $('#userSubmitFormOuter').hide().html('');
+                  $('#searchTarget').html('');
+                } else {
+                  that.showAppMessage('Saved ticket', 'success');
+                  formBlock.html('<div class="alert alert-danger" role="alert">Internal error</div>');
+                }
+
               },
               error: function(xhr, status, error) {
                 var message = 'Ticket save failed';

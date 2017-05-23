@@ -505,4 +505,27 @@ div.end #appMessages .alert {
   div.end {
     display: none;
   }
+  div.upcoming div.well {
+    padding: 0;
+  }
+  div.upcoming div.well.ticket {
+    min-height: 80px;
+  }
+  div.upcoming div.well.ticket.noSong {
+    min-height: 60px;
+  }
+  div.upcoming div.well.ticket .performers .instrumentTag .instrumentTextIcon {
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 19px;
+    vertical-align: 0;
+  }
+  div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-bottom: 14px;
+  }
 }
