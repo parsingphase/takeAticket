@@ -391,6 +391,26 @@ div.songSearch .searchTargetOuter table th,
 div.songSearch .searchTargetOuter table tr {
   padding-bottom: 0.3em;
 }
+div.songSearch .instrumentTextIcon {
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: 0;
+}
+div.songSearch .instrumentPerformers {
+  margin-right: 4px;
+}
+div.songSearch img.instrumentIcon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-bottom: 4px;
+}
 div.helpPage {
   margin-bottom: 100px;
 }

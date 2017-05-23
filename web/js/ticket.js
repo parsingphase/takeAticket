@@ -13,6 +13,7 @@ var ticketer = (function() {
     selfSubmitTemplate: null,
     manageInstrumentTabsTemplate: null,
     appMessageTarget: null,
+    ticketSubmitTemplate: null,
     searchCount: 10,
     instrumentOrder: null,
     defaultSongLengthSeconds: 240,
@@ -63,6 +64,21 @@ var ticketer = (function() {
       }, 10000);
     },
 
+    sortBand: function(unsortedBand) {
+      var sortedBand = {};
+      if (this.instrumentOrder) {
+        for (var i = 0; i < this.instrumentOrder.length; i++) {
+          var instrument = this.instrumentOrder[i];
+          if (unsortedBand.hasOwnProperty(instrument)) {
+            sortedBand[instrument] = unsortedBand[instrument];
+          }
+        }
+      } else {
+        sortedBand = unsortedBand;
+      }
+      return sortedBand;
+    },
+
     /**
      * Draw an "upcoming" ticket
      * @param ticket {{band}}
@@ -71,14 +87,7 @@ var ticketer = (function() {
     drawDisplayTicket: function(ticket) {
       // Sort band into standard order
       var unsortedBand = ticket.band;
-      var sortedBand = {};
-      for (var i = 0; i < this.instrumentOrder.length; i++) {
-        var instrument = this.instrumentOrder[i];
-        if (unsortedBand.hasOwnProperty(instrument)) {
-          sortedBand[instrument] = unsortedBand[instrument];
-        }
-      }
-      ticket.band = sortedBand;
+      ticket.band = this.sortBand(unsortedBand);
       var ticketParams = {ticket: ticket, icons: this.displayOptions.iconMapHtml};
       return this.upcomingTicketTemplate(ticketParams);
     },
@@ -942,6 +951,15 @@ var ticketer = (function() {
         '</table>'
       );
 
+      this.ticketSubmitTemplate = Handlebars.compile(
+        '<h4>Your Request Slip <span class="btn btn-primary submitUserTicketButton">Submit this</span></h4>' +
+        '<div class="songDetails"><p><b>{{song.artist}}: {{song.title}}</b></p>' +
+        // '<div class="bandName"><input type="text" placeholder="Your band name (optional)"/></div> ' +
+        '{{#each band}}' +
+        '<span class="instrumentTag">{{instrumentIcon @key}}</span> ' +
+        '<span class="instrumentPerformers">{{commalist this}}</span><br />' +
+        '{{/each}}' +
+        '</div>');
     },
 
     ticketOrderChanged: function() {
@@ -1063,6 +1081,12 @@ var ticketer = (function() {
 
 
     searchPageSongSelectionClick: function(song) {
+      // Don't allow "Perform this song" if it's already in the queue (song.queued)
+      if (song.queued && this.displayOptions.selfSubmission) {
+        window.alert('Song taken, please choose another');
+        return;
+      }
+
       var target = $('#searchTarget');
       song.instrumentNames = song.instruments.map(function(s) {
         return s.name;
@@ -1176,6 +1200,8 @@ var ticketer = (function() {
 
         // after all changes, redraw ALL buttons
         that.drawPerformerButtonsForAllInstruments($('#userSubmitFormOuter'), band, song);
+
+        that.drawConfirmTicketFormIfValid('#userTicketConfirmFormOuter', band, song);
       };
 
       // $(targetElement).html('PerformerButtons '+ instrumentCode);
@@ -1218,6 +1244,50 @@ var ticketer = (function() {
       }
       targetElement.append(letterSpan);
       targetElement.find('.addPerformerButton').click(clickCallback);
+    },
+
+    bandMemberCount: function(bandObject) {
+      var count = 0;
+      for (var instrument in bandObject) {
+        if (bandObject.hasOwnProperty(instrument)) {
+          if (Array.isArray(bandObject[instrument])) {
+            count += bandObject[instrument].length;
+          }
+        }
+      }
+      return count;
+    },
+
+    drawConfirmTicketFormIfValid: function(element, band, song) {
+      var formBlock = $(element);
+      var ticket = {};
+
+      // X console.log(['song', song]);
+      // X console.log(['band', band, this.bandMemberCount(band)]);
+
+      if (song && song.id && band && this.bandMemberCount(band)) {
+        formBlock.show();
+        formBlock.html('TICKET FORM');
+        ticket.song = song;
+        ticket.band = band;
+
+        formBlock.html(this.ticketSubmitTemplate(ticket));
+
+      }
+
+      /* Data format
+       var data = {
+       title: ticketTitle,
+       songId: songId,
+       band: currentBand,
+       private: isPrivate, // n/a
+       blocking: isBlocked // n/a
+       };
+
+       // see: url: '/api/saveTicket'
+       // probably admin-only at the moment
+       */
+
     },
 
     updatePerformanceStats: function() {

@@ -6,8 +6,10 @@
     {% block pageJs %}
         <script>
           var displayOptions = {{ displayOptions|json_encode|raw }};
+          var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
           $(function() {
             ticketer.displayOptions = displayOptions;
+            ticketer.instrumentOrder = instrumentOrder;
             ticketer.searchCount = 20;
             ticketer.initSearchPage();
           });
@@ -43,6 +45,10 @@
 
         <div id="userSubmitFormOuter" class="well col-md-12"
              style="display: none; margin-bottom: 80px;">
-
         </div>
+
+        <div id="userTicketConfirmFormOuter" class="well col-md-12"
+             style="display: none; margin-bottom: 80px;">
+        </div>
+
     {% endblock %}
