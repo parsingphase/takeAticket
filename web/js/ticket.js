@@ -1141,6 +1141,7 @@ var ticketer = (function() {
               that.drawPerformerButtonsForAllInstruments($('#userSubmitFormOuter'), band, song);
 
               input.val('');
+              that.drawConfirmTicketFormIfValid('#userTicketConfirmFormOuter', band, song);
             } else {
               window.alert('Name format must be Forename Initial');
             }
