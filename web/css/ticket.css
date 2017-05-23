@@ -119,6 +119,17 @@ div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
   padding-top: 0.4em;
   padding-right: 0.4em;
 }
+div.manage #updateWarning {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10%;
+  width: auto;
+  font-weight: bold;
+}
+div.manage #updateWarning .btn {
+  margin-left: 8px;
+}
 div.manage div.ticket .instrumentTextIcon {
   height: 20px;
   padding: 0 6px;
@@ -504,6 +515,9 @@ div.end #appMessages .alert {
   }
   div.end {
     display: none;
+  }
+  div.upcoming {
+    margin-bottom: 100px;
   }
   div.upcoming div.well {
     padding: 0;

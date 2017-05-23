@@ -58,6 +58,11 @@ performersAjax:
     defaults: { _controller: TakeATicketBundle:Ajax:reloadPerformers }
     methods:  [GET]
 
+lastUpdateHashAjax:
+    path: /api/updateHash
+    defaults: { _controller: TakeATicketBundle:Ajax:lastUpdateHash }
+    methods: [GET]
+
 manage:
     path:     /manage
     defaults: { _controller: TakeATicketBundle:Management:index }

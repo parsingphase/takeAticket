@@ -19,6 +19,7 @@ var ticketer = (function() {
     defaultSongLengthSeconds: 240,
     defaultSongIntervalSeconds: 120,
     messageTimer: null,
+    lastUpdateHash: null,
 
     /**
      * @var {{songInPreview,upcomingCount,iconMapHtml,selfSubmission}}
@@ -626,6 +627,25 @@ var ticketer = (function() {
       this.appMessageTarget = $('#appMessages');
       this.initTemplates();
       var ticket, ticketBlock; // For loop iterations
+
+      // Enable warning on hash change
+      var updateWarning = $('#updateWarning');
+
+      $.get('/api/updateHash', function(data) {
+        that.lastUpdateHash = data.hash;
+        updateWarning.find('.btn').click(function() {
+          window.location.reload(true);
+        });
+      });
+
+      window.setInterval(function() {
+          $.get('/api/updateHash', function(data) {
+            if (that.lastUpdateHash !== data.hash) {
+              updateWarning.show();
+            }
+          });
+        },
+        10000);
 
       var out = '';
       for (var i = 0; i < tickets.length; i++) {

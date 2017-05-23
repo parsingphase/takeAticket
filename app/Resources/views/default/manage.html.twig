@@ -5,22 +5,26 @@
 
     {% block pageJs %}
         <script>
-            var tickets = {{ tickets|json_encode|raw }};
-            var performers = {{ performers|json_encode|raw }};
-            var displayOptions = {{ displayOptions|json_encode|raw }};
-            var platforms = {{ allPlatforms|json_encode|raw }};
-            var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
-            $(function() {
-                ticketer.performers = performers;
-                ticketer.platforms = platforms;
-                ticketer.displayOptions = displayOptions;
-                ticketer.instrumentOrder = instrumentOrder;
-                ticketer.manage(tickets);
-            });
+          var tickets = {{ tickets|json_encode|raw }};
+          var performers = {{ performers|json_encode|raw }};
+          var displayOptions = {{ displayOptions|json_encode|raw }};
+          var platforms = {{ allPlatforms|json_encode|raw }};
+          var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
+          $(function() {
+            ticketer.performers = performers;
+            ticketer.platforms = platforms;
+            ticketer.displayOptions = displayOptions;
+            ticketer.instrumentOrder = instrumentOrder;
+            ticketer.manage(tickets);
+          });
         </script>
     {% endblock %}
 
     {% block appTarget %}
+        <div id="updateWarning">
+            <div class="alert alert-warning">Tickets added <span class="btn btn-warning">Reload
+                <span class="fa fa-refresh"></span> </span></div>
+        </div>
         <div id="target" class="sortContainer"></div>
         <div class="editTicketOuter"></div>
     {% endblock %}

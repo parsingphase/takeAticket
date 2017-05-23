@@ -204,6 +204,17 @@ class AjaxController extends BaseController
         return $jsonResponse;
     }
 
+    /**
+     * Opaque hash that changes when new tickets are added (may cover further changes in future)
+     *
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function lastUpdateHashAction()
+    {
+        return new JsonResponse(['hash' => count($this->getDataStore()->fetchUndeletedTickets())]);
+    }
+
     public function newTicketOrderAction(Request $request)
     {
         //        $this->setJsonErrorHandler();
