@@ -1094,7 +1094,7 @@ var ticketer = (function() {
         return s.name;
       }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
-      $('#userTicketConfirmFormOuter').html('').hide(); // remove older messages
+      $('#userTicketConfirmFormOuter').html('').hide(); // Remove older messages
 
       if (this.displayOptions.selfSubmission) {
         var that = this;
@@ -1186,7 +1186,7 @@ var ticketer = (function() {
       var that = this;
       var clickCallback = function() {
         var button = $(this);
-        if (button.attr('disabled')) { // ignore these buttons
+        if (button.attr('disabled')) { // Ignore these buttons
           return;
         }
         var instrument = button.data('instrument');
@@ -1251,7 +1251,7 @@ var ticketer = (function() {
         if (performer.songsPending > 2) {
           newButton.attr('disabled', 'disabled');
           newButton.addClass('notAvailable');
-          newButton.html(newButton.html() + ' <span class="fa fa-pause"></span>')
+          newButton.html(newButton.html() + ' <span class="fa fa-pause"></span>');
         }
 
         newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
