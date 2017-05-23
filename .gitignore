@@ -31,3 +31,4 @@ web/uploads
 test.db
 /web/docs
 credentials-mysql.json
+/ticket.css
