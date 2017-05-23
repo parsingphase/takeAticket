@@ -628,24 +628,28 @@ var ticketer = (function() {
       this.initTemplates();
       var ticket, ticketBlock; // For loop iterations
 
-      // Enable warning on hash change
-      var updateWarning = $('#updateWarning');
+      if (this.displayOptions.selfSubmission) {
+        // Enable warning on hash change
+        var updateWarning = $('#updateWarning');
 
-      $.get('/api/updateHash', function(data) {
-        that.lastUpdateHash = data.hash;
-        updateWarning.find('.btn').click(function() {
-          window.location.reload(true);
-        });
-      });
-
-      window.setInterval(function() {
-          $.get('/api/updateHash', function(data) {
-            if (that.lastUpdateHash !== data.hash) {
-              updateWarning.show();
-            }
+        $.get('/api/updateHash', function(data) {
+          that.lastUpdateHash = data.hash;
+          updateWarning.find('.btn').click(function() {
+            window.location.reload(true);
           });
-        },
-        10000);
+        });
+
+        window.setInterval(function() {
+            $.get('/api/updateHash', function(data) {
+              // X window.alert('Tickets: '+$('.ticket').length + ' / '+ data.hash  + ' / ' + that.lastUpdateHash);
+              if ((that.lastUpdateHash !== data.hash) && (data.hash !== $('.ticket').length)) {
+                // Note: abusing "opaque" hash here to avoid false-positives! (assuming it's undeleted count)
+                updateWarning.show();
+              }
+            });
+          },
+          10000);
+      }
 
       var out = '';
       for (var i = 0; i < tickets.length; i++) {
