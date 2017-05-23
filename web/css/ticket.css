@@ -370,7 +370,9 @@ div.songSearch .performerControls .btn {
   margin-top: 8px;
   margin-right: 8px;
 }
+div.manage .performerControls .btn[disabled="disabled"],
 div.manage .performerControls .btn.btn-primary[disabled="disabled"],
+div.songSearch .performerControls .btn[disabled="disabled"],
 div.songSearch .performerControls .btn.btn-primary[disabled="disabled"] {
   font-style: italic;
   background-color: #DDDDDD;
@@ -410,6 +412,9 @@ div.songSearch img.instrumentIcon {
   height: 18px;
   vertical-align: middle;
   margin-bottom: 4px;
+}
+div.songSearch #userSubmitFormOuter table {
+  margin-bottom: 0;
 }
 div.helpPage {
   margin-bottom: 100px;

@@ -938,8 +938,9 @@ var ticketer = (function() {
       this.selfSubmitTemplate = Handlebars.compile(
         // { song, players }
         '<p>Enter each performer as "firstname initial" (eg "David B") the same way each time,' +
-        'so that we can quickly &amp; uniquely identify you and ensure everyone gets an equal chance to perform. ' +
-        'Each performer can have up to three pending songs in the queue at a time.</p>' +
+        'so that we can uniquely identify you and ensure everyone gets an equal chance to perform. ' +
+        'Performers can have up to three pending songs in the queue at a time ' +
+        '(shown with <span class="fa fa-pause"></span> for users with 3+).</p>' +
         '<table class="table table-striped">' +
         '{{#each song.instruments}}' +
         '<tr class="instrumentRow" data-instrument="{{ this.abbreviation }}">' +
@@ -1093,6 +1094,7 @@ var ticketer = (function() {
         return s.name;
       }); // Unwrap objects
       target.html(this.songDetailsTemplate({song: song}));
+      $('#userTicketConfirmFormOuter').html('').hide(); // remove older messages
 
       if (this.displayOptions.selfSubmission) {
         var that = this;
@@ -1183,6 +1185,9 @@ var ticketer = (function() {
       var that = this;
       var clickCallback = function() {
         var button = $(this);
+        if (button.attr('disabled')) { // ignore these buttons
+          return;
+        }
         var instrument = button.data('instrument');
         var performer = button.data('performer');
         band[instrument] = band[instrument] ? band[instrument] : [];
@@ -1214,7 +1219,8 @@ var ticketer = (function() {
       var performerCount = this.performers.length; // Legitimately global (performers is app-wide)
       var letterSpan;
       for (var pIdx = 0; pIdx < performerCount; pIdx++) {
-        var performerName = this.performers[pIdx].performerName;
+        var performer = this.performers[pIdx];
+        var performerName = performer.performerName;
         var performerInstrument = this.findPerformerInstrument(performerName, band);
         var isPerforming = performerInstrument ? 1 : 0;
         var initialLetter = performerName.charAt(0).toUpperCase();
@@ -1230,6 +1236,7 @@ var ticketer = (function() {
         lastInitial = initialLetter;
 
         newButton = $('<span></span>');
+        newButton.text(performerName);
         newButton.addClass('btn addPerformerButton').data({
           instrument: instrumentCode,
           performer: performerName
@@ -1239,7 +1246,13 @@ var ticketer = (function() {
         if (isPerforming && (performerInstrument !== instrumentCode)) { // Dim out buttons for other instruments
           newButton.attr('disabled', 'disabled');
         }
-        newButton.text(performerName);
+
+        if (performer.songsPending > 2) {
+          newButton.attr('disabled', 'disabled');
+          newButton.addClass('notAvailable');
+          newButton.html(newButton.html() + ' <span class="fa fa-pause"></span>')
+        }
+
         newButton.data('selected', isPerforming); // This is where it gets fun - check if user is in band!
         letterSpan.append(newButton);
       }
@@ -1289,7 +1302,6 @@ var ticketer = (function() {
                 formBlock.html('<div class="alert alert-success" role="alert">Ticket submitted</div>');
                 $('#userSubmitFormOuter').hide().html('');
                 $('#searchTarget').html('');
-
               },
               error: function(xhr, status, error) {
                 var message = 'Ticket save failed';

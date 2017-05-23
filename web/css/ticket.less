@@ -450,7 +450,9 @@ div.songSearch {
     .btn {
       margin-top: 8px;
       margin-right: 8px;
-      &.btn-primary[disabled="disabled"] {
+      &[disabled="disabled"],
+      &.btn-primary[disabled="disabled"] // make it explicit for selectivity
+      {
         font-style: italic;
         background-color: #DDDDDD;
         border-color: #888888;
@@ -504,6 +506,11 @@ div.songSearch {
     margin-bottom: 4px;
   }
 
+  #userSubmitFormOuter {
+    table {
+      margin-bottom: 0;
+    }
+  }
 }
 
 div.helpPage {
