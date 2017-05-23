@@ -10,9 +10,11 @@ namespace Phase\TakeATicketBundle\Controller;
 
 use Phase\TakeATicket\Model\Instrument;
 use Phase\TakeATicket\Model\Platform;
+use Phase\TakeATicketBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AjaxController extends BaseController
 {
@@ -106,7 +108,9 @@ class AjaxController extends BaseController
     public function saveTicketAction(Request $request)
     {
         //        $this->setJsonErrorHandler();
-        $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
+        if (!$this->getDataStore()->fetchSetting('selfSubmission')) {
+            $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
+        }
 
         $title = $request->get('title');
         $songKey = $request->get('songId');
@@ -114,6 +118,19 @@ class AjaxController extends BaseController
         $private = $request->get('private') === 'true' ? 1 : 0;
         $blocking = $request->get('blocking') === 'true' ? 1 : 0;
         $existingTicketId = $request->get('existingTicketId');
+        $userId = null;
+
+        if ($this->isGranted(self::MANAGER_REQUIRED_ROLE)) {
+            $user = $this->getUser();
+            /** @var User $user */
+            $userId = $user->getId();
+        } else {
+            $blocking = 0;
+            $private = 1;
+            if ($existingTicketId) {
+                throw new AccessDeniedException('Cannot modify existing tickets');
+            }
+        }
 
         $song = null;
         $songId = null;
@@ -135,7 +152,7 @@ class AjaxController extends BaseController
         if ($existingTicketId) {
             $ticketId = $existingTicketId;
         } else {
-            $ticketId = $this->getDataStore()->storeNewTicket($title, $songId);
+            $ticketId = $this->getDataStore()->storeNewTicket($title, $songId, $userId);
         }
 
         // update even new tickets so that we can add any new columns easily

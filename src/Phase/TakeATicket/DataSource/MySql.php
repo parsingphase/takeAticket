@@ -24,9 +24,10 @@ class MySql extends AbstractSql
      * @param $title
      * @param $songId
      *
-     * @return int|false
+     * @param null $userId
+     * @return false|int
      */
-    public function storeNewTicket($title, $songId)
+    public function storeNewTicket($title, $songId, $userId = null)
     {
         $conn = $this->getDbConn();
         $max = $conn->fetchAssoc('SELECT max(`offset`) AS o FROM tickets');
@@ -37,6 +38,10 @@ class MySql extends AbstractSql
             'offset' => $maxOffset + 1,
             'songId' => $songId,
         ];
+
+        if ($userId) {
+            $ticket['createdBy'] = $userId;
+        }
         $res = $conn->insert(self::TICKETS_TABLE, $ticket);
 
         return $res ? $conn->lastInsertId() : false;

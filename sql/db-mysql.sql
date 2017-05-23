@@ -11,6 +11,7 @@ CREATE TABLE tickets (
   deleted INT DEFAULT 0,
   private INT DEFAULT 0,
   blocking INT DEFAULT 0,
+  createdBy INT DEFAULT NULL,
   startTime INT DEFAULT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- startTime is unix epoch seconds
