@@ -710,7 +710,7 @@ var ticketer = (function() {
 
       this.manageTemplate = Handlebars.compile(
         '<div class="ticket well well-sm {{#if ticket.used}}used{{/if}}' +
-        ' {{#each ticket.song.platforms }}platform{{ this }} {{/each}}' +
+        ' {{#if ticket.song}}{{#each ticket.song.platforms }}platform{{ this }} {{/each}}{{/if}}' +
         ' {{#if ticket.band.K}}withKeys{{/if}}"' +
         ' data-ticket-id="{{ ticket.id }}">' +
         '        <div class="pull-right">' +
@@ -719,7 +719,8 @@ var ticketer = (function() {
           for (var i = 0; i < that.platforms.length; i++) {
             var p = that.platforms[i];
             s += '<div class="gameMarker gameMarker' + p + '">' +
-              '{{#ifContains ticket.song.platforms "' + p + '" }}' + p + '{{/ifContains}}</div>';
+              '{{#if ticket.song}}{{#ifContains ticket.song.platforms "' + p + '" }}' + p +
+              '{{/ifContains}}{{/if}}</div>';
           }
           return s;
         })() +
@@ -1261,6 +1262,7 @@ var ticketer = (function() {
     drawConfirmTicketFormIfValid: function(element, band, song) {
       var formBlock = $(element);
       var ticket = {};
+      var that = this;
 
       // X console.log(['song', song]);
       // X console.log(['band', band, this.bandMemberCount(band)]);
@@ -1269,10 +1271,36 @@ var ticketer = (function() {
         formBlock.show();
         formBlock.html('TICKET FORM');
         ticket.song = song;
+        ticket.songId = song.id;
         ticket.band = band;
 
         formBlock.html(this.ticketSubmitTemplate(ticket));
 
+        formBlock.find('.submitUserTicketButton').click(function() {
+          $.ajax({
+              method: 'POST',
+              data: ticket,
+              url: '/api/saveTicket',
+              success: function(data, status) {
+                that.showAppMessage('Saved ticket', 'success');
+
+                void(status);
+
+                formBlock.html('<div class="alert alert-success" role="alert">Ticket submitted</div>');
+                $('#userSubmitFormOuter').hide().html('');
+                $('#searchTarget').html('');
+
+              },
+              error: function(xhr, status, error) {
+                var message = 'Ticket save failed';
+                that.reportAjaxError(message, xhr, status, error);
+                void(error);
+                // FIXME handle error
+                formBlock.html('<div class="alert alert-danger" role="alert">Ticket failed</div>');
+              }
+            }
+          );
+        });
       }
 
       /* Data format
