@@ -119,12 +119,36 @@ class ManagementController extends BaseController
 
         $settingsSubmit = 'Save Settings';
         $settingsForm = $formFactory->createNamedBuilder('settingsForm', FormType::class, $formDefaults)
-            ->add('freeze', CheckboxType::class, ['label' => 'Display "Queue Frozen" message', 'required' => false])
-            ->add('freezeMessage', TextType::class, ['label' => 'Customise "Queue Frozen" message', 'required' => false])
-            ->add('remotesUrl', TextType::class, ['label' => 'URL to display on remote screens', 'required' => false])
-            ->add('upcomingCount', NumberType::class, ['label' => 'Upcoming songs to display', 'required' => false])
-            ->add('songInPreview', CheckboxType::class, ['label' => 'Display song titles on public queue', 'required' => false])
-            ->add('selfSubmission', CheckboxType::class, ['label' => 'Enable self-submission', 'required' => false])
+            ->add(
+                'freeze',
+                CheckboxType::class,
+                ['label' => 'Display "Queue Frozen" message', 'required' => false]
+            )
+            ->add(
+                'freezeMessage',
+                TextType::class,
+                ['label' => 'Customise "Queue Frozen" message', 'required' => false]
+            )
+            ->add(
+                'remotesUrl',
+                TextType::class,
+                ['label' => 'URL to display on remote screens', 'required' => false]
+            )
+            ->add(
+                'upcomingCount',
+                NumberType::class,
+                ['label' => 'Upcoming songs to display', 'required' => false]
+            )
+            ->add(
+                'songInPreview',
+                CheckboxType::class,
+                ['label' => 'Display song titles on public queue', 'required' => false]
+            )
+            ->add(
+                'selfSubmission',
+                CheckboxType::class,
+                ['label' => 'Enable self-submission', 'required' => false]
+            )
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();
 
