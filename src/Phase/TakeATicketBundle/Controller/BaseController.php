@@ -39,7 +39,7 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Get display options from config, with overrides if possible
+     * Get public-safe display options from config, with overrides if possible
      *
      * @return array
      */
@@ -51,6 +51,7 @@ abstract class BaseController extends Controller
         $displayOptions['upcomingCount'] = $this->getUpcomingCount();
         $displayOptions['songInPreview'] = (bool)$this->getDataStore()->fetchSetting('songInPreview');
         $displayOptions['selfSubmission'] = (bool)$this->getDataStore()->fetchSetting('selfSubmission');
+        $displayOptions['selfSubmissionKeyNeeded'] = (bool)$this->getDataStore()->fetchSetting('selfSubmissionKey');
 
         if ($this->isGranted('ROLE_ADMIN')) {
             $displayOptions['songInPreview'] = true; // force for logged-in users

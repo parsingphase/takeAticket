@@ -89,7 +89,8 @@ class ManagementController extends BaseController
             'remotesUrl' => '/',
             'upcomingCount' => 3,
             'songInPreview' => false,
-            'selfSubmission' => false
+            'selfSubmission' => false,
+            'selfSubmissionKey' => ''
         ];
 
         $formDefaults = $settingKeys;
@@ -148,6 +149,10 @@ class ManagementController extends BaseController
                 'selfSubmission',
                 CheckboxType::class,
                 ['label' => 'Enable self-submission', 'required' => false]
+            )->add(
+                'selfSubmissionKey',
+                TextType::class,
+                ['label' => 'Code required for self-submission (if any)', 'required' => false]
             )
             ->add($settingsSubmit, SubmitType::class)
             ->getForm();

@@ -427,6 +427,13 @@ div.songSearch img.instrumentIcon {
 div.songSearch #userSubmitFormOuter table {
   margin-bottom: 0;
 }
+div.songSearch #userTicketConfirmFormOuter .submitControls {
+  margin-top: 0.6em;
+}
+div.songSearch #userTicketConfirmFormOuter .submitControls input.submissionKey {
+  margin-right: 0.6em;
+  width: 7em;
+}
 div.helpPage {
   margin-bottom: 100px;
 }

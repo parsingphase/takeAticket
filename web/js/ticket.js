@@ -981,13 +981,16 @@ var ticketer = (function() {
       );
 
       this.ticketSubmitTemplate = Handlebars.compile(
-        '<h4>Your Request Slip <span class="btn btn-primary submitUserTicketButton">Submit this</span></h4>' +
+        '<h4>Your Request Slip</h4>' +
         '<div class="songDetails"><p><b>{{song.artist}}: {{song.title}}</b></p>' +
         // '<div class="bandName"><input type="text" placeholder="Your band name (optional)"/></div> ' +
         '{{#each band}}' +
         '<span class="instrumentTag">{{instrumentIcon @key}}</span> ' +
         '<span class="instrumentPerformers">{{commalist this}}</span><br />' +
         '{{/each}}' +
+        '<div class="submitControls">' +
+        '<input type=text title="Secret code" class="submissionKey" placeholder="Code needed" />' +
+        '<span class="btn btn-primary submitUserTicketButton">Submit this</span></div>' +
         '</div>');
     },
 
@@ -1317,7 +1320,27 @@ var ticketer = (function() {
 
         formBlock.html(this.ticketSubmitTemplate(ticket));
 
-        formBlock.find('.submitUserTicketButton').click(function() {
+        var submitButton = formBlock.find('.submitUserTicketButton');
+        var submissionKeyInput = formBlock.find('.submissionKey');
+        if (this.displayOptions.selfSubmissionKeyNeeded) {
+          submitButton.attr('disabled', 'disabled');
+          submissionKeyInput.keydown(
+            function() {
+              if ($(this).val().length) {
+                submitButton.removeAttr('disabled');
+              } else {
+                submitButton.attr('disabled', 'disabled');
+              }
+            }
+          );
+        } else {
+          submissionKeyInput.hide();
+        }
+
+        submitButton.click(function() {
+          if (that.displayOptions.selfSubmissionKeyNeeded) {
+            ticket.submissionKey = submissionKeyInput.val();
+          }
           $.ajax({
               method: 'POST',
               data: ticket,

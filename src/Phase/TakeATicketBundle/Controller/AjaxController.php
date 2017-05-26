@@ -117,6 +117,7 @@ class AjaxController extends BaseController
         $private = $request->get('private') === 'true' ? 1 : 0;
         $blocking = $request->get('blocking') === 'true' ? 1 : 0;
         $existingTicketId = $request->get('existingTicketId');
+        $submissionKey = trim($request->get('submissionKey'));
         $userId = null;
 
         if ($this->isGranted(self::MANAGER_REQUIRED_ROLE)) {
@@ -160,6 +161,12 @@ class AjaxController extends BaseController
                         }
                     }
                 }
+            }
+
+            if ($this->getDataStore()->fetchSetting('selfSubmissionKey') &&
+                strcasecmp($submissionKey, $this->getDataStore()->fetchSetting('selfSubmissionKey'))
+            ) {
+                $dataErrors[] = 'Secret code wrong or missing';
             }
 
             if ($dataErrors) {
