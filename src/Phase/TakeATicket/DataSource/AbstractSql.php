@@ -523,6 +523,26 @@ abstract class AbstractSql
     }
 
     /**
+     * Check whether song is already in the queue
+     *
+     * @param $songId
+     * @return array|mixed
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getQueueEntriesForSongId($songId)
+    {
+        $conn = $this->getDbConn();
+        $statement = $conn->prepare(
+            'SELECT * FROM tickets WHERE deleted=0 AND songId=:songId ORDER BY offset ASC'
+        );
+        $statement->execute(['songId' => $songId]);
+        $tickets = $statement->fetchAll();
+        $tickets = $this->expandTicketsData($tickets);
+
+        return $tickets;
+    }
+
+    /**
      * @param $title
      * @param $songId
      *

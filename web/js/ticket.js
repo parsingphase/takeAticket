@@ -1331,8 +1331,11 @@ var ticketer = (function() {
                   $('#userSubmitFormOuter').hide().html('');
                   $('#searchTarget').html('');
                 } else {
-                  that.showAppMessage('Saved ticket', 'success');
-                  formBlock.html('<div class="alert alert-danger" role="alert">Internal error</div>');
+                  that.showAppMessage('Error saving ticket', 'danger');
+                  formBlock.html(
+                    '<div class="alert alert-danger" role="alert">Unable to save ticket: ' +
+                    ( data.message ? data.message : 'Internal Error') +
+                    '</div>');
                 }
 
               },

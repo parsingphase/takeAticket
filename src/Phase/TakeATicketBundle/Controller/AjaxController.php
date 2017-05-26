@@ -107,7 +107,6 @@ class AjaxController extends BaseController
 
     public function saveTicketAction(Request $request)
     {
-        //        $this->setJsonErrorHandler();
         if (!$this->getDataStore()->fetchSetting('selfSubmission')) {
             $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
         }
@@ -129,6 +128,47 @@ class AjaxController extends BaseController
             $private = 1;
             if ($existingTicketId) {
                 throw new AccessDeniedException('Cannot modify existing tickets');
+            }
+
+            // Check song is unused, check no performers have more than 3 upcoming songs
+            // Ensure that name format is valid
+
+            $dataErrors = [];
+
+            $ticketsForSong = $this->getDataStore()->getQueueEntriesForSongId($songKey);
+
+            if (count($ticketsForSong)) {
+                $dataErrors[] = 'The song is already taken';
+            }
+
+            $performerStats = $this->getDataStore()->generatePerformerStats();
+
+            foreach ($band as $instrumentCandidates) {
+                foreach ($instrumentCandidates as $candidate) {
+                    $candidate = trim($candidate);
+                    if ($candidate) {
+                        if (preg_match('/\w+ \w+/', $candidate)) {
+                            foreach ($performerStats as $performerStat) {
+                                if (
+                                    ($performerStat['songsPending'] > 2) &&
+                                    !strcasecmp($candidate, $performerStat['performerName'])
+                                ) {
+                                    $dataErrors[] = "$candidate has too many songs pending";
+                                }
+                            }
+                        } else {
+                            $dataErrors[] = "'$candidate' is not a valid name";
+                        }
+                    }
+                }
+            }
+
+            if ($dataErrors) {
+                $responseData = [
+                    'status' => 'error',
+                    'message' => implode(', ', $dataErrors)
+                ];
+                return new JsonResponse($responseData, 200);
             }
         }
 
@@ -158,7 +198,6 @@ class AjaxController extends BaseController
         // update even new tickets so that we can add any new columns easily
         $updated = ['title' => $title, 'songId' => $songId, 'blocking' => $blocking, 'private' => $private];
 
-        //        $this->app['logger']->debug("Updating ticket", $updated);
         $this->getDataStore()->updateTicketById(
             $ticketId,
             $updated
@@ -176,6 +215,7 @@ class AjaxController extends BaseController
         $responseData = [
             'ticket' => $ticket,
             'performers' => $this->getDataStore()->generatePerformerStats(),
+            'status' => 'ok'
         ];
 
         if ($ticketId) {
@@ -189,8 +229,6 @@ class AjaxController extends BaseController
 
     public function deleteTicketAction(Request $request)
     {
-        //        $this->setJsonErrorHandler();
-
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 
         $id = $request->get('ticketId');
@@ -217,8 +255,6 @@ class AjaxController extends BaseController
 
     public function newTicketOrderAction(Request $request)
     {
-        //        $this->setJsonErrorHandler();
-
         $this->denyAccessUnlessGranted(self::MANAGER_REQUIRED_ROLE);
 
         $idOrder = $request->get('idOrder');
@@ -227,8 +263,6 @@ class AjaxController extends BaseController
             throw new \InvalidArgumentException('Order must be array!');
         }
 
-        //        $this->app['logger']->debug('New order: '.print_r($idOrder, true));
-
         $res = true;
         foreach ($idOrder as $offset => $id) {
             $res = $res && $this->getDataStore()->updateTicketOffsetById($id, $offset);
@@ -236,7 +270,6 @@ class AjaxController extends BaseController
         if ($res) {
             $jsonResponse = new JsonResponse(['ok' => 'ok']);
         } else {
-            //            $this->app['logger']->warn('Failed to store track order: '.print_r($idOrder, true));
             $jsonResponse = new JsonResponse(['ok' => 'fail', 'message' => 'Failed to store new sort order'], 500);
         }
 
