@@ -1333,8 +1333,9 @@ var ticketer = (function() {
                 } else {
                   that.showAppMessage('Error saving ticket', 'danger');
                   formBlock.html(
-                    '<div class="alert alert-danger" role="alert">Unable to save ticket: ' +
+                    '<div class="alert alert-danger" role="alert"><p>Unable to save ticket: ' +
                     ( data.message ? data.message : 'Internal Error') +
+                    '</p><p>Please reload the page to try again</p>' +
                     '</div>');
                 }
 
@@ -1343,8 +1344,7 @@ var ticketer = (function() {
                 var message = 'Ticket save failed';
                 that.reportAjaxError(message, xhr, status, error);
                 void(error);
-                // FIXME handle error
-                formBlock.html('<div class="alert alert-danger" role="alert">Ticket failed</div>');
+                formBlock.html('<div class="alert alert-danger" role="alert">Internal error saving ticket</div>');
               }
             }
           );
