@@ -149,8 +149,7 @@ class AjaxController extends BaseController
                     if ($candidate) {
                         if (preg_match('/\w+ \w+/', $candidate)) {
                             foreach ($performerStats as $performerStat) {
-                                if (
-                                    ($performerStat['songsPending'] > 2) &&
+                                if (($performerStat['songsPending'] > 2) &&
                                     !strcasecmp($candidate, $performerStat['performerName'])
                                 ) {
                                     $dataErrors[] = "$candidate has too many songs pending";

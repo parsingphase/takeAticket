@@ -1334,7 +1334,7 @@ var ticketer = (function() {
                   that.showAppMessage('Error saving ticket', 'danger');
                   formBlock.html(
                     '<div class="alert alert-danger" role="alert"><p>Unable to save ticket: ' +
-                    ( data.message ? data.message : 'Internal Error') +
+                    (data.message ? data.message : 'Internal Error') +
                     '</p><p>Please reload the page to try again</p>' +
                     '</div>');
                 }
