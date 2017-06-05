@@ -81,10 +81,10 @@ fos_user:
 
 fos_oauth_server:
     db_driver: orm
-    client_class:        Acme\DemoBundle\Entity\Client
-    access_token_class:  Acme\DemoBundle\Entity\AccessToken
-    refresh_token_class: Acme\DemoBundle\Entity\RefreshToken
-    auth_code_class:     Acme\DemoBundle\Entity\AuthCode
+    client_class:        Phase\TakeATicketBundle\Entity\OAuthClient
+    access_token_class:  Phase\TakeATicketBundle\Entity\OAuthAccessToken
+    refresh_token_class: Phase\TakeATicketBundle\Entity\OAuthRefreshToken
+    auth_code_class:     Phase\TakeATicketBundle\Entity\OAuthAuthCode
     service:
         user_provider: platform.user.provider
         options:
