@@ -34,6 +34,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/oauth-server-bundle": "^1.5",
         "friendsofsymfony/user-bundle": "^2.0.0-beta1",
         "incenteev/composer-parameter-handler": "^2.0",
         "michelf/php-markdown": "^1.5",

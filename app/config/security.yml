@@ -29,6 +29,20 @@ security:
                 lifetime: 31536000
                 path:     /
 
+
+        oauth_authorize:
+            pattern:    ^/oauth/v2/auth
+            form_login:
+                provider: fos_userbundle
+                check_path: _security_check
+                login_path: _demo_login
+            anonymous: true
+
+#        api:
+#            pattern:    ^/api
+#            fos_oauth:  true
+#            stateless:  true
+
     providers:
         fos_userbundle:
             id: fos_user.user_provider.username_email
@@ -37,3 +51,7 @@ security:
         # require ROLE_ADMIN for /admin*
         - { path: ^/help, roles: ROLE_ADMIN }
         - { path: ^/manage, roles: ROLE_ADMIN }
+        # You can omit this if /api can be accessed both authenticated and anonymously
+#        - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
+#        - { path: ^/demo/secured/hello/admin/, roles: ROLE_ADMIN }
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

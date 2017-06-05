@@ -26,9 +26,12 @@ docs/announcements
 !var/SymfonyRequirements.php
 /web/bundles/
 web/local
+!web/uploads/.gitkeep
+!docs/announcements/.gitkeep
 .php_cs.cache
 web/uploads
 test.db
 /web/docs
 credentials-mysql.json
 /ticket.css
+images/

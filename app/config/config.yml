@@ -78,3 +78,14 @@ fos_user:
     from_email:
         address:        "%admin_notification_from_email%"
         sender_name:    "%admin_notification_from_name%"
+
+fos_oauth_server:
+    db_driver: orm
+    client_class:        Acme\DemoBundle\Entity\Client
+    access_token_class:  Acme\DemoBundle\Entity\AccessToken
+    refresh_token_class: Acme\DemoBundle\Entity\RefreshToken
+    auth_code_class:     Acme\DemoBundle\Entity\AuthCode
+    service:
+        user_provider: platform.user.provider
+        options:
+            supported_scopes: user
