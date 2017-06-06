@@ -28,7 +28,12 @@ security:
             pattern:    ^/api/(user|articles)
             fos_oauth:  true
             stateless:  true
-            anonymous:  false
+            anonymous:  true
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                check_path: _security_check
+                login_path: _demo_login
 
         main:
             pattern: ^/

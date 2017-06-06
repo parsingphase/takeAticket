@@ -15,6 +15,7 @@ class ApiController extends Controller
 {
     public function articlesAction()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $articles = array('article1', 'article2', 'article3');
         return new JsonResponse($articles);
     }
