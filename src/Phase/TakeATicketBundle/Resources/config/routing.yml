@@ -82,3 +82,13 @@ css:
     path:     /css/custom
     defaults: { _controller: TakeATicketBundle:Css:customCss }
     methods:  [GET]
+
+oauth_test_articles:
+    path: /api/articles
+    defaults: { _controller: TakeATicketBundle:Api:articles }
+    methods: [GET]
+
+oauth_test_user:
+    path: /api/articles
+    defaults: { _controller: TakeATicketBundle:Api:user }
+    methods: [GET]
