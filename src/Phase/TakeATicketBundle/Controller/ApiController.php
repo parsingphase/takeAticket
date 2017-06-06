@@ -22,7 +22,7 @@ class ApiController extends Controller
     public function userAction()
     {
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        if($user) {
+        if ($user) {
             return new JsonResponse(array(
                 'id' => $user->getId(),
                 'username' => $user->getUsername()
@@ -32,6 +32,5 @@ class ApiController extends Controller
         return new JsonResponse(array(
             'message' => 'User is not identified'
         ));
-
     }
 }
