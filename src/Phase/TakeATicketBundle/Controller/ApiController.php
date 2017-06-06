@@ -21,7 +21,7 @@ class ApiController extends Controller
 
     public function userAction()
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
         if($user) {
             return new JsonResponse(array(
                 'id' => $user->getId(),
