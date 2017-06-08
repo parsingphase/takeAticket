@@ -22,4 +22,4 @@ build:
             version: "7.0"
     tests:
         override:
-            - ./vendor/bin/phing test-all
+            - ./vendor/bin/phing -f phing.xml test-all
