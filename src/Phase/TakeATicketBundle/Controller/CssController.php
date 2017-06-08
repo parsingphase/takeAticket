@@ -29,6 +29,8 @@ class CssController extends BaseController
 
         if ($backgroundUrl) {
             $data .= "body {\n\tbackground-image: url('$backgroundUrl');\n\tbackground-size: cover;\n}\n";
+            $data .= "@media only screen and (max-device-width: 480px)" .
+                "\n{\tbody {\n\tbackground-image: none !important;\n\t}\n}";
         }
 
         $data .= $customCss;
