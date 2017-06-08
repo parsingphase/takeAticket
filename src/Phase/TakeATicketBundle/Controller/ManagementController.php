@@ -257,8 +257,13 @@ class ManagementController extends BaseController
 
         $stylingSubmit = 'Update styles';
         $stylingForm = $formFactory->createNamedBuilder('stylingForm', FormType::class, $defaults)
-            ->add('backgroundImageFile', FileType::class, ['label' => 'New background image'])
-            ->add('customCss', TextareaType::class, ['attr' => ['rows' => 8, 'cols' => 60, 'label' => 'Custom CSS']])
+            ->add('backgroundImageFile', FileType::class, ['label' => 'New background image', 'required' => false])
+            ->add('removeImageFile', CheckboxType::class, ['label' => 'Remove background image', 'required' => false])
+            ->add(
+                'customCss',
+                TextareaType::class,
+                ['attr' => ['rows' => 8, 'cols' => 60, 'label' => 'Custom CSS'], 'required' => false]
+            )
             ->add($stylingSubmit, SubmitType::class)
             ->getForm();
 
@@ -277,6 +282,11 @@ class ManagementController extends BaseController
             ) {
                 $data = $stylingForm->getData();
 
+                if ($data['removeImageFile']) {
+                    $this->deleteBackgroundImageFiles();
+                    $dataStore->updateSetting('backgroundFilename', null);
+                }
+
                 $file = $data['backgroundImageFile'];
                 if ($file) {
                     $mimeType = $file->getMimeType();
@@ -293,7 +303,7 @@ class ManagementController extends BaseController
                     if (array_key_exists($mimeType, $suffixByMimeType)) {
                         $suffix = $suffixByMimeType[$mimeType];
                         $targetFile = 'background.' . $suffix;
-                        $destination = dirname($this->get('kernel')->getRootDir()) . '/web/uploads/' . $targetFile;
+                        $destination = $this->getBackgroundImageDir() . $targetFile;
                         move_uploaded_file($pathName, $destination);
                         $dataStore->updateSetting('backgroundFilename', $targetFile);
                     } else {
@@ -326,5 +336,21 @@ class ManagementController extends BaseController
                 'backgroundUpdated' => $backgroundUpdated,
             ]
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBackgroundImageDir()
+    {
+        return dirname($this->get('kernel')->getRootDir()) . '/web/uploads/';
+    }
+
+    protected function deleteBackgroundImageFiles()
+    {
+        $files = glob($this->getBackgroundImageDir() . 'background.*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
     }
 }

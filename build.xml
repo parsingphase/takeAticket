@@ -7,7 +7,7 @@
     <target name="test-all"
             description="Run all tests with phing">
         <echo message="Use vendor/bin/phing -f phing.xml [command] to run phing directly"/>
-        <exec command="vendor/bin/phing -f phing.xml test-all" checkreturn="true" passthru="true"/>
+        <exec command="vendor/bin/phing -f phing.xml test-all" failonerror="true" />
     </target>
 
     <!-- Installation and deployment tasks all use ant for greater reliability -->
