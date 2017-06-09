@@ -39,7 +39,7 @@ RUN mkdir -p web/docs && \
 
 RUN php bin/console doctrine:schema:update --force && \
     php bin/console fos:user:create admin admin@localhost admin --super-admin
-RUN vendor/bin/phing test-all
+RUN vendor/bin/phing -f phing.xml test-all
 
 # Sample data:
 RUN sqlite3 var/db/app.sqlite < sql/sampleSongs.sql
