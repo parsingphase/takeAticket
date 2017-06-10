@@ -55,19 +55,19 @@
 </div>
 {% block footer %}
 
-
-    {% if freeze is defined and freeze %}
-        <div class="alertHolder">
-            <div class="panel panel-danger">
-                <div class="panel-heading">
-                    Queue Frozen
-                </div>
-                <div class="panel-body">{{ freezeMessage |default('No more requests please') }}</div>
-            </div>
-        </div>
-    {% endif %}
-
     <div class="end">
+
+        {% if freeze is defined and freeze %}
+            <div class="alertHolder">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        Queue Frozen
+                    </div>
+                    <div class="panel-body">{{ freezeMessage |default('No more requests please') }}</div>
+                </div>
+            </div>
+        {% endif %}
+
         <div class="pull-right docslink">
             <a href="https://github.com/parsingphase/takeAticket"><span class="fa fa-github"
                                                                         title="Source & Docs"></span></a>
