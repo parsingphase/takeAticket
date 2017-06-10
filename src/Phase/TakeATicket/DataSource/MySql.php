@@ -11,11 +11,11 @@ namespace Phase\TakeATicket\DataSource;
 class MySql extends AbstractSql
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function concatenateEscapedFields($fields)
     {
-        return ('CONCAT(' . join(', ', $fields) . ')');
+        return 'CONCAT('.implode(', ', $fields).')';
     }
 
     /**
@@ -23,9 +23,11 @@ class MySql extends AbstractSql
      *
      * @param $title
      * @param $songId
-     * @return int|false
+     *
+     * @param null $userId
+     * @return false|int
      */
-    public function storeNewTicket($title, $songId)
+    public function storeNewTicket($title, $songId, $userId = null)
     {
         $conn = $this->getDbConn();
         $max = $conn->fetchAssoc('SELECT max(`offset`) AS o FROM tickets');
@@ -34,9 +36,14 @@ class MySql extends AbstractSql
         $ticket = [
             'title' => $title,
             'offset' => $maxOffset + 1,
-            'songId' => $songId
+            'songId' => $songId,
         ];
+
+        if ($userId) {
+            $ticket['createdBy'] = $userId;
+        }
         $res = $conn->insert(self::TICKETS_TABLE, $ticket);
+
         return $res ? $conn->lastInsertId() : false;
     }
 
@@ -44,10 +51,11 @@ class MySql extends AbstractSql
      * Overridden to take advantage of autoIds
      *
      * @param $performerName
-     * @param bool|false $createMissing
+     * @param bool|false    $createMissing
+     *
      * @return mixed
      */
-    public function getPerformerIdByName($performerName, $createMissing = false)
+    public function fetchPerformerIdByName($performerName, $createMissing = false)
     {
         $conn = $this->getDbConn();
         $sql = 'SELECT id FROM performers p WHERE p.name LIKE :name LIMIT 1';

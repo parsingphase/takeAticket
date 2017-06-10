@@ -1,0 +1,48 @@
+{
+  "name": "mysql-tickets",
+  "sourceDb": "takeaticket",
+  "destDb": "takeaticket_fixtures",
+  "tables": {
+    "instruments": {
+      "sampler": "all"
+    },
+    "platforms": {
+      "sampler": "all"
+    },
+    "songs": {
+      "sampler": "all",
+      "limit": 50,
+      "remember": {
+        "id": "songIds",
+        "sourceId": "sourceIds"
+      }
+    },
+    "songs_x_instruments": {
+      "sampler": "matched",
+      "constraints": {
+        "songId": "$songIds"
+      }
+    },
+    "songs_x_platforms": {
+      "sampler": "matched",
+      "constraints": {
+        "songId": "$songIds"
+      }
+    },
+    "sources": {
+      "sampler": "matched",
+      "constraints": {
+        "id": "$sourceIds"
+      }
+    },
+    "performers": {
+      "sampler": "empty"
+    },
+    "settings": {
+      "sampler": "empty"
+    },
+    "tickets": {
+      "sampler": "empty"
+    }
+  }
+}

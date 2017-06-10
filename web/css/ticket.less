@@ -1,0 +1,726 @@
+body {
+  background-size: cover;
+}
+
+.container {
+  padding: 0;
+}
+
+.auto-font {
+  text-wrap: none;
+  white-space: nowrap;
+}
+
+div.page-header {
+  padding: 0;
+  font-size: 50px;
+  font-weight: bolder;
+  margin-top: 0;
+  margin-bottom: 0;
+  position: relative;
+  background-color: rgba(245, 245, 245, 0.95) !important;
+  .headerControls {
+    position: absolute;
+    right: 0;
+    font-size: 24px;
+    margin-right: 20px;
+    &, a {
+      color: #d0d0d0;
+      padding: 4px 6px;
+    }
+  }
+  &:hover {
+    .headerControls {
+      &, a {
+        color: #999;
+      }
+    }
+  }
+}
+
+div#target {
+  margin-top: 20px;
+}
+
+div.announcement {
+  h1 {
+    font-weight: bold;
+    font-size: 1.4em;
+  }
+  font-size: 2.3em;
+  &.INTERVAL, &.MORE {
+    font-size: 4em;
+  }
+}
+
+div.upcoming {
+  margin-bottom: 100px;
+
+  div.well {
+    //padding: 0;
+
+    &.ticket {
+      //min-height: 180px;
+      min-height: 120px;
+      background-color: rgba(245, 245, 245, 0.95) !important;
+
+      &.withSong {
+        padding-top: 6px;
+      }
+
+      &.noSong {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        min-height: 100px;
+      }
+
+      .ticketAdminControls {
+        float: right;
+        .btn {
+          margin-left: 4px;
+        }
+      }
+
+      .ticketMeta {
+        display: none;
+      }
+
+      p {
+        margin-bottom: 5px;
+      }
+
+      p.band {
+        font-size: 50px;
+        font-weight: bolder;
+      }
+
+      p.song {
+        font-size: 30px;
+        font-weight: bolder;
+      }
+
+      .performers {
+        // left/right measurements inside must be relative for auto-font to work
+        font-size: 100px;
+        text-align: center;
+        font-weight: bolder;
+
+        .instrumentTag {
+          padding-left: 0.2em;
+          padding-right: 0.2em;
+
+          .instrumentTextIcon {
+            height: 40px;
+            padding: 0 10px;
+            border-radius: 20px;
+            display: inline-block;
+            color: #fff;
+            background-color: #999;
+            font-size: 32px;
+            line-height: 38px;
+            vertical-align: 0.25em;
+          }
+
+          img.instrumentIcon {
+            @iconSize: 40px;
+            width: @iconSize;
+            height: @iconSize;
+            vertical-align: middle;
+            margin-bottom: 14px;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+.asAdmin {
+  div.upcoming {
+    .ticketMeta {
+      display: block !important;
+      position: absolute;
+      .blocking, .private {
+        float: left;
+        font-size: 2em;
+        padding-top: 0.4em;
+        padding-right: 0.4em;
+      }
+    }
+  }
+}
+
+div.manage {
+  #updateWarning {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10%;
+    width: auto;
+    font-weight: bold;
+    .btn {
+      margin-left: 8px;
+    }
+  }
+
+  div.ticket {
+
+    .instrumentTextIcon {
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 10px;
+      display: inline-block;
+      color: #fff;
+      background-color: #999;
+      //font-size: 32px;
+      //line-height: 18px;
+      vertical-align: 0.1em;
+      font-weight: bold;
+    }
+
+    .performer {
+      padding-right: 4px;
+    }
+
+    .ticketTitleIcon {
+      font-weight: bold;
+      text-wrap: none;
+      white-space: nowrap;
+    }
+
+    .proximityIssue {
+      color: orange;
+      &.proximityIssue1 {
+        color: red;
+      }
+    }
+
+    .ticketOrder {
+      float: left;
+      height: 2em;
+      width: 4em;
+      .ticketOrdinal,
+      .ticketTime {
+        font-size: 1.1em;
+      }
+    }
+
+    .ticketId {
+      float: left;
+      height: 2em;
+      //font-weight: bold;
+      font-size: 1.8em;
+      width: 2.4em;
+    }
+
+    .ticketMeta {
+      float: left;
+      height: 4em;
+      padding-right: 14px;
+      .blocking, .private {
+        width: 16px;
+        font-size: 1.2em;
+      }
+      .blocking {
+        height: 22px;
+      }
+    }
+
+    .pendingSong {
+      .fa {
+        width: 16px;
+      }
+
+      .performerDoneCount0 {
+        font-weight: bolder;
+        font-size: 1.3em;
+      }
+
+      .performerDoneCount1 {
+        font-weight: bold;
+      }
+
+    }
+
+    &.well {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      min-height: 62px;
+    }
+
+    &.used {
+      color: #777;
+      font-style: italic;
+      background-color: #fefefe !important;
+    }
+
+    &.shown {
+      border-color: red;
+      border-width: 3px;
+    }
+
+    .gameMarker {
+      display: inline-block;
+      vertical-align: top;
+      font-size: 2em;
+      font-weight: bold;
+      width: 70px;
+    }
+
+    &.withKeys .gameMarkerRb4 {
+      color: #888;
+    }
+
+    button {
+      min-height: 2.5em;
+      span.fa {
+        font-size: 1.3em;
+      }
+    }
+
+    &.used button.performButton {
+      display: none;
+    }
+  }
+
+  div.editTicketOuter {
+    margin-bottom: 80px;
+  }
+
+  div.editTicket {
+    min-height: 500px;
+
+    h3 {
+      margin-top: 0;
+      margin-left: 12px;
+      width: 10em;
+      padding: 6px;
+      &.editTicketHeader {
+        background-color: #aaaaaa;
+        color: #ffffff;
+      }
+    }
+
+    .editTicketButtons {
+      button {
+        margin-left: 4px;
+      }
+    }
+
+    .editTicketSong,
+    .editTicketBandColumn {
+      float: left;
+      padding: 10px;
+      .ticketAspectSummary {
+        padding-left: 6px;
+        min-height: 50px;
+        .selectedSong {
+          margin-left: 8px;
+        }
+      }
+    }
+
+    .editTicketSong {
+      width: 400px;
+      button.removeSongButton {
+        margin-left: 10px;
+        font-size: 1.4em;
+        padding: 4px 10px;
+      }
+    }
+
+    .editTicketBandColumn {
+      width: 600px;
+
+      .editTicketTitle {
+        width: 30em;
+      }
+
+      .instrument {
+        cursor: pointer;
+        float: left;
+        width: 110px;
+        min-height: 4em;
+        border: solid 1px #ccc;
+        border-bottom: none;
+        margin-right: 6px;
+        //padding: 4px 8px;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        &.instrumentSelected {
+          background-color: #e0e0e0;
+          .instrumentName {
+            background-color: #ccc;
+          }
+        }
+        .instrumentName, .instrumentPerformer {
+          padding: 4px 8px;
+          margin-bottom: 4px;
+        }
+        .instrumentName {
+          font-weight: bold;
+          background-color: #ddd;
+        }
+        i {
+          color: #888;
+        }
+        &.instrumentUnused {
+          // hidden by default;
+          display: none;
+        }
+      }
+
+      .bandControls {
+        //border: dashed grey 1px;
+        padding-top: 14px;
+
+        .bandTabsOuter {
+
+          .performerSelect {
+            clear: both;
+            padding: 8px;
+            background-color: #e0e0e0;
+          }
+          .newPerformer {
+            width: 18em;
+          }
+        }
+
+      }
+    }
+
+    .addSongTitle {
+      width: 24em;
+    }
+
+    .input-group-addon .fa {
+      width: 16px;
+    }
+
+  }
+
+  div.page-header {
+    font-size: 40px;
+    font-weight: bolder;
+  }
+}
+
+div.manage,
+div.songSearch {
+  .songCompleteOuter {
+    padding-left: 41px;
+    .songComplete {
+      position: absolute;
+      //height: 200px;
+      width: 24em;
+      background-color: white;
+      border: solid lightgrey 1px;
+      display: none;
+    }
+  }
+
+  .acSong {
+    // single song
+    padding: 5px;
+    cursor: pointer;
+    border-bottom: solid lightgrey 1px;
+    &:last-of-type {
+      border-bottom: none;
+    }
+    &.selected {
+      background-color: lightblue;
+    }
+    .queued {
+      font-style: italic;
+      color: #bbb;
+    }
+  }
+
+  .performerControlsCell {
+    width: 50%;
+  }
+
+  .performerControls {
+
+    .letterSpan {
+      display: inline-block;
+    }
+
+    .initialLetter {
+      margin: 8px 4px 0 0;
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+      background-color: #ccc;
+      display: inline-block;
+      padding: 4px 10px 4px 6px;
+      vertical-align: middle;
+      font-weight: bolder;
+      color: #555;
+    }
+
+    .btn {
+      margin-top: 8px;
+      margin-right: 8px;
+      &[disabled="disabled"],
+      &.btn-primary[disabled="disabled"] // make it explicit for selectivity
+      {
+        font-style: italic;
+        background-color: #DDDDDD;
+        border-color: #888888;
+        color: #444444;
+      }
+    }
+  }
+}
+
+div.songSearch {
+  .searchContent {
+    padding-top: 20px;
+  }
+
+  .searchTargetOuter {
+    min-height: 180px;
+    padding-top: 0;
+
+    table {
+      th {
+        padding-right: 1.2em;
+      }
+      th, tr {
+        padding-bottom: 0.3em;
+      }
+    }
+  }
+
+  .instrumentTextIcon {
+    height: 18px;
+    //margin: 0 4px;
+    padding: 0 4px;
+    border-radius: 9px;
+    display: inline-block;
+    color: #fff;
+    background-color: #999;
+    font-size: 13px;
+    line-height: 20px;
+    vertical-align: 0;
+  }
+
+  .instrumentPerformers {
+    margin-right: 4px;
+  }
+
+  img.instrumentIcon {
+    @iconSize: 18px;
+    width: @iconSize;
+    height: @iconSize;
+    vertical-align: middle;
+    margin-bottom: 4px;
+  }
+
+  #userSubmitFormOuter {
+    table {
+      margin-bottom: 0;
+    }
+  }
+
+  #userTicketConfirmFormOuter {
+    .submitControls {
+      margin-top: 0.6em;
+      input.submissionKey {
+        margin-right: 0.6em;
+        width: 7em;
+      }
+    }
+  }
+}
+
+div.helpPage {
+  margin-bottom: 100px;
+}
+
+div.alertHolder {
+  text-align: center;
+  font-size: 3em;
+  padding: 0 3em;
+}
+
+div.container.settings {
+  form {
+    table {
+      th {
+        padding-right: 0.6em;
+      }
+      td {
+        padding: 3px;
+        input[type="text"] {
+          width: 20em;
+        }
+      }
+    }
+  }
+}
+
+div.end {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  //background-color: #f5f5f5;
+  background-color: rgba(245, 245, 245, 0.95) !important;
+
+  .panel { margin-bottom: 0; }
+
+  div.gflink {
+    font-size: 40px;
+    width: 100%;
+    a {
+      color: #333
+    }
+    a:hover {
+      color: #777;
+      text-decoration: none;
+    }
+  }
+
+  .docslink {
+    font-size: 24px;
+    margin-right: 20px;
+    &, a {
+      color: #e8e8e8;
+      padding: 4px 6px;
+    }
+  }
+  &:hover {
+    .docslink {
+      &, a {
+        color: #999;
+      }
+    }
+  }
+
+  #appMessages {
+    .alert {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .songCompleteOuter {
+    .songComplete {
+      position: relative !important;
+    }
+  }
+
+  div.searchTargetOuter {
+    //z-index: -100;
+  }
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px)
+  //@media only screen and (max-width: 600px)
+{
+  .noMobile {
+    display: none;
+  }
+
+  body {
+    //color: red;
+    //width: 500px;
+  }
+
+  div.container {
+    //width: 480px;
+  }
+
+  div.headerControls.pull-right {
+    float: none !important;
+    position: relative;
+    display: block;
+    background-color: white;
+    .fa {
+      //font-size: 1em;
+      color: #555555;
+      padding-left: 0.1em;
+    }
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .songSearch {
+
+    .searchContent {
+      padding-top: 0 !important;
+    }
+
+    .songCompleteOuter {
+      .songComplete {
+        //color: green;
+        max-width: 240px;
+        margin-bottom: 6px;
+        position: relative !important;
+      }
+    }
+
+    div.searchTargetOuter {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 6px;
+      //max-width: 300px;
+      max-width: 95%;
+      //z-index: -100;
+      float: none;
+    }
+  }
+
+  div.end {
+    display: none;
+  }
+
+
+  div.upcoming {
+    margin-bottom: 100px;
+
+    div.well {
+      padding: 0;
+
+      &.ticket {
+        min-height: 80px;
+
+        &.noSong {
+          //padding-top: 6px;
+          //padding-bottom: 6px;
+          min-height: 60px;
+        }
+
+        .performers {
+
+          .instrumentTag {
+            //padding-left: 0.2em;
+            //padding-right: 0.2em;
+
+            .instrumentTextIcon {
+              height: 20px;
+              padding: 0 5px;
+              border-radius: 10px;
+              //display: inline-block;
+              //color: #fff;
+              //background-color: #999;
+              font-size: 16px;
+              line-height: 19px;
+              vertical-align: 0;
+            }
+
+            img.instrumentIcon {
+              @iconSize: 20px;
+              width: @iconSize;
+              height: @iconSize;
+              vertical-align: middle;
+              margin-bottom: 14px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

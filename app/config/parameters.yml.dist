@@ -1,0 +1,40 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+    # You should uncomment this if you want use pdo_sqlite
+    database_path: ~
+
+    mailer_transport:  smtp
+    mailer_host:       127.0.0.1
+    mailer_user:       ~
+    mailer_password:   ~
+
+    # A secret key that's used to generate certain security-related tokens
+    secret:            ThisTokenIsNotSoSecretChangeIt
+
+    admin_notification_from_email: noreply@localhost
+    admin_notification_from_name: TakeATicket
+    admin_notification_to_email:  noreply@localhost
+
+    song_loader_row_formatters:
+        - \Phase\TakeATicket\SongLoader\RclKaraokeRowMapper
+        - \Phase\TakeATicket\SongLoader\RclRockBandRowMapper
+        - \Phase\TakeATicket\SongLoader\SimpleKaraokeRowMapper
+
+    displayOptions:
+        songInPreview: false,
+        upcomingCount: 4, # number of tickets to show on upcoming page
+        # files cannot currently be distributed due to copyright issues
+#        iconMapHtml:
+#            V: '<img src="local/rb-mic.png" class="instrumentIcon"/>'
+#            G: '<img src="local/rb-guitar.png" class="instrumentIcon"/>'
+#            B: '<img src="local/rb-bass.png" class="instrumentIcon"/>'
+#            D: '<img src="local/rb-drums.png" class="instrumentIcon"/>'
+#            K: '<img src="local/rb-keys.png" class="instrumentIcon"/>'

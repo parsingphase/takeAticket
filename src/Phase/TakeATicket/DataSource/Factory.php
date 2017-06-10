@@ -12,6 +12,11 @@ use Doctrine\DBAL\Connection;
 
 class Factory
 {
+    /**
+     * @param Connection $connection
+     *
+     * @return AbstractSql
+     */
     public static function datasourceFromDbConnection(Connection $connection)
     {
         $driverType = $connection->getDriver()->getName();

@@ -1,0 +1,79 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Settings Management{% endblock %}
+{% block headerText %}Manage Settings{% endblock %}
+{% block containerClass %}settings{% endblock %}
+
+{% form_theme settingsForm 'form_table_layout.html.twig' %}
+{% form_theme resetForm 'form_table_layout.html.twig' %}
+{% form_theme songListForm 'form_table_layout.html.twig' %}
+{% form_theme stylingForm 'form_table_layout.html.twig' %}
+
+
+{% block appTarget %}
+
+    <div class="well">
+        <h3>Settings</h3>
+        {% if settingsFormSaved %}
+            <div class="alert alert-success">
+                Saved
+            </div>
+        {% endif %}
+
+        {{ form_start(settingsForm) }}
+        {{ form_widget(settingsForm) }}
+        {{ form_end(settingsForm) }}
+    </div>
+
+    <div class="well">
+        <h3>Wipe queue</h3>
+        <div class="panel panel-danger">
+            <div class="panel-heading">Remove all tickets and performers</div>
+
+            <div class="panel-body">
+                <p><b>To reset all tickets and performers and clear the system down for a new session, type
+                        '{{ resetRequiredText }}'
+                        into the box below and submit.</b></p>
+                {% if resetFormSaved %}
+                    <div class="alert alert-success">
+                        All session data cleared
+                    </div>
+                {% else %}
+                    {{ form_start(resetForm) }}
+                    {{ form_widget(resetForm) }}
+                    {{ form_end(resetForm) }}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="well">
+        <h3>Reload song list</h3>
+
+        {% if songFormSaved %}
+            <div class="alert alert-success">
+                Stored {{ songsLoaded }} songs
+            </div>
+        {% endif %}
+
+        {{ form(songListForm) }}
+    </div>
+
+    <div class="well">
+        <h3>Styling</h3>
+
+        {% if styleFormSaved %}
+            <div class="alert alert-success">
+                Styling updated
+                {% if backgroundUpdated %}
+                    - image uploaded
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {{ form(stylingForm) }}
+    </div>
+
+    <div style="height: 60px"></div>
+
+{% endblock %}

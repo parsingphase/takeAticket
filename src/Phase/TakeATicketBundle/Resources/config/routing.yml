@@ -1,0 +1,84 @@
+index:
+    path:     /
+    defaults: { _controller: TakeATicketBundle:Default:index }
+    methods:  [GET]
+
+songs:
+    path:     /songSearch
+    defaults: { _controller: TakeATicketBundle:Default:songSearch }
+    methods:  [GET]
+
+announce:
+    path:     /announce/{section}
+    defaults: { _controller: TakeATicketBundle:Default:announce, section: 'readme' }
+    methods:  [GET]
+
+upcomingRss:
+    path:     /upcomingRss
+    defaults: { _controller: TakeATicketBundle:Rss:upcomingRss }
+    methods:  [GET]
+
+nextSongAjax:
+    path: /api/next
+    defaults: { _controller: TakeATicketBundle:Ajax:nextSongs }
+    methods:  [GET]
+
+songSearchAjax:
+    path: /api/songSearch
+    defaults: { _controller: TakeATicketBundle:Ajax:songSearch }
+    methods:  [GET,POST]
+
+remotesRedirectAjax:
+    path: /api/remotesRedirect
+    defaults: { _controller: TakeATicketBundle:Ajax:remotesRedirect }
+    methods:  [GET]
+
+saveTicketAjax:
+    path: /api/saveTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:saveTicket }
+    methods:  [POST]
+
+useTicketAjax:
+    path: /api/useTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:useTicket }
+    methods:  [POST]
+
+newTicketOrderAjax:
+    path: /api/newOrder
+    defaults: { _controller: TakeATicketBundle:Ajax:newTicketOrder }
+    methods:  [POST]
+
+deleteTicketAjax:
+    path: /api/deleteTicket
+    defaults: { _controller: TakeATicketBundle:Ajax:deleteTicket }
+    methods:  [POST]
+
+performersAjax:
+    path: /api/performers
+    defaults: { _controller: TakeATicketBundle:Ajax:reloadPerformers }
+    methods:  [GET]
+
+lastUpdateHashAjax:
+    path: /api/updateHash
+    defaults: { _controller: TakeATicketBundle:Ajax:lastUpdateHash }
+    methods: [GET]
+
+manage:
+    path:     /manage
+    defaults: { _controller: TakeATicketBundle:Management:index }
+    methods:  [GET]
+
+settings:
+    path:     /manage/settings
+    defaults: { _controller: TakeATicketBundle:Management:settings }
+    methods:  [GET, POST]
+
+help:
+    path:     /help/{section}
+    defaults: { _controller: TakeATicketBundle:Management:help, section: 'readme' }
+    methods:  [GET]
+
+css:
+    path:     /css/custom
+    defaults: { _controller: TakeATicketBundle:Css:customCss }
+    methods:  [GET]

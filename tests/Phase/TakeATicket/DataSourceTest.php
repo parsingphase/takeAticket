@@ -7,9 +7,12 @@ use /** @noinspection PhpInternalEntityUsedInspection */
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Phase\TakeATicket\DataSource\Factory;
+use Phase\TakeATicket\Model\Song;
 
 class DataSourceTest extends \PHPUnit_Framework_TestCase
 {
+    const SONG_SOURCE_TESTS = 999;
+
     /**
      * @var \Doctrine\DBAL\Connection[]
      * Loaded on demand by ::getConfiguredDatabases
@@ -40,8 +43,14 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
                 }
 
                 foreach ($songInserts as $insertSql) {
+                    $insertSql = trim($insertSql);
                     if ($insertSql && !preg_match('/^\s+-- /', $insertSql)) {
-                        $databases[$k]->exec($insertSql);
+                        try {
+                            $databases[$k]->exec(str_replace("\\'", "''", $insertSql));
+                        } catch (\Exception $e) {
+                            print("\nError importing $insertSql:\n" . $e->getMessage() . "\n");
+                            throw $e;
+                        }
                     }
                 }
             }
@@ -81,8 +90,8 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSearch($dbName, $conn)
     {
-        $searchString = 'When you';
-        // should return The Killers: When You Were Young
+        $searchString = strtolower($conn->fetchColumn('SELECT title FROM songs LIMIT 5,1'));
+        // grab exact title to search for
 
         $dataSource = Factory::datasourceFromDbConnection($conn);
         $hits = $dataSource->findSongsBySearchString($searchString);
@@ -99,18 +108,18 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     {
         // Note: we start these tests with an empty, truncated user table
         $dataSource = Factory::datasourceFromDbConnection($conn);
-        $noSuchUser = $dataSource->getPerformerIdByName('Bob');
+        $noSuchUser = $dataSource->fetchPerformerIdByName('Bob');
         $this->assertFalse($noSuchUser, "Nonexistent user must not be found ($dbName)");
 
-        $firstUserId = $dataSource->getPerformerIdByName('Bob', true);
+        $firstUserId = $dataSource->fetchPerformerIdByName('Bob', true);
         $this->assertEquals(1, $firstUserId, "Creating first user must return ID=1 ($dbName)");
         // Only works for DBs with monotonic int IDs - may need later revision
 
-        $secondUserId = $dataSource->getPerformerIdByName('Harry', true);
+        $secondUserId = $dataSource->fetchPerformerIdByName('Harry', true);
         $this->assertTrue($secondUserId > 1, "Creating second user must return ID>1 ($dbName)");
         // Only works for DBs with monotonic int IDs - may need later revision
 
-        $existingUserId = $dataSource->getPerformerIdByName(strtolower('Bob'), false);
+        $existingUserId = $dataSource->fetchPerformerIdByName(strtolower('Bob'), false);
         // strtolower - check that we don't need case matching
         $this->assertEquals($firstUserId, $existingUserId, "Second search for same user must return same ID ($dbName)");
     }
@@ -211,6 +220,64 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testMultipleSongStore($dbName, $conn)
+    {
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+
+        $duration1 = mt_rand(500, 600);
+
+        $song = new Song();
+        $song
+            ->setSourceId(self::SONG_SOURCE_TESTS)
+            ->setArtist('Disturbed')
+            ->setTitle('The Sound of Silence')
+            ->setDuration($duration1);
+
+        $dataSource->storeSong($song);
+        $firstSongId = $song->getId();
+        $this->assertTrue($firstSongId > 0, "Stored song has ID (DB $dbName)");
+
+        $fetched = $dataSource->fetchSongRowById($firstSongId);
+        $this->assertEquals($duration1, $fetched['duration']);
+        $this->assertEquals(self::SONG_SOURCE_TESTS, $fetched['sourceId']);
+
+        $song = new Song();
+        $song
+            ->setSourceId(self::SONG_SOURCE_TESTS)
+            ->setArtist('Skunk Anansie')
+            ->setTitle('Secretly')
+            ->setDuration(240);
+        $dataSource->storeSong($song);
+        $secondSongId = $song->getId();
+        $this->assertTrue($secondSongId > $firstSongId, "Second song has ID above first (DB $dbName)");
+    }
+
+    /**
+     * @dataProvider databasesProvider
+     * @param string $dbName
+     * @param Connection $conn
+     */
+    public function testSettings($dbName, $conn)
+    {
+        $dataSource = Factory::datasourceFromDbConnection($conn);
+
+        $empty = $dataSource->fetchSetting('nosuch');
+        $this->assertNull($empty, "$dbName: non-existing setting should return null");
+
+        $rand = mt_rand(1234, 5678);
+        $dataSource->updateSetting('randomNumber', $rand);
+        $this->assertEquals(
+            $rand,
+            $dataSource->fetchSetting('randomNumber'),
+            "$dbName: existing setting should return stored value"
+        );
+    }
+
+    /**
      * @param $connectionParams
      * @return \Doctrine\DBAL\Connection
      * @throws \Doctrine\DBAL\DBALException
@@ -220,9 +287,7 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         /** @noinspection PhpInternalEntityUsedInspection */
         $config = new Configuration();
 
-        $conn = DriverManager::getConnection($connectionParams, $config);
-
-        return $conn;
+        return DriverManager::getConnection($connectionParams, $config);
     }
 
     /**
@@ -272,7 +337,7 @@ class DataSourceTest extends \PHPUnit_Framework_TestCase
         if ($this->databases === false) {
             $databases = [];
 
-            $configDir = dirname(dirname(dirname(__DIR__))) . '/config/';
+            $configDir = dirname(dirname(__DIR__)) . '/config/';
 
             $configFile = $configDir . 'testConfig.dist.php'; // default
             if (file_exists($configDir . 'testConfig.php')) {

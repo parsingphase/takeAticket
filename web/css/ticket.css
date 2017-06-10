@@ -1,0 +1,554 @@
+body {
+  background-size: cover;
+}
+.container {
+  padding: 0;
+}
+.auto-font {
+  text-wrap: none;
+  white-space: nowrap;
+}
+div.page-header {
+  padding: 0;
+  font-size: 50px;
+  font-weight: bolder;
+  margin-top: 0;
+  margin-bottom: 0;
+  position: relative;
+  background-color: rgba(245,245,245,0.95) !important;
+}
+div.page-header .headerControls {
+  position: absolute;
+  right: 0;
+  font-size: 24px;
+  margin-right: 20px;
+}
+div.page-header .headerControls,
+div.page-header .headerControls a {
+  color: #d0d0d0;
+  padding: 4px 6px;
+}
+div.page-header:hover .headerControls,
+div.page-header:hover .headerControls a {
+  color: #999;
+}
+div#target {
+  margin-top: 20px;
+}
+div.announcement {
+  font-size: 2.3em;
+}
+div.announcement h1 {
+  font-weight: bold;
+  font-size: 1.4em;
+}
+div.announcement.INTERVAL,
+div.announcement.MORE {
+  font-size: 4em;
+}
+div.upcoming {
+  margin-bottom: 100px;
+}
+div.upcoming div.well.ticket {
+  min-height: 120px;
+  background-color: rgba(245,245,245,0.95) !important;
+}
+div.upcoming div.well.ticket.withSong {
+  padding-top: 6px;
+}
+div.upcoming div.well.ticket.noSong {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  min-height: 100px;
+}
+div.upcoming div.well.ticket .ticketAdminControls {
+  float: right;
+}
+div.upcoming div.well.ticket .ticketAdminControls .btn {
+  margin-left: 4px;
+}
+div.upcoming div.well.ticket .ticketMeta {
+  display: none;
+}
+div.upcoming div.well.ticket p {
+  margin-bottom: 5px;
+}
+div.upcoming div.well.ticket p.band {
+  font-size: 50px;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket p.song {
+  font-size: 30px;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket .performers {
+  font-size: 100px;
+  text-align: center;
+  font-weight: bolder;
+}
+div.upcoming div.well.ticket .performers .instrumentTag {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+div.upcoming div.well.ticket .performers .instrumentTag .instrumentTextIcon {
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 20px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  font-size: 32px;
+  line-height: 38px;
+  vertical-align: 0.25em;
+}
+div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
+  margin-bottom: 14px;
+}
+.asAdmin div.upcoming .ticketMeta {
+  display: block !important;
+  position: absolute;
+}
+.asAdmin div.upcoming .ticketMeta .blocking,
+.asAdmin div.upcoming .ticketMeta .private {
+  float: left;
+  font-size: 2em;
+  padding-top: 0.4em;
+  padding-right: 0.4em;
+}
+div.manage #updateWarning {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10%;
+  width: auto;
+  font-weight: bold;
+}
+div.manage #updateWarning .btn {
+  margin-left: 8px;
+}
+div.manage div.ticket .instrumentTextIcon {
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  vertical-align: 0.1em;
+  font-weight: bold;
+}
+div.manage div.ticket .performer {
+  padding-right: 4px;
+}
+div.manage div.ticket .ticketTitleIcon {
+  font-weight: bold;
+  text-wrap: none;
+  white-space: nowrap;
+}
+div.manage div.ticket .proximityIssue {
+  color: orange;
+}
+div.manage div.ticket .proximityIssue.proximityIssue1 {
+  color: red;
+}
+div.manage div.ticket .ticketOrder {
+  float: left;
+  height: 2em;
+  width: 4em;
+}
+div.manage div.ticket .ticketOrder .ticketOrdinal,
+div.manage div.ticket .ticketOrder .ticketTime {
+  font-size: 1.1em;
+}
+div.manage div.ticket .ticketId {
+  float: left;
+  height: 2em;
+  font-size: 1.8em;
+  width: 2.4em;
+}
+div.manage div.ticket .ticketMeta {
+  float: left;
+  height: 4em;
+  padding-right: 14px;
+}
+div.manage div.ticket .ticketMeta .blocking,
+div.manage div.ticket .ticketMeta .private {
+  width: 16px;
+  font-size: 1.2em;
+}
+div.manage div.ticket .ticketMeta .blocking {
+  height: 22px;
+}
+div.manage div.ticket .pendingSong .fa {
+  width: 16px;
+}
+div.manage div.ticket .pendingSong .performerDoneCount0 {
+  font-weight: bolder;
+  font-size: 1.3em;
+}
+div.manage div.ticket .pendingSong .performerDoneCount1 {
+  font-weight: bold;
+}
+div.manage div.ticket.well {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-height: 62px;
+}
+div.manage div.ticket.used {
+  color: #777;
+  font-style: italic;
+  background-color: #fefefe !important;
+}
+div.manage div.ticket.shown {
+  border-color: red;
+  border-width: 3px;
+}
+div.manage div.ticket .gameMarker {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 2em;
+  font-weight: bold;
+  width: 70px;
+}
+div.manage div.ticket.withKeys .gameMarkerRb4 {
+  color: #888;
+}
+div.manage div.ticket button {
+  min-height: 2.5em;
+}
+div.manage div.ticket button span.fa {
+  font-size: 1.3em;
+}
+div.manage div.ticket.used button.performButton {
+  display: none;
+}
+div.manage div.editTicketOuter {
+  margin-bottom: 80px;
+}
+div.manage div.editTicket {
+  min-height: 500px;
+}
+div.manage div.editTicket h3 {
+  margin-top: 0;
+  margin-left: 12px;
+  width: 10em;
+  padding: 6px;
+}
+div.manage div.editTicket h3.editTicketHeader {
+  background-color: #aaaaaa;
+  color: #ffffff;
+}
+div.manage div.editTicket .editTicketButtons button {
+  margin-left: 4px;
+}
+div.manage div.editTicket .editTicketSong,
+div.manage div.editTicket .editTicketBandColumn {
+  float: left;
+  padding: 10px;
+}
+div.manage div.editTicket .editTicketSong .ticketAspectSummary,
+div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary {
+  padding-left: 6px;
+  min-height: 50px;
+}
+div.manage div.editTicket .editTicketSong .ticketAspectSummary .selectedSong,
+div.manage div.editTicket .editTicketBandColumn .ticketAspectSummary .selectedSong {
+  margin-left: 8px;
+}
+div.manage div.editTicket .editTicketSong {
+  width: 400px;
+}
+div.manage div.editTicket .editTicketSong button.removeSongButton {
+  margin-left: 10px;
+  font-size: 1.4em;
+  padding: 4px 10px;
+}
+div.manage div.editTicket .editTicketBandColumn {
+  width: 600px;
+}
+div.manage div.editTicket .editTicketBandColumn .editTicketTitle {
+  width: 30em;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument {
+  cursor: pointer;
+  float: left;
+  width: 110px;
+  min-height: 4em;
+  border: solid 1px #ccc;
+  border-bottom: none;
+  margin-right: 6px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentSelected {
+  background-color: #e0e0e0;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentSelected .instrumentName {
+  background-color: #ccc;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentName,
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentPerformer {
+  padding: 4px 8px;
+  margin-bottom: 4px;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument .instrumentName {
+  font-weight: bold;
+  background-color: #ddd;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument i {
+  color: #888;
+}
+div.manage div.editTicket .editTicketBandColumn .instrument.instrumentUnused {
+  display: none;
+}
+div.manage div.editTicket .editTicketBandColumn .bandControls {
+  padding-top: 14px;
+}
+div.manage div.editTicket .editTicketBandColumn .bandControls .bandTabsOuter .performerSelect {
+  clear: both;
+  padding: 8px;
+  background-color: #e0e0e0;
+}
+div.manage div.editTicket .editTicketBandColumn .bandControls .bandTabsOuter .newPerformer {
+  width: 18em;
+}
+div.manage div.editTicket .addSongTitle {
+  width: 24em;
+}
+div.manage div.editTicket .input-group-addon .fa {
+  width: 16px;
+}
+div.manage div.page-header {
+  font-size: 40px;
+  font-weight: bolder;
+}
+div.manage .songCompleteOuter,
+div.songSearch .songCompleteOuter {
+  padding-left: 41px;
+}
+div.manage .songCompleteOuter .songComplete,
+div.songSearch .songCompleteOuter .songComplete {
+  position: absolute;
+  width: 24em;
+  background-color: white;
+  border: solid lightgrey 1px;
+  display: none;
+}
+div.manage .acSong,
+div.songSearch .acSong {
+  padding: 5px;
+  cursor: pointer;
+  border-bottom: solid lightgrey 1px;
+}
+div.manage .acSong:last-of-type,
+div.songSearch .acSong:last-of-type {
+  border-bottom: none;
+}
+div.manage .acSong.selected,
+div.songSearch .acSong.selected {
+  background-color: lightblue;
+}
+div.manage .acSong .queued,
+div.songSearch .acSong .queued {
+  font-style: italic;
+  color: #bbb;
+}
+div.manage .performerControlsCell,
+div.songSearch .performerControlsCell {
+  width: 50%;
+}
+div.manage .performerControls .letterSpan,
+div.songSearch .performerControls .letterSpan {
+  display: inline-block;
+}
+div.manage .performerControls .initialLetter,
+div.songSearch .performerControls .initialLetter {
+  margin: 8px 4px 0 0;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-color: #ccc;
+  display: inline-block;
+  padding: 4px 10px 4px 6px;
+  vertical-align: middle;
+  font-weight: bolder;
+  color: #555;
+}
+div.manage .performerControls .btn,
+div.songSearch .performerControls .btn {
+  margin-top: 8px;
+  margin-right: 8px;
+}
+div.manage .performerControls .btn[disabled="disabled"],
+div.manage .performerControls .btn.btn-primary[disabled="disabled"],
+div.songSearch .performerControls .btn[disabled="disabled"],
+div.songSearch .performerControls .btn.btn-primary[disabled="disabled"] {
+  font-style: italic;
+  background-color: #DDDDDD;
+  border-color: #888888;
+  color: #444444;
+}
+div.songSearch .searchContent {
+  padding-top: 20px;
+}
+div.songSearch .searchTargetOuter {
+  min-height: 180px;
+  padding-top: 0;
+}
+div.songSearch .searchTargetOuter table th {
+  padding-right: 1.2em;
+}
+div.songSearch .searchTargetOuter table th,
+div.songSearch .searchTargetOuter table tr {
+  padding-bottom: 0.3em;
+}
+div.songSearch .instrumentTextIcon {
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  display: inline-block;
+  color: #fff;
+  background-color: #999;
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: 0;
+}
+div.songSearch .instrumentPerformers {
+  margin-right: 4px;
+}
+div.songSearch img.instrumentIcon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-bottom: 4px;
+}
+div.songSearch #userSubmitFormOuter table {
+  margin-bottom: 0;
+}
+div.songSearch #userTicketConfirmFormOuter .submitControls {
+  margin-top: 0.6em;
+}
+div.songSearch #userTicketConfirmFormOuter .submitControls input.submissionKey {
+  margin-right: 0.6em;
+  width: 7em;
+}
+div.helpPage {
+  margin-bottom: 100px;
+}
+div.alertHolder {
+  text-align: center;
+  font-size: 3em;
+  padding: 0 3em;
+}
+div.container.settings form table th {
+  padding-right: 0.6em;
+}
+div.container.settings form table td {
+  padding: 3px;
+}
+div.container.settings form table td input[type="text"] {
+  width: 20em;
+}
+div.end {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(245,245,245,0.95) !important;
+}
+div.end .panel {
+  margin-bottom: 0;
+}
+div.end div.gflink {
+  font-size: 40px;
+  width: 100%;
+}
+div.end div.gflink a {
+  color: #333;
+}
+div.end div.gflink a:hover {
+  color: #777;
+  text-decoration: none;
+}
+div.end .docslink {
+  font-size: 24px;
+  margin-right: 20px;
+}
+div.end .docslink,
+div.end .docslink a {
+  color: #e8e8e8;
+  padding: 4px 6px;
+}
+div.end:hover .docslink,
+div.end:hover .docslink a {
+  color: #999;
+}
+div.end #appMessages .alert {
+  margin-bottom: 0;
+}
+@media only screen and (max-width: 600px) {
+  .songCompleteOuter .songComplete {
+    position: relative !important;
+  }
+}
+@media only screen and (max-device-width: 480px) {
+  .noMobile {
+    display: none;
+  }
+  div.headerControls.pull-right {
+    float: none !important;
+    position: relative;
+    display: block;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  div.headerControls.pull-right .fa {
+    color: #555555;
+    padding-left: 0.1em;
+  }
+  .songSearch .searchContent {
+    padding-top: 0 !important;
+  }
+  .songSearch .songCompleteOuter .songComplete {
+    max-width: 240px;
+    margin-bottom: 6px;
+    position: relative !important;
+  }
+  .songSearch div.searchTargetOuter {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 6px;
+    max-width: 95%;
+    float: none;
+  }
+  div.end {
+    display: none;
+  }
+  div.upcoming {
+    margin-bottom: 100px;
+  }
+  div.upcoming div.well {
+    padding: 0;
+  }
+  div.upcoming div.well.ticket {
+    min-height: 80px;
+  }
+  div.upcoming div.well.ticket.noSong {
+    min-height: 60px;
+  }
+  div.upcoming div.well.ticket .performers .instrumentTag .instrumentTextIcon {
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 19px;
+    vertical-align: 0;
+  }
+  div.upcoming div.well.ticket .performers .instrumentTag img.instrumentIcon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-bottom: 14px;
+  }
+}

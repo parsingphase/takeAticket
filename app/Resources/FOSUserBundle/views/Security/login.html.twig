@@ -1,0 +1,15 @@
+{% extends "::base.html.twig" %}
+
+{% block headerText %}Login{% endblock %}
+
+{% block pageJs %}
+    {# not needed #}
+{% endblock %}
+
+{% block appTarget %}
+    <div class="well" style="margin-top: 1em">
+        {% block fos_user_content %}
+            {{ include('FOSUserBundle:Security:login_content.html.twig') }}
+        {% endblock fos_user_content %}
+    </div>
+{% endblock %}

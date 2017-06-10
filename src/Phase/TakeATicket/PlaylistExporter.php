@@ -13,7 +13,6 @@ use Phase\TakeATicket\DataSource\Factory;
 
 class PlaylistExporter
 {
-
     /**
      * @var Connection
      */
@@ -21,6 +20,7 @@ class PlaylistExporter
 
     /**
      * PlaylistExporter constructor.
+     *
      * @param Connection $dbConn
      */
     public function __construct(Connection $dbConn)
@@ -37,7 +37,7 @@ class PlaylistExporter
         $handle = fopen($outFile, 'w');
 
         if ($handle === false) {
-            print("Failed to open '$outFile'\n");
+            echo "Failed to open '$outFile'\n";
         }
 
         $title = [
@@ -83,9 +83,7 @@ class PlaylistExporter
         }
         fputcsv($handle, ['ENDS']);
 
-        print("\n Wrote to '$outFile'\n");
-
-
+//        echo "\n Wrote to '$outFile'\n";
     }
 
     public function performersByInstrument($band, $instrument)
@@ -100,8 +98,9 @@ class PlaylistExporter
                 $band[$instrument]
             );
 
-            $performers = join(', ', $performers);
+            $performers = implode(', ', $performers);
         }
+
         return $performers;
     }
 }

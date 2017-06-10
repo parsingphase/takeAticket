@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Song Search{% endblock %}
+{% block headerText %}Song Search{% endblock %}
+{% block containerClass %}songSearch{% endblock %}
+
+    {% block pageJs %}
+        <script>
+          var displayOptions = {{ displayOptions|json_encode|raw }};
+          var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
+          $(function() {
+            ticketer.displayOptions = displayOptions;
+            ticketer.instrumentOrder = instrumentOrder;
+            ticketer.searchCount = 20;
+            ticketer.initSearchPage();
+          });
+        </script>
+    {% endblock %}
+
+    {% block appTarget %}
+        <div class="well col-md-12" style="margin-top: 20px; font-size: large">
+            {% if displayOptions.selfSubmission %}
+                Start by searching for a song to perform.
+            {% else %}
+                Search all available songs.
+            {% endif %}
+            Song that are already in the queue will be greyed out.
+        </div>
+
+        <div class="searchContent">
+            <div class="col-md-6">
+                <div class="input-group input-group">
+                    <span class="input-group-addon" id="search-addon1"><span class="fa fa-search"></span> </span>
+                    <input class="searchString form-control" placeholder="Search song or use code"/>
+                </div>
+
+                <div class="songCompleteOuter">
+                    <div class="songComplete"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6 well searchTargetOuter">
+                <div id="searchTarget"></div>
+            </div>
+        </div>
+
+        <div id="userSubmitFormOuter" class="well col-md-12"
+             style="display: none;">
+        </div>
+
+        <div id="userTicketConfirmFormOuter" class="well col-md-12"
+             style="display: none;">
+        </div>
+
+        <div class="noMobile clearfix" style="margin-bottom: 70px;"></div> <!-- space for footer - no footer on mobile-->
+
+    {% endblock %}

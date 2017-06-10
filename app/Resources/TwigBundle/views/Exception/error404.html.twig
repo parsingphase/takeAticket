@@ -1,0 +1,20 @@
+{# app/Resources/TwigBundle/views/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}RCL | Error{% endblock %}
+{% block headerText %}Manual{% endblock %}
+{% block containerClass %}errorPage{% endblock %}
+
+{% block appTarget %}
+    <div id="target">
+        <div class="well"><h3>{{ status_code }}</h3>
+            <p>{{ status_text }}</p></div>
+    </div>
+
+    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+        <script>
+            window.setTimeout(function() { window.location='/';}, 1000);
+        </script>
+    {% endif %}
+
+{% endblock %}

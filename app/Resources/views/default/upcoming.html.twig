@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+{% block title %}RCL | Next Bands{% endblock %}
+{% block headerText %}Next {{ displayOptions.upcomingCount }} Bands{% endblock %}
+{% block containerClass %}upcoming{% endblock %}
+
+    {% block pageJs %}
+        <script>
+            var displayOptions = {{ displayOptions|json_encode|raw }};
+            var instrumentOrder = {{ instrumentOrder|json_encode|raw }};
+            $(function() {
+                ticketer.displayOptions = displayOptions;
+                ticketer.instrumentOrder = instrumentOrder;
+                ticketer.go();
+                {% if not is_granted('ROLE_ADMIN') %}
+                ticketer.checkRemoteRedirect();
+                {% endif %}
+            });
+        </script>
+    {% endblock %}
+
