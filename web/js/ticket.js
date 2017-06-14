@@ -1341,7 +1341,7 @@ var ticketer = (function() {
           if (that.displayOptions.selfSubmissionKeyNeeded && !that.displayOptions.isAdmin) {
             ticket.submissionKey = submissionKeyInput.val();
             if (!ticket.submissionKey.trim()) {
-              window.alert("Please check submission code");
+              window.alert('Please check submission code');
               return false;
             }
           }
@@ -1358,7 +1358,7 @@ var ticketer = (function() {
                   $('#userSubmitFormOuter').hide().html('');
                   $('#searchTarget').html('');
                 } else if (data.error && (data.error === 'E_BAD_SECRET')) {
-                  window.alert("Please check submission code");
+                  window.alert('Please check submission code');
                 } else {
                   that.showAppMessage('Error saving ticket', 'danger');
                   formBlock.html(
