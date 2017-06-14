@@ -135,6 +135,7 @@ class AjaxController extends BaseController
             // Ensure that name format is valid
 
             $dataErrors = [];
+            $fixableError = false;
 
             $ticketsForSong = $this->getDataStore()->getQueueEntriesForSongId($songKey);
 
@@ -167,6 +168,7 @@ class AjaxController extends BaseController
                 strcasecmp($submissionKey, $this->getDataStore()->fetchSetting('selfSubmissionKey'))
             ) {
                 $dataErrors[] = 'Secret code wrong or missing';
+                $fixableError = 'E_BAD_SECRET';
             }
 
             if ($dataErrors) {
@@ -174,6 +176,9 @@ class AjaxController extends BaseController
                     'status' => 'error',
                     'message' => implode(', ', $dataErrors)
                 ];
+                if ($fixableError) {
+                    $responseData['error'] = $fixableError; // more than one error = faily death.
+                }
                 return new JsonResponse($responseData, 200);
             }
         }

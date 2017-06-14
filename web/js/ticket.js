@@ -1322,7 +1322,7 @@ var ticketer = (function() {
 
         var submitButton = formBlock.find('.submitUserTicketButton');
         var submissionKeyInput = formBlock.find('.submissionKey');
-        if (this.displayOptions.selfSubmissionKeyNeeded) {
+        if (this.displayOptions.selfSubmissionKeyNeeded && !that.displayOptions.isAdmin) {
           submitButton.attr('disabled', 'disabled');
           submissionKeyInput.keydown(
             function() {
@@ -1338,8 +1338,12 @@ var ticketer = (function() {
         }
 
         submitButton.click(function() {
-          if (that.displayOptions.selfSubmissionKeyNeeded) {
+          if (that.displayOptions.selfSubmissionKeyNeeded && !that.displayOptions.isAdmin) {
             ticket.submissionKey = submissionKeyInput.val();
+            if (!ticket.submissionKey.trim()) {
+              window.alert("Please check submission code");
+              return false;
+            }
           }
           $.ajax({
               method: 'POST',
@@ -1353,6 +1357,8 @@ var ticketer = (function() {
                   formBlock.html('<div class="alert alert-success" role="alert">Ticket submitted</div>');
                   $('#userSubmitFormOuter').hide().html('');
                   $('#searchTarget').html('');
+                } else if (data.error && (data.error === 'E_BAD_SECRET')) {
+                  window.alert("Please check submission code");
                 } else {
                   that.showAppMessage('Error saving ticket', 'danger');
                   formBlock.html(
