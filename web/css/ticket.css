@@ -439,7 +439,7 @@ div.helpPage {
 div.alertHolder {
   text-align: center;
   font-size: 3em;
-  padding: 1em 8em;
+  padding: 0 3em;
 }
 div.container.settings form table th {
   padding-right: 0.6em;
@@ -455,6 +455,9 @@ div.end {
   bottom: 0;
   width: 100%;
   background-color: rgba(245,245,245,0.95) !important;
+}
+div.end .panel {
+  margin-bottom: 0;
 }
 div.end div.gflink {
   font-size: 40px;
