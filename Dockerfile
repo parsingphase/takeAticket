@@ -3,7 +3,7 @@
 #Runs the Symfony app via the internal server. Admin account is user: admin, password: admin
 # Not recommended for production use!
 
-FROM ubuntu:16.10
+FROM ubuntu:18.04
 MAINTAINER Richard George "richard@phase.org"
 
 RUN apt-get update && \
