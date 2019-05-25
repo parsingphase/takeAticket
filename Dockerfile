@@ -7,7 +7,7 @@ FROM ubuntu:18.04
 MAINTAINER Richard George "richard@phase.org"
 
 RUN apt-get update && \
-    apt-get install -y php ant git php-xml php-dom php-xmlwriter php-zip php-sqlite3 php-mbstring nodejs npm sqlite3
+    DEBIAN_FRONTEND=noninteractive apt-get install -y php ant git php-xml php-dom php-xmlwriter php-zip php-sqlite3 php-mbstring nodejs npm sqlite3
 
 WORKDIR /root
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
