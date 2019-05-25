@@ -8,8 +8,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Phase\TakeATicket\DataSource\Factory;
 use Phase\TakeATicket\Model\Song;
+use PHPUnit\Framework\TestCase;
 
-class DataSourceTest extends \PHPUnit_Framework_TestCase
+class DataSourceTest extends TestCase
 {
     const SONG_SOURCE_TESTS = 999;
 

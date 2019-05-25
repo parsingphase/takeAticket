@@ -24,7 +24,7 @@
         }
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": "^5.5.9||^7.0",
         "ext-PDO": "*",
         "aptoma/twig-markdown": "^2.0",
         "components/bootstrap": "~3.2",
@@ -33,7 +33,7 @@
         "components/jqueryui": "~1.11",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "^2.6.3",
         "friendsofsymfony/user-bundle": "^2.0.0-beta1",
         "incenteev/composer-parameter-handler": "^2.0",
         "michelf/php-markdown": "^1.5",
@@ -49,9 +49,9 @@
         "leafo/lessphp": "^0.5.0",
         "maple-syrup-group/dbsampler": "^0.2.2",
         "phing/phing": "^2.16",
-        "phpunit/phpunit": "^5.6",
+        "phpunit/phpunit": "^6.5",
         "sensio/generator-bundle": "^3.0",
-        "squizlabs/php_codesniffer": "^2.8.1",
+        "squizlabs/php_codesniffer": "^3.4",
         "symfony/phpunit-bridge": "^3.0"
     },
     "scripts": {

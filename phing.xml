@@ -19,20 +19,14 @@
     </target>
 
     <target name="phpcs"
-            description="Perform codesniffer check of sourcecode files"
-    >
-        <phpcodesniffer
-                standard="PSR2"
-                allowedFileExtensions="php"
-                haltonerror="true"
-                haltonwarning="true"
-        >
-            <fileset dir="${project.basedir}">
-                <include name="src/**/*.php"/>
-                <exclude name="vendor/"/>
-            </fileset>
-            <formatter type="full" usefile="false"/>
-        </phpcodesniffer>
+            description="Run PHP Codesniffer with PSR2 standard">
+        <exec executable="${project.basedir}/vendor/bin/phpcs" checkreturn="true" passthru="true">
+            <arg value="-n"/>
+            <!-- no warnings -->
+            <arg value="--standard=PSR2"/>
+            <arg value="${project.basedir}/src"/>
+            <!--<arg value="${basedir}/tests"/>-->
+        </exec>
     </target>
 
     <target name="phpunit"
