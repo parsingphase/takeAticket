@@ -17,8 +17,15 @@ Important notes:
 The docker version of this software is not designed as a full production system, but you can use it on a closed system
 if you understand the following limitations: 
 
- 1. The admin account/password is locked to 'admin/admin' (password changing will follow later!)
- 2. If you stop the running docker image, your queue and song list will be wiped. 
+ 1. The admin account/password is set to 'admin/admin' - changing it is currently an advanced operation, see below. 
+ 2. **If you stop the running docker image, your queue and song list will be wiped.** 
  3. The image contains a small example song list, but you can upload more via the admin interface
 
+## Options for those comfortable with Docker
+
+ - You can change the admin password by connecting to the container and running 
+            `./bin/console fos:user:change-password admin NEWPASSWORD`
+ - The sqlite database is held at `/app/var/db` and initialised from `/app/sql/db-sqlite.sql`, should you want to extend 
+ the Dockerfile to mount the database for persistence
+          
 {% include footer.md %}
