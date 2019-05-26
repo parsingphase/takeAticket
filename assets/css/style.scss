@@ -1,0 +1,24 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+header {
+  padding-bottom: 0;
+
+  h3 {
+    a {
+      color: lighten(#d5000d, 10%);
+
+      &:hover {
+        color: #d5000d;
+        text-decoration: underline;
+      }
+
+    }
+  }
+}
+
+section#downloads {
+  display: none
+}

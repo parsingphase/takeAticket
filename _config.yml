@@ -1,1 +1,4 @@
 theme: jekyll-theme-tactile
+repository: parsingphase/takeAticket
+exclude: [app,components,node_modules,tests,var,vendor,web]
+credit: 'Created by <a href="https://parsingphase.dev">Parsingphase</a>'
